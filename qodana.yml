@@ -1,4 +1,4 @@
 version: 1.0
-linter: jetbrains/qodana-js:2023.3
+linter: jetbrains/qodana-python-community:2023.3
 profile:
   name: qodana.recommended
