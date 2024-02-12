@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 
-const nm = 8
 
 const Main = () => {
     const [data, setdata] = useState({
