@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import Header from '../components/Header';
 
-function App() {
-    // usestate for setting a javascript
-    // object for storing and using data
+const Main = () => {
     const [data, setdata] = useState({
         message: "",
     });
@@ -22,10 +21,12 @@ function App() {
     }, []);
 
     return (
-        <div className="App">
-            <h1>React and flask</h1>
+        <div className='Main'>
+            <Header />
             <p>{data.message}</p>
+            <h2>Main Page</h2>
         </div>
     );
-}
-export default App;
+};
+
+export default Main;
