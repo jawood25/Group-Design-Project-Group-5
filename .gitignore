@@ -2,6 +2,7 @@
 
 # dependencies
 /frontend/node_modules
+**/__pycache__
 /.pnp
 .pnp.js
 
