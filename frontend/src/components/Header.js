@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Header = () => {
+const Header = ({ isLoggedIn }) => {
     return (
         <div className="Header">
             <nav class="navbar bg-body-tertiary">
@@ -17,8 +17,14 @@ const Header = () => {
                         <a class="navbar-brand ms-2" href="/">PathPal</a>
                     </div>
                     <div class="d-flex">
-                        <a class="btn btn-outline-success me-2" type="submit" href="/sign-up">Sign Up</a>
-                        <a class="btn btn-outline-success" type="submit" href="/login">Login</a>
+                    {isLoggedIn ? (
+                            <a className="btn btn-info text-white me-2" type="submit" href="/my-account">My Account</a>
+                        ) : (
+                            <span>
+                                <a className="btn btn-outline-success me-2" type="submit" href="/sign-up">Sign Up</a>
+                                <a className="btn btn-outline-success" type="submit" href="/login">Login</a>
+                            </span>
+                        )}
                     </div>
                 </div>
             </nav>

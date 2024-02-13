@@ -2,28 +2,27 @@ import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 
 const Main = () => {
-    const [data, setdata] = useState({
-        message: "",
-    });
+    const [isLoggedIn, setIsLoggedIn] = useState(true);
 
-    // Using useEffect for single rendering
+    const checkLoginStatus = async () => {
+        try {
+            const response = await fetch('/api/check-login-status');
+            if (response.ok) {
+                const data = await response.json();
+                setIsLoggedIn(data.isLoggedIn);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+    
     useEffect(() => {
-        // Using fetch to fetch the api from 
-        // flask server it will be redirected to proxy
-        fetch("/api/data").then((res) =>
-            res.json().then((data) => {
-                // Setting a data from api
-                setdata({
-                    message: data.message
-                });
-            })
-        );
+        checkLoginStatus();
     }, []);
 
     return (
         <div className='Main'>
-            <Header />
-            <p>{data.message}</p>
+            <Header isLoggedIn={isLoggedIn} />
             <h2>Main Page</h2>
         </div>
     );
