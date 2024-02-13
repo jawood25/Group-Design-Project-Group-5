@@ -2,11 +2,7 @@
 
 # dependencies
 /frontend/node_modules
-/backend/bin
-/backend/include
-/backend/lib
-/backend/pyvenv.cfg
-**/__pycache__
+/venv
 /.pnp
 .pnp.js
 
