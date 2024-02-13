@@ -44,14 +44,16 @@ class UserSignUp(Resource):
         _username = req_data.get("username")
         # _email = req_data.get("email")
         _password = req_data.get("password")
-
-        user = User.objects(pk=_username).first()
-
-        if user:
+        try:
+            user = User.objects(pk=_username).first()
+            if user:
+                return {"success": False,
+                        "msg": "User exist"}, 400
+            new_user = user(username=_username, password=_password)
+            new_user.save()
+        except Exception as e:
             return {"success": False,
-                    "msg": "User exist"}, 400
-        new_user = user(username=_username, password=_password)
-        new_user.save()
+                    "msg": e}, 401
 
         return {"success": True,
                 "userID": new_user.id,
@@ -67,13 +69,17 @@ class UserLogin(Resource):
         req_data = request.get_json()
         _username = req_data.get("username")
         _password = req_data.get("password")
-        user = User.objects(pk=_username).first()
-        if user is None:
+        try:
+            user = User.objects(pk=_username).first()
+            if user is None:
+                return {"success": False,
+                        "msg": "User not exist"}, 400
+            if _password != user.password:
+                return {"success": False,
+                        "msg": "Wrong credentials."}, 401
+        except Exception as e:
             return {"success": False,
-                    "msg": "User not exist"}, 400
-        if _password != user.password:
-            return {"success": False,
-                    "msg": "Wrong credentials."}, 400
+                    "msg": e}, 403
 
         return {
             # "token": token,
