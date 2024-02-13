@@ -5,6 +5,7 @@ import Main from './pages/Main';
 import Error from './pages/Error';
 import SignUp from './pages/SignUp'
 import Login from './pages/Login'
+import './style/style.css'
 
 const router = createBrowserRouter([
   {
