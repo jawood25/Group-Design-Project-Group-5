@@ -12,6 +12,13 @@ class Login(Resource):
     def post(self):
         data = request.json
         return {'message': data}, 200
+    
+# test for sign-up
+@api.route('/api/sign-up/')
+class SignUp(Resource):
+    def post(self):
+        data = request.json
+        return {'message': data}, 200
 
 
 @api.route('/api/user/')
