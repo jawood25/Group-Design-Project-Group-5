@@ -5,7 +5,10 @@ import Main from './pages/Main';
 import Error from './pages/Error';
 import SignUp from './pages/SignUp'
 import Login from './pages/Login'
+import MyAccount from './pages/MyAccount';
 import './style/style.css'
+import store from './redux/store';
+import { Provider } from 'react-redux'
 
 const router = createBrowserRouter([
   {
@@ -20,12 +23,18 @@ const router = createBrowserRouter([
   {
     path: "login",
     element: <Login />
+  },
+  {
+    path: "my-account",
+    element: <MyAccount />
   }
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <RouterProvider router={router} />  
+    </Provider>
   </React.StrictMode>
 );

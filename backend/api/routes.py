@@ -6,11 +6,12 @@ from .models import Route
 
 route_model = api.model('RouteModel', {"rId": fields.Integer(required=True)})
 
-
-@api.route('/api/data/')
-class Data(Resource):
-    def get(self):
-        return {'message': 'test from Flask'}
+# test for login
+@api.route('/api/login/')
+class Login(Resource):
+    def post(self):
+        data = request.json
+        return {'message': data}, 200
 
 
 @api.route('/api/user/')
