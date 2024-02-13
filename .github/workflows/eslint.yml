@@ -36,8 +36,8 @@ jobs:
           npm install @microsoft/eslint-formatter-sarif@3.0.0
 
       - name: Run ESLint
-        run: npx eslint frontend
-          --config package.json
+        run: npx eslint .
+          --config frontend/package.json
           --ext .js,.jsx,.ts,.tsx
           --format @microsoft/eslint-formatter-sarif
           --output-file eslint-results.sarif
