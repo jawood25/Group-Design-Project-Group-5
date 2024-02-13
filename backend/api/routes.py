@@ -6,7 +6,7 @@ from .models import *
 
 route_model = api.model('RouteModel', {"rId": fields.Integer(required=True)})
 signup_model = api.model('SignUpModel', {"username": fields.String(required=True, min_length=2, max_length=32),
-                                         "email": fields.String(required=True, min_length=4, max_length=64),
+                                         # "email": fields.String(required=True, min_length=4, max_length=64),
                                          "password": fields.String(required=True, min_length=4, max_length=16)
                                          })
 
@@ -31,42 +31,45 @@ class UserStatus(Resource):
 class UserSignUp(Resource):
     @api.expect(signup_model, validate=True)
     def post(self):
-        return {'message': 'test from UserSignUp'}
+        req_data = request.get_json()
+
+        _username = req_data.get("username")
+        # _email = req_data.get("email")
+        _password = req_data.get("password")
+
+        user = User.objects(pk=_username).first()
+
+        if user:
+            return {"success": False,
+                    "msg": "User exist"}, 400
+        new_user = user(username=_username, password=_password)
+        new_user.save()
+
+        return {"success": True,
+                "userID": new_user.id,
+                "msg": "The user was successfully registered"}, 200
 
 
-# @api.route('/api/user/login')
-# class UserLogin(Resource):
-#     @api.expect(login_model, validate=True)
-#     def post(self):
-#         req_data = request.get_json()
-#         _username = req_data.get("username")
-#         _password = req_data.get("password")
-#
-#         user = User.objects(pk=_username).first()
-#
-#         if user is None:
-#             return {"success": False,
-#                     "msg": "User not exist"}, 400
-#         if _password != user.password:
-#             return {"success": False,
-#                     "msg": "Wrong credentials."}, 400
-#
-#         # return {"success": True,
-#         #         "startpoint": route.startPoint,
-#         #         "msg": "Route is found"}, 200
-#         #
-#
-#         # # create access token uwing JWT
-#         # token = jwt.encode({'email': _username, 'exp': datetime.utcnow() + timedelta(minutes=30)}, BaseConfig.SECRET_KEY)
-#         #
-#         # user_exists.set_jwt_auth_active(True)
-#         # user_exists.save()
-#         #
-#         # return {"success": True,
-#         #         "token": token,
-#         #         "user": user_exists.toJSON()}, 200
-#
-#         return {'message': 'test from UserLogin'}
+
+
+@api.route('/api/user/login')
+class UserLogin(Resource):
+    @api.expect(login_model, validate=True)
+    def post(self):
+        req_data = request.get_json()
+        _username = req_data.get("username")
+        _password = req_data.get("password")
+        user = User.objects(pk=_username).first()
+        if user is None:
+            return {"success": False,
+                    "msg": "User not exist"}, 400
+        if _password != user.password:
+            return {"success": False,
+                    "msg": "Wrong credentials."}, 400
+
+        return {
+            # "token": token,
+            "username": user.username}, 200
 
 
 @api.route('/api/route/draw')
