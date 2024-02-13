@@ -14,11 +14,19 @@ login_model = api.model('LoginModel', {"username": fields.String(required=True, 
                                        "password": fields.String(required=True, min_length=4, max_length=16)
                                        })
 
-
-@api.route('/api/data/')
-class Data(Resource):
-    def get(self):
-        return {'message': 'test from Flask'}
+# test for login
+@api.route('/api/login/')
+class Login(Resource):
+    def post(self):
+        data = request.json
+        return {'message': data}, 200
+    
+# test for sign-up
+@api.route('/api/sign-up/')
+class SignUp(Resource):
+    def post(self):
+        data = request.json
+        return {'message': data}, 200
 
 
 @api.route('/api/user/check-login-status')

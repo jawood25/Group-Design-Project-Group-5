@@ -1,6 +1,9 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
-const Header = ({ isLoggedIn }) => {
+const Header = () => {
+    const isLoggedIn = useSelector((state) => state.loginStaus.isLoggedIn);
     return (
         <div className="Header">
             <nav class="navbar bg-body-tertiary">
@@ -14,15 +17,15 @@ const Header = ({ isLoggedIn }) => {
                                 <li><button class="dropdown-item" type="button">Menu3</button></li>
                             </ul>
                         </div>
-                        <a class="navbar-brand ms-2" href="/">PathPal</a>
+                        <Link to="/" class="navbar-brand ms-2">PathPal</Link>
                     </div>
                     <div class="d-flex">
                     {isLoggedIn ? (
-                            <a className="btn btn-info text-white me-2" type="submit" href="/my-account">My Account</a>
+                            <Link to="/my-account" className="btn btn-info text-white me-2">My Account</Link>
                         ) : (
                             <span>
-                                <a className="btn btn-outline-success me-2" type="submit" href="/sign-up">Sign Up</a>
-                                <a className="btn btn-outline-success" type="submit" href="/login">Login</a>
+                                <Link to="/sign-up" className="btn btn-outline-success me-2">Sign Up</Link>
+                                <Link to="/login" className="btn btn-outline-success">Login</Link>
                             </span>
                         )}
                     </div>
