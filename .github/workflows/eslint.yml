@@ -32,10 +32,11 @@ jobs:
 
       - name: Install ESLint
         run: |
+          npm install eslint@8.10.0
           npm install @microsoft/eslint-formatter-sarif@3.0.0
 
       - name: Run ESLint
-        run: npx eslint frontend
+        run: npx eslint .
           --config ./frontend/package.json
           --ext .js,.jsx,.ts,.tsx
           --format @microsoft/eslint-formatter-sarif
