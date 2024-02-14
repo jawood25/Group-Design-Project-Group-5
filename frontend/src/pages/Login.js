@@ -22,6 +22,7 @@ const Login = () => {
 
         try {
             const response = await fetch('/api/login', {
+                mode: 'no-cors',
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -31,6 +32,8 @@ const Login = () => {
 
             if (response.ok) {
                 console.log('Login successful');
+                const responseData = await response.json();
+                console.log(responseData)
                 dispatch(login());
                 navigate("/");
             } else {

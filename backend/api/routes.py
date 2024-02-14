@@ -23,11 +23,6 @@ class dbTest(Resource):
         new_user.save()
         return {'msg': 'add to db'}
 
-@api.route('/api/check-login-status')
-class UserStatus(Resource):
-    def get(self):
-        return {'message': 'test from UserStatus'}
-
 
 @api.route('/api/sign-up/')
 class UserSignUp(Resource):
