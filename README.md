@@ -6,7 +6,7 @@ Split your terminal. One for frontend and another for backend.
 
 In the backend directory, run **pip install -r requirements.txt**
 
-In the backend directory, run **python app.py**. This is a server-side, which is listening at 3001.
+Then, run **python app.py**. This is a server-side, which is listening at 3001.
 
 In the frontend directory, run **npm install**.
 
