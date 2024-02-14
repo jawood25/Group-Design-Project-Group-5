@@ -14,28 +14,22 @@ login_model = api.model('LoginModel', {"username": fields.String(required=True, 
                                        "password": fields.String(required=True, min_length=4, max_length=16)
                                        })
 
-# test for login
-@api.route('/api/login/')
-class Login(Resource):
-    def post(self):
-        data = request.json
-        return {'message': data}, 200
-    
-# test for sign-up
-@api.route('/api/sign-up/')
-class SignUp(Resource):
-    def post(self):
-        data = request.json
-        return {'message': data}, 200
+@api.route('/api/testdb')
+class dbTest(Resource):
+    def get(self):
+        _username = "test"
+        _password = "testpassword"
+        new_user = User(username=_username, password=_password)
+        new_user.save()
+        return {'msg': 'add to db'}
 
-
-@api.route('/api/user/check-login-status')
+@api.route('/api/check-login-status')
 class UserStatus(Resource):
     def get(self):
         return {'message': 'test from UserStatus'}
 
 
-@api.route('/api/user/sign-up')
+@api.route('/api/sign-up/')
 class UserSignUp(Resource):
     @api.expect(signup_model, validate=True)
     def post(self):
@@ -60,9 +54,7 @@ class UserSignUp(Resource):
                 "msg": "The user was successfully registered"}, 200
 
 
-
-
-@api.route('/api/user/login')
+@api.route('/api/login/')
 class UserLogin(Resource):
     @api.expect(login_model, validate=True)
     def post(self):
@@ -85,8 +77,7 @@ class UserLogin(Resource):
             # "token": token,
             "username": user.username}, 200
 
-
-@api.route('/api/route/draw')
+@api.route('/api/draw')
 class DrawRoute(Resource):
     @api.expect(route_model, validate=True)
     def get(self):
