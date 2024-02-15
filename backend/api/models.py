@@ -3,13 +3,12 @@ from .exts import db
 
 class User(db.Document):
     username = db.StringField(required=True,unique=True)
-    #email = db.StringField(required=True,primary_key=True)
-    #name = db.StringField(required=True)
     password = db.StringField(required=True)
 
+    # email = db.StringField(required=True,primary_key=True)
+    # name = db.StringField(required=True)
     #age = db.IntField()
     #phone = db.IntField(unique=True)
-
     #friends = db.ListField(db.ReferenceField('self', reverse_delete_rule='PULL'))
 
 class Comment(db.Document):
