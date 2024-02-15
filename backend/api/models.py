@@ -1,5 +1,3 @@
-
-
 from datetime import datetime
 from .exts import db  # Importing the database instance from an external module
 
@@ -15,9 +13,9 @@ class User(db.Document):
     # Optional name field for the user
     name = db.StringField()
     # Optional age field for the user
-    age = db.IntField()
+    age = db.IntField(default=0)
     # Optional phone field, must be unique if provided
-    phone = db.IntField(unique=True)
+    phone = db.IntField(default=0)
     # List of references to other User documents representing friends, auto-updates if a friend is deleted
     friends = db.ListField(db.ReferenceField('self', reverse_delete_rule='PULL'))
 

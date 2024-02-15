@@ -56,7 +56,7 @@ class UserSignUp(Resource):
         _username = req_data.get("username")
         _password = req_data.get("password")
         try:
-            user = User.objects(pk=_username).first()  # Check if user already exists
+            user = User.objects(username=_username).first()  # Check if user already exists
             if user:
                 return {"success": False, "msg": "User exist"}, 400
             new_user = User(username=_username, password=_password)  # Create new user if not exist
