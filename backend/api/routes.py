@@ -6,10 +6,16 @@ from .models import *
 
 
 # Define API models for data validation and documentation
+# need JSON data
 route_model = api.model('RouteModel', {
     "rId": fields.Integer(required=True)  # Model for route fetching, requires a route ID
 })
 
+# example:
+# {
+#   "username": "someUsername",
+#   "password": "somePassword"
+# }
 signup_model = api.model('SignUpModel', {
     # Model for user sign-up, requires username and password (email commented out)
     "username": fields.String(required=True, min_length=2, max_length=32),
@@ -27,11 +33,12 @@ login_model = api.model('LoginModel', {
 class dbTest(Resource):
     def get(self):
         # Example method to test database by adding a test user
-        _username = "test"
+        _username = "test1"
         _password = "testpassword"
-        new_user = User(username=_username, password=_password)  # Create new User instance
-        new_user.save()  # Save the user to the database
-        return {'msg': 'add to db'}
+        user = User.objects(username=_username).first()
+        if user is None:
+            return {"success": False, "msg": "User exist"}, 400
+        return {'msg': 'add to db'},200
 
 # Define a Resource to check user login status (example implementation)
 @api.route('/api/check-login-status/')
@@ -67,11 +74,14 @@ class UserLogin(Resource):
         req_data = request.get_json()
         _username = req_data.get("username")
         _password = req_data.get("password")
+        #user = User.objects().first()  # Fetch user by username
         try:
-            user = User.objects(pk=_username).first()  # Fetch user by username
-            if user is None or _password != user.password:
+            user = User.objects(username=_username).first()  # Fetch user by username
+            if user is None:
+                return {"success": False, "msg": "User not exist"}, 401
+            if _password != user.password:
                 # If user not found or password mismatch
-                return {"success": False, "msg": "Wrong credentials."}, 401
+                return {"success": False, "msg": "Wrong credentials."}, 400
         except Exception as e:
             return {"success": False, "msg": str(e)}, 403
 

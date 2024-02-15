@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 from .exts import init_exts
+from .routes import *
 
 # Function to create and configure the Flask app
 def create_apis():
