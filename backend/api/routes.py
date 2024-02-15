@@ -33,7 +33,7 @@ login_model = api.model('LoginModel', {
 class dbTest(Resource):
     def get(self):
         # Example method to test database by adding a test user
-        _username = "test2"
+        _username = "test3"
         _password = "testpassword"
         user = User.objects(username=_username).first()
         if user:
@@ -48,7 +48,7 @@ class UserStatus(Resource):
         return {'message': 'test from UserStatus'}
 
 # Define a Resource for user sign-up
-@api.route('/api/sign-up/')
+@api.route('/api/sign-up/', methods=['POST'])
 class UserSignUp(Resource):
     @api.expect(signup_model, validate=True)  # Expecting data matching the signup_model
     def post(self):
