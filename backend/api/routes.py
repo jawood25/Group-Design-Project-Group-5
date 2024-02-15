@@ -33,11 +33,12 @@ login_model = api.model('LoginModel', {
 class dbTest(Resource):
     def get(self):
         # Example method to test database by adding a test user
-        _username = "test1"
+        _username = "test2"
         _password = "testpassword"
         user = User.objects(username=_username).first()
-        if user is None:
+        if user:
             return {"success": False, "msg": "User exist"}, 400
+        User(username=_username,password=_password).save()
         return {'msg': 'add to db'},200
 
 # Define a Resource to check user login status (example implementation)
