@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Header from '../components/Header';
+import { Link } from 'react-router-dom';
 
 const SignUp = () => {
     const [username, setUsername] = useState('');
@@ -51,7 +52,7 @@ const SignUp = () => {
                                     <button type="submit" className="btn btn-color px-5 mb-5 w-100">Sign up</button>
                                 </div>
                                 <div id="emailHelp" class="form-text text-center mb-0 text-dark">
-                                    Already Registered? <a href="/login" class="text-blue fw-bold"> Login</a>
+                                    Already Registered? <Link to="/login" class="text-blue fw-bold"> Login</Link>
                                 </div>
                             </form>
                         </div>

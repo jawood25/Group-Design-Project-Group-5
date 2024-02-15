@@ -4,9 +4,9 @@ Repository for Group 5 in the CSU44098 Group Design Project module.
 ## How to run the app
 Split your terminal. One for frontend and another for backend.
 
-In the backend directory, run **pip install -r requirements.txt**. You can use pip install to install packages.
+In the backend directory, run **pip install -r requirements.txt**
 
-Run **python run.py**. This is a server-side, which is listening at 3001.
+Then, run **python app.py**. This is a server-side, which is listening at 3001.
 
 In the frontend directory, run **npm install**.
 

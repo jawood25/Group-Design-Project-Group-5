@@ -3,6 +3,7 @@ import Header from '../components/Header';
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux'
 import { login, logout } from '../redux/loginStatus';
+import { Link } from 'react-router-dom';
 
 
 const Login = () => {
@@ -22,6 +23,7 @@ const Login = () => {
 
         try {
             const response = await fetch('/api/login', {
+                mode: 'no-cors',
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -31,6 +33,8 @@ const Login = () => {
 
             if (response.ok) {
                 console.log('Login successful');
+                const responseData = await response.json();
+                console.log(responseData)
                 dispatch(login());
                 navigate("/");
             } else {
@@ -74,7 +78,7 @@ const Login = () => {
                                         ) : (<></>)}
                                 </div>
                                 <div id="emailHelp" class="form-text text-center mb-0 text-dark">
-                                    Not Registered? <a href="/sign-up" class="text-blue fw-bold"> Create an Account</a>
+                                    Not Registered? <Link to="/sign-up" class="text-blue fw-bold"> Create an Account</Link>
                                 </div>
                             </form>
                         </div>
