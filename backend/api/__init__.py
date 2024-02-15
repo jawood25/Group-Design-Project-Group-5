@@ -7,17 +7,18 @@ def create_apis():
     app = Flask(__name__)
     CORS(app)
 
-    db_uri = "mongodb+srv://PathPalAdmin:YOAybG23XVTqQnri@cluster0.b6yu9ji.mongodb.net/pathpal?retryWrites=true&w=majority&directConnection=true"
-    app.config["MONGO_URI"] = db_uri
+    # db_uri = "mongodb+srv://PathPalAdmin:YOAybG23XVTqQnri@cluster0.b6yu9ji.mongodb.net/pathpal?retryWrites=true&w=majority&directConnection=true"
+    # app.config["MONGO_URI"] = db_uri
 
-    # app.config['MONGODB_SETTINGS'] = {
-    #     'db': 'pathpal',
-    #     'host': 'cluster0.b6yu9ji.mongodb.net',
-    #     'username': 'PathPalAdmin',
-    #     'password': 'YOAybG23XVTqQnri',
-    #     'retryWrites': True,
-    #     'w': 'majority'
-    # }
+    app.config['MONGODB_SETTINGS'] = {
+        'db': 'pathpal',
+        'host': 'cluster0.b6yu9ji.mongodb.net',
+        'username': 'PathPalAdmin',
+        'password': 'YOAybG23XVTqQnri',
+        'retryWrites': True,
+        'w': 'majority',
+        'directConnection': True
+    }
 
     init_exts(app=app)
 

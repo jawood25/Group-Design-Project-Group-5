@@ -23,7 +23,7 @@ class dbTest(Resource):
         new_user.save()
         return {'msg': 'add to db'}
 
-@api.route('/api/check-login-status')
+@api.route('/api/check-login-status/')
 class UserStatus(Resource):
     def get(self):
         return {'message': 'test from UserStatus'}
@@ -77,7 +77,7 @@ class UserLogin(Resource):
             # "token": token,
             "username": user.username}, 200
 
-@api.route('/api/draw')
+@api.route('/api/draw/')
 class DrawRoute(Resource):
     @api.expect(route_model, validate=True)
     def get(self):
