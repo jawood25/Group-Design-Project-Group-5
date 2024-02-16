@@ -4,7 +4,6 @@ from mongoengine.errors import ValidationError, NotUniqueError
 from .exts import api
 from .models import Route, User
 
-
 # Define API models for data validation and documentation
 # need JSON data
 route_model = api.model('RouteModel', {
@@ -28,6 +27,7 @@ login_model = api.model('LoginModel', {
     "password": fields.String(required=True, min_length=4, max_length=16)
 })
 
+
 # Define a Resource for testing database connectivity
 @api.route('/api/testdb/')
 class DbTest(Resource):
@@ -41,13 +41,15 @@ class DbTest(Resource):
         new_user = User(username=_username)
         new_user.set_password(_password)
         new_user.save()
-        return {'msg': 'add to db'},200
+        return {'msg': 'add to db'}, 200
+
 
 # Define a Resource to check user login status (example implementation)
 @api.route('/api/check-login-status/')
 class UserStatus(Resource):
     def get(self):
         return {'message': 'test from UserStatus'}
+
 
 # Define a Resource for user sign-up
 @api.route('/api/sign-up/', methods=['POST'])
@@ -68,18 +70,19 @@ class UserSignUp(Resource):
         except ValidationError as ve:
             # handle data validation errors
             return {"success": False, "msg": str(ve)}, 401
-        except NotUniqueError as nue:
+        except NotUniqueError:
             # handle non-unique error
             return {"success": False, "msg": "This username is already taken"}, 401
         except Exception as e:
             # catch all other exceptions
-            return {"success": False, "msg": "An unexpected error occurred"}, 401
+            return {"success": False, "msg": str(e)}, 401
 
-        return {"success": True,"username": user.username,
+        return {"success": True, "username": user.username,
                 "msg": "User was successfully registered"}, 200
 
+
 # Define a Resource for user login
-@api.route('/api/login/',methods=['POST'])
+@api.route('/api/login/', methods=['POST'])
 class UserLogin(Resource):
     @api.expect(login_model, validate=True)  # Expecting data matching the login_model
     def post(self):
@@ -94,12 +97,20 @@ class UserLogin(Resource):
             if not user.check_password(_password):
                 # If user not found or password mismatch
                 return {"success": False, "msg": "Wrong credentials."}, 400
+        except ValidationError as ve:
+            # handle data validation errors
+            return {"success": False, "msg": str(ve)}, 403
+        except NotUniqueError:
+            # handle non-unique error
+            return {"success": False, "msg": "This username is already taken"}, 403
         except Exception as e:
+            # catch all other exceptions
             return {"success": False, "msg": str(e)}, 403
 
         # Successful login response
-        return {"success": True,"username": user.username,
+        return {"success": True, "username": user.username,
                 "msg": "User was successfully logined"}, 200
+
 
 # Define a Resource to draw/fetch a route
 @api.route('/api/draw/')
