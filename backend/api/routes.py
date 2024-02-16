@@ -1,5 +1,6 @@
 from flask import request
 from flask_restx import Resource, fields
+from mongoengine.errors import ValidationError, NotUniqueError
 from .exts import api
 from .models import Route, User
 
@@ -64,8 +65,15 @@ class UserSignUp(Resource):
             new_user = User(username=_username)  # Create new user if not exist
             new_user.set_password(_password)
             new_user.save()  # Save the new user to the database
+        except ValidationError as ve:
+            # handle data validation errors
+            return {"success": False, "msg": str(ve)}, 401
+        except NotUniqueError as nue:
+            # handle non-unique error
+            return {"success": False, "msg": "This username is already taken"}, 401
         except Exception as e:
-            return {"success": False, "msg": str(e)}, 401
+            # catch all other exceptions
+            return {"success": False, "msg": "An unexpected error occurred"}, 401
 
         return {"success": True,"username": user.username,
                 "msg": "User was successfully registered"}, 200

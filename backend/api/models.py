@@ -62,8 +62,8 @@ class Route(db.Document):
 
     # Class method to retrieve a route by its ID
     @classmethod
-    def get_by_id(cls, id):
-        return cls.objects(id=id).first()
+    def get_by_rid(cls, rid):
+        return cls.objects(id=rid).first()
 
 
 # Defines a UserEvent document for events created by users
