@@ -7,7 +7,7 @@ const MapNpm = () => {
         <div className='MapNpm'>
             <Header />
             <h2>Map with Npm</h2>
-            <APIProvider apiKey='AIzaSyA52O6N6Qc8vgRMEG1i3o0xLA-j4tJdIMg'>
+            <APIProvider apiKey=''>
                 <div style={{ height: "400px", width: "800px" }}>
                     <Map
                         defaultCenter={{ lat: 53.3437935, lng: -6.2545716 }}
