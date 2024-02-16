@@ -1,6 +1,6 @@
-from datetime import datetimeFieldList
-from .exts import db  # Importing the database instance from an external module
+import datetime
 from mongoengine import StringField,IntField,ListField,ReferenceField, DateTimeField
+from .exts import db  # Importing the database instance from an external module
 
 # Defines a User document with various fields to store user information
 class User(db.Document):
@@ -16,7 +16,8 @@ class User(db.Document):
     age = IntField(default=0)
     # Optional phone field, must be unique if provided
     phone = IntField(default=0)
-    # List of references to other User documents representing friends, auto-updates if a friend is deleted
+    # List of references to other User documents representing friends,
+    # auto-updates if a friend is deleted
     friends = ListField(ReferenceField('self', reverse_delete_rule='PULL'))
 
     ### code for further use ###
@@ -33,7 +34,7 @@ class Comment(db.Document):
     # Reference to a User document representing the comment's author, required
     author = ReferenceField(User, required=True)
     # Date and time when the comment was posted, defaults to the current UTC time
-    date_posted = DateTimeField(default=datetime.utcnow)
+    date_posted = DateTimeField(default=datetime.datetime.utcnow())
     # Number of dislikes for the comment, defaults to 0
     dislikes = IntField(default=0)
     # Number of likes for the comment, defaults to 0
@@ -73,7 +74,7 @@ class UserEvent(db.Document):
     # Required venue of the event
     venue = StringField(required=True)
     # Date and time of the event, defaults to the current UTC time
-    date = DateTimeField(default=datetime.utcnow)
+    date = DateTimeField(default=datetime.datetime.utcnow())
     # Required reference to a Route document associated with the event
     route = ReferenceField(Route, required=True)
     # Number of users interested in the event, defaults to 0
