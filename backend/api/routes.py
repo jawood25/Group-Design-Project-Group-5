@@ -1,7 +1,7 @@
 from flask import request
 from flask_restx import Resource, fields
 from .exts import api
-from .models import User
+from .models import Route, User
 
 
 # Define API models for data validation and documentation
