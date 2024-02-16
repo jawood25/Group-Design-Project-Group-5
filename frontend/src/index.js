@@ -3,12 +3,14 @@ import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Main from './pages/Main';
 import Error from './pages/Error';
-import SignUp from './pages/SignUp'
-import Login from './pages/Login'
+import SignUp from './pages/SignUp';
+import Login from './pages/Login';
 import MyAccount from './pages/MyAccount';
-import './style/style.css'
+import Map from './pages/Map';
+import MapNpm from './pages/MapNpm';
+import './style/style.css';
 import store from './redux/store';
-import { Provider } from 'react-redux'
+import { Provider } from 'react-redux';
 
 const router = createBrowserRouter([
   {
@@ -27,7 +29,15 @@ const router = createBrowserRouter([
   {
     path: "my-account",
     element: <MyAccount />
-  }
+  },
+  {
+    path: "/test-map",
+    element: <Map />
+  },
+  // {
+  //   path: "/test-map-npm",
+  //   element: <MapNpm />
+  // }
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
