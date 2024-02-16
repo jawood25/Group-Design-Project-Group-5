@@ -1,8 +1,7 @@
-from .exts import api
-from flask import jsonify, request
+from flask import request
 from flask_restx import Resource, fields
-
-from .models import *
+from .exts import api
+from .models import User
 
 
 # Define API models for data validation and documentation
@@ -30,7 +29,7 @@ login_model = api.model('LoginModel', {
 
 # Define a Resource for testing database connectivity
 @api.route('/api/testdb')
-class dbTest(Resource):
+class DbTest(Resource):
     def get(self):
         # Example method to test database by adding a test user
         _username = "test3"
@@ -65,7 +64,8 @@ class UserSignUp(Resource):
         except Exception as e:
             return {"success": False, "msg": str(e)}, 401
 
-        return {"success": True, "userID": str(new_user.id), "msg": "The user was successfully registered"}, 200
+        return {"success": True, "userID": str(new_user.id), 
+                "msg": "The user was successfully registered"}, 200
 
 # Define a Resource for user login
 @api.route('/api/login/')
