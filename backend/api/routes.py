@@ -119,7 +119,7 @@ class DrawRoute(Resource):
     def get(self):
         req_data = request.get_json()
         _rid = req_data.get("rid")
-        route = Route.get_by_id(_rid)  # Fetch route by ID
+        route = Route.get_by_rid(_rid)  # Fetch route by ID
         if not route:
             return {"success": False, "msg": "Route not exist"}, 400
 
