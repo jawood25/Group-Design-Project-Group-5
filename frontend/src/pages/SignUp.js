@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 const SignUp = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [Username_already_exists, setUsername_already_exists] = useState(false)
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -25,7 +27,13 @@ const SignUp = () => {
 
             if (response.ok) {
                 console.log('Sign up successful');
-            } else {
+            }
+            
+            else if (response.status == 400){
+                console.log('Username already exists')
+                setUsername_already_exists(true);
+            }
+            else {
                 console.error('Sign up failed');
             }
         } catch (error) {
@@ -50,6 +58,11 @@ const SignUp = () => {
                                 </div>
                                 <div className="text-center">
                                     <button type="submit" className="btn btn-color px-5 mb-5 w-100">Sign up</button>
+                                </div>
+                                <div className="text-center">
+                                    { Username_already_exists ? (
+                                            <div className="text-danger mb-3">Username already exists</div>
+                                        ) : (<></>)}
                                 </div>
                                 <div id="emailHelp" className="form-text text-center mb-0 text-dark">
                                     Already Registered? <Link to="/login" className="text-blue fw-bold"> Login</Link>

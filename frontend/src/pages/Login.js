@@ -10,6 +10,8 @@ const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [login_failed, setLogin_failed] = useState(false)
+    const [Username_does_not_exist, setUsername_does_not_exist] = useState(false)
+    const [Incorrect_password, setIncorrect_password] = useState(false)
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -36,7 +38,18 @@ const Login = () => {
                 console.log(responseData)
                 dispatch(login());
                 navigate("/");
-            } else {
+            }
+            else if (response.status == 400){
+                console.log('Incorrect password')
+                setIncorrect_password(true);
+                dispatch(logout());
+            }
+            else if (response.status == 401) {
+                console.log('Username does not exist')
+                setUsername_does_not_exist(true);
+                dispatch(logout());
+            } 
+            else {
                 console.error('Login failed');
                 setLogin_failed(true);
                 dispatch(logout());
@@ -74,6 +87,16 @@ const Login = () => {
                                 <div className="text-center">
                                     { login_failed ? (
                                             <div className="text-danger mb-3">Login Failed</div>
+                                        ) : (<></>)}
+                                </div>
+                                <div className="text-center">
+                                    { Username_does_not_exist ? (
+                                            <div className="text-danger mb-3">Username does not exist</div>
+                                        ) : (<></>)}
+                                </div>
+                                <div className="text-center">
+                                    { Incorrect_password ? (
+                                            <div className="text-danger mb-3">Incorrect password</div>
                                         ) : (<></>)}
                                 </div>
                                 <div id="emailHelp" className="form-text text-center mb-0 text-dark">
