@@ -3,6 +3,7 @@ import Header from '../components/Header';
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux'
 import { login, logout } from '../redux/loginStatus';
+import { saveUsername } from '../redux/userInfo';
 import { Link } from 'react-router-dom';
 
 
@@ -33,7 +34,8 @@ const Login = () => {
             if (response.ok) {
                 console.log('Login successful');
                 const responseData = await response.json();
-                console.log(responseData)
+                const username = responseData.username
+                dispatch(saveUsername(username))
                 dispatch(login());
                 navigate("/");
             } else {
@@ -50,34 +52,34 @@ const Login = () => {
         <div className='Login'>
             <Header />
 
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-6 offset-md-3">
-                        <h2 class="text-center text-dark mt-5">Login</h2>
-                        <div class="card my-5">
+            <div className="container">
+                <div className="row">
+                    <div className="col-md-6 offset-md-3">
+                        <h2 className="text-center text-dark mt-5">Login</h2>
+                        <div className="card my-5">
 
-                            <form class="card-body cardbody-color p-lg-5" onSubmit={handleSubmit}>
-                                <div class="mb-3">
-                                    <input type="text" class="form-control" value={username} onChange={(e) => setUsername(e.target.value)} id="Username" aria-describedby="emailHelp"
+                            <form className="card-body cardbody-color p-lg-5" onSubmit={handleSubmit}>
+                                <div className="mb-3">
+                                    <input type="text" className="form-control" value={username} onChange={(e) => setUsername(e.target.value)} id="Username" aria-describedby="emailHelp"
                                         placeholder="User Name" />
                                 </div>
-                                <div class="mb-3">
-                                    <input type="password" class="form-control" value={password} onChange={(e) => setPassword(e.target.value)} id="password" placeholder="password" />
+                                <div className="mb-3">
+                                    <input type="password" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)} id="password" placeholder="password" />
                                 </div>
-                                <div class="text-center">
+                                <div className="text-center">
                                     { login_failed ? (
-                                            <button type="submit" class="btn btn-color px-5 mb-2 w-100">Login</button>
+                                            <button type="submit" className="btn btn-color px-5 mb-2 w-100">Login</button>
                                         ) : (
-                                            <button type="submit" class="btn btn-color px-5 mb-5 w-100">Login</button>
+                                            <button type="submit" className="btn btn-color px-5 mb-5 w-100">Login</button>
                                         )}
                                 </div>
-                                <div class="text-center">
+                                <div className="text-center">
                                     { login_failed ? (
-                                            <div class="text-danger mb-3">Login Failed</div>
+                                            <div className="text-danger mb-3">Login Failed</div>
                                         ) : (<></>)}
                                 </div>
-                                <div id="emailHelp" class="form-text text-center mb-0 text-dark">
-                                    Not Registered? <Link to="/sign-up" class="text-blue fw-bold"> Create an Account</Link>
+                                <div id="emailHelp" className="form-text text-center mb-0 text-dark">
+                                    Not Registered? <Link to="/sign-up" className="text-blue fw-bold"> Create an Account</Link>
                                 </div>
                             </form>
                         </div>
