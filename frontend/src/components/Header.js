@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 const Header = () => {
-    const isLoggedIn = useSelector((state) => state.loginStaus.isLoggedIn);
+    const isLoggedIn = useSelector((state) => state.loginStatus.isLoggedIn);
     return (
         <div className="Header">
             <nav className="navbar bg-body-tertiary">
@@ -12,9 +12,7 @@ const Header = () => {
                         <div className="dropdown">
                             <button className="navbar-toggler" type="button" data-bs-toggle="dropdown" aria-expanded="false"><span className="navbar-toggler-icon"></span></button>
                             <ul className="dropdown-menu">
-                                <li><button className="dropdown-item" type="button">Menu1</button></li>
-                                <li><button className="dropdown-item" type="button">Menu2</button></li>
-                                <li><button className="dropdown-item" type="button">Menu3</button></li>
+                                <li><Link to="/upload" className="dropdown-item">Upload Your Running Route</Link></li>
                             </ul>
                         </div>
                         <Link to="/" className="navbar-brand ms-2">PathPal</Link>

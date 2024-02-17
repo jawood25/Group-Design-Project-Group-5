@@ -6,7 +6,8 @@ import Error from './pages/Error';
 import SignUp from './pages/SignUp';
 import Login from './pages/Login';
 import MyAccount from './pages/MyAccount';
-import Map from './pages/Map';
+import Map from './components/Map';
+import Upload from './pages/Upload';
 import MapNpm from './pages/MapNpm';
 import './style/style.css';
 import store from './redux/store';
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
     path: "/test-map",
     element: <Map />
   },
+  {
+    path: "/upload",
+    element: <Upload />
+  }
   // {
   //   path: "/test-map-npm",
   //   element: <MapNpm />
