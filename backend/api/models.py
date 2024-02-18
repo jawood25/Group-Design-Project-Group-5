@@ -61,6 +61,10 @@ class User(db.Document):
     def check_password(self, password):
         return self.password == password
 
+    def get_routes_id(self):
+        route_ids = [route.id for route in routes]
+        return route_ids
+
     # Class method to retrieve a user by their username
     @classmethod
     def get_by_username(cls, username):

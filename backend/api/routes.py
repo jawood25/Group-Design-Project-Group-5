@@ -180,7 +180,7 @@ class UserRoutes(Resource):
         try:
             if not user:
                 return {"success": False, "msg": "User not exist"}, 401
-            item_ids = [route.id for route in user.routes]
+            route_ids = user.get_routes_id()
         except ValidationError as ve:
             # handle data validation errors
             return {"success": False, "msg": str(ve)}, 403
@@ -191,5 +191,5 @@ class UserRoutes(Resource):
             # catch all other exceptions
             return {"success": False, "msg": str(e)}, 403
 
-        return {"success": True, "route_ids": jsonify(item_ids),
+        return {"success": True, "route_ids": jsonify(route_ids),
                 "msg": "Route is created"}, 200
