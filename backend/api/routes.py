@@ -49,7 +49,8 @@ class DbTest(Resource):
         try:
             if not user:
                 return {"success": False, "msg": "User not exist"}, 401
-            new_route = Route(creator_username=_username, kmlURL=_url, city=_city, location=_location, hour=_hours,
+            new_route = Route(creator_username=_username, kmlURL=_url,
+                              city=_city,location=_location, hour=_hours,
                               min=_minutes, difficulty=_difficulty, desc=_desc)
             new_route.save()
             user.routes.append(new_route)
@@ -149,7 +150,8 @@ class UploadRoute(Resource):
         try:
             if not user:
                 return {"success": False, "msg": "User not exist"}, 401
-            new_route = Route(creator_username=_username, kmlURL=_url, city=_city, location=_location, hour=_hours,
+            new_route = Route(creator_username=_username, kmlURL=_url,
+                              city=_city, location=_location, hour=_hours,
                               min=_minutes, difficulty=_difficulty, desc=_desc)
             new_route.save()
             user.routes.append(new_route)
@@ -178,7 +180,7 @@ class UserRoutes(Resource):
         try:
             if not user:
                 return {"success": False, "msg": "User not exist"}, 401
-            item_ids = [item.item_id for item in user.routes]
+            item_ids = [route.id for route in user.routes]
         except ValidationError as ve:
             # handle data validation errors
             return {"success": False, "msg": str(ve)}, 403
