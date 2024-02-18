@@ -62,7 +62,7 @@ class User(db.Document):
         return self.password == password
 
     def get_routes(self):
-        routes = [route for route in self.routes]
+        routes = [route.to_json() for route in self.routes]
         return routes
 
     # Class method to retrieve a user by their username
