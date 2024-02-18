@@ -99,7 +99,7 @@ class UserSignUp(Resource):
             # catch all other exceptions
             return {"success": False, "msg": str(e)}, 401
 
-        return {"success": True, "username": user.username,
+        return {"success": True, "username": new_user.username,
                 "msg": "User was successfully registered"}, 200
 
 # Define a Resource for user login
