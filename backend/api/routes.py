@@ -166,7 +166,7 @@ class UploadRoute(Resource):
             # catch all other exceptions
             return {"success": False, "msg": str(e)}, 403
 
-        return {"success": True, "route_id": new_route.id,
+        return {"success": True,
                 "msg": "Route is created"}, 200
 
 @api.route('/api/userroutes')
@@ -180,7 +180,7 @@ class UserRoutes(Resource):
         try:
             if not user:
                 return {"success": False, "msg": "User not exist"}, 401
-            route_ids = user.get_routes_id()
+            routes = user.get_routes()
         except ValidationError as ve:
             # handle data validation errors
             return {"success": False, "msg": str(ve)}, 403
@@ -191,5 +191,5 @@ class UserRoutes(Resource):
             # catch all other exceptions
             return {"success": False, "msg": str(e)}, 403
 
-        return {"success": True, "route_ids": jsonify(route_ids),
+        return {"success": True, "route_ids": jsonify(routes),
                 "msg": "Route is created"}, 200
