@@ -14,7 +14,7 @@ upload_model = api.model('UploadModel', {
     "hours": fields.Integer(required=True),
     "minutes": fields.Integer(required=True),
     "difficulty": fields.String(required=True, min_length=2, max_length=32),
-    "desc": fields.String(required=True, min_length=2, max_length=32)
+    "desc": fields.String(required=True, max_length=200)
 })
 userroutes_model = api.model('UserRoutesModel', {
     "username": fields.String(required=True, min_length=2, max_length=32),
