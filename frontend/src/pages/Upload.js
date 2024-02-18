@@ -38,8 +38,8 @@ const Upload = () => {
             kmlURL: kmlURL,
             city: city,
             location: location,
-            hours: hours,
-            minutes: minutes,
+            hours: parseInt(hours),
+            minutes: parseInt(minutes),
             difficulty: difficulty,
             desc: desc
         };
