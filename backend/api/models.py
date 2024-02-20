@@ -1,5 +1,5 @@
 import datetime
-from mongoengine import StringField, IntField, ListField, ReferenceField, DateTimeField
+from mongoengine import StringField, IntField, ListField, ReferenceField, DateTimeField,FloatField
 from .exts import db  # Importing the database instance from an external module
 
 
@@ -13,16 +13,6 @@ class Comment(db.Document):
 
 # Defines a Route document for storing information about specific routes
 class Route(db.Document):
-    startPoint = StringField()
-    description = StringField()
-    dislike = IntField(default=0)
-    like = IntField(default=0)
-    saves = IntField(default=0)
-    time_taken = IntField()
-    distance = IntField()
-    creator_username = StringField(required=True)
-    comment = ReferenceField(Comment, reverse_delete_rule='PULL')
-
     kmlURL = StringField()
     city = StringField()
     location = StringField()
@@ -31,6 +21,15 @@ class Route(db.Document):
     difficulty = StringField()
     desc = StringField()
 
+    dislike = IntField(default=0)
+    like = IntField(default=0)
+    saves = IntField(default=0)
+    distance = FloatField(default=0.0)
+    creator_username = StringField(required=True)
+    comment = ReferenceField(Comment, reverse_delete_rule='PULL')
+
+    # def __repr__(self):
+    #     return f"Route {self.RouteID}"
 
     # Class method to retrieve a route by its ID
     @classmethod
@@ -46,7 +45,8 @@ class User(db.Document):
     name = StringField()
     age = IntField(default=0)
     phone = IntField(default=0)
-    routes = ListField(ReferenceField(Route,reverse_delete_rule='PULL'))
+    create_routes = ListField(ReferenceField(Route, reverse_delete_rule='PULL'))
+    saved_routes = ListField(ReferenceField(Route, reverse_delete_rule='PULL'))
     friends = ListField(ReferenceField('self', reverse_delete_rule='PULL'))
 
     # Returns a string representation of the User instance
@@ -61,33 +61,30 @@ class User(db.Document):
     def check_password(self, password):
         return self.password == password
 
-    def get_routes(self):
-        routes = [route.to_json() for route in self.routes]
+    def get_create_routes(self):
+        routes = [route.to_json() for route in self.create_routes]
         return routes
+
+    def get_saved_routes(self):
+        routes = [route.to_json() for route in self.saved_routes]
+        return routes
+
+    def add_create_routes(self,new_route):
+        self.create_routes.append(new_route)
+        self.save()
+
+    def add_saved_routes(self,new_route):
+        self.saved_routes.append(new_route)
+        self.save()
 
     # Class method to retrieve a user by their username
     @classmethod
     def get_by_username(cls, username):
         return cls.objects(username=username).first()
 
-    ### code for further use ###
-
-    # email = StringField(required=True,primary_key=True)
-    # name = StringField(required=True)
-    # age = IntField()
-    # phone = IntField(unique=True)
-    # friends = ListField(ReferenceField('self', reverse_delete_rule='PULL'))
-
 ### code for further use ###
-
-# class FriendList(Document):
-#     number_of_friends = IntField(default=0)
-#     friends = ListField(ReferenceField(User))
 
 # class EventList(Document):
 #     number_of_events = IntField(default=0)
 #     events = ListField(ReferenceField('Event'))
-#
-# class RouteList(Document):
-#     number_of_saved_routes = IntField(default=0)
-#     routes = ListField(ReferenceField('Route'))
+

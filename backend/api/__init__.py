@@ -5,6 +5,8 @@ from flask_cors import CORS
 from .exts import init_exts
 from .routes import *
 
+from .test import *
+
 load_dotenv()
 NAME=os.getenv("DB_NAME")
 HOST=os.getenv("DB_HOST")

@@ -32,41 +32,6 @@ login_model = api.model('LoginModel', {
 })
 
 
-# Define a Resource for testing database connectivity
-@api.route('/api/testdb/')
-class DbTest(Resource):
-    def get(self):
-        # Example method to test database by adding a test user
-        _username = "test31"
-        _url = "111"
-        _city = "111"
-        _location = "111"
-        _hours = 111
-        _minutes = 111
-        _difficulty = "111"
-        _desc = "111"
-        user = User.get_by_username(_username)  # Fetch route by username
-        try:
-            if not user:
-                return {"success": False, "msg": "User not exist"}, 401
-            new_route = Route(creator_username=_username, kmlURL=_url,
-                              city=_city,location=_location, hour=_hours,
-                              min=_minutes, difficulty=_difficulty, desc=_desc)
-            new_route.save()
-            user.routes.append(new_route)
-            user.save()
-        except ValidationError as ve:
-            # handle data validation errors
-            return {"success": False, "msg": str(ve)}, 403
-        except NotUniqueError:
-            # handle non-unique error
-            return {"success": False, "msg": "This username is already taken"}, 403
-        except Exception as e:
-            # catch all other exceptions
-            return {"success": False, "msg": str(e)}, 403
-
-        return {'msg': 'add to db'}, 200
-
 # Define a Resource to check user login status (example implementation)
 @api.route('/api/check-login-status/')
 class UserStatus(Resource):
@@ -154,8 +119,7 @@ class UploadRoute(Resource):
                               city=_city, location=_location, hour=_hours,
                               min=_minutes, difficulty=_difficulty, desc=_desc)
             new_route.save()
-            user.routes.append(new_route)
-            user.save()
+            user.add_create_routes(new_route)
         except ValidationError as ve:
             # handle data validation errors
             return {"success": False, "msg": str(ve)}, 403
@@ -166,7 +130,7 @@ class UploadRoute(Resource):
             # catch all other exceptions
             return {"success": False, "msg": str(e)}, 403
 
-        return {"success": True,
+        return {"success": True,"route_id": str(new_route.id),
                 "msg": "Route is created"}, 200
 
 @api.route('/api/userroutes')
@@ -180,7 +144,7 @@ class UserRoutes(Resource):
         try:
             if not user:
                 return {"success": False, "msg": "User not exist"}, 401
-            routes = user.get_routes()
+            routes = user.get_create_routes()
         except ValidationError as ve:
             # handle data validation errors
             return {"success": False, "msg": str(ve)}, 403
