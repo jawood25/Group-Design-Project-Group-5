@@ -24,14 +24,18 @@ Add config in **\_\_init\_\_.py**
 Initialize app and get DB object in **exts.py**
 
 ## Test DB
-Typing **http://localhost:3001/api/testdb** in browser
+Modify **test.py** to create test
+
+Typing **http://localhost:3001/api/testdb** in browser to test
 
 ## available APIs
 **/api/login/** :  for user login
 
 **/api/sign-up/** : for user sign up
 
-**/api/draw/** : for drawing route
-
 **/api/check-login-status/** : for checking user's login status
+
+**/api/upload/** : for uploading user's routes
+
+**/api/userroutes/** : for getting user's created routes
 

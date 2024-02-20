@@ -98,7 +98,7 @@ class UserLogin(Resource):
                 "msg": "User was successfully logined"}, 200
 
 # Define a Resource to upload a route
-@api.route('/api/upload')
+@api.route('/api/upload/')
 class UploadRoute(Resource):
     @api.expect(upload_model, validate=True)  # Expecting data matching the route_model
     def post(self):
@@ -133,7 +133,7 @@ class UploadRoute(Resource):
         return {"success": True,"route_id": str(new_route.id),
                 "msg": "Route is created"}, 200
 
-@api.route('/api/userroutes')
+@api.route('/api/userroutes/')
 class UserRoutes(Resource):
     @api.expect(userroutes_model, validate=True)  # Expecting data matching the route_model
     def post(self):
