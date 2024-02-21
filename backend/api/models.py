@@ -1,7 +1,7 @@
 import datetime
 from mongoengine import StringField, IntField, ListField, ReferenceField, DateTimeField,FloatField
+from werkzeug.security import generate_password_hash, check_password_hash
 from .exts import db  # Importing the database instance from an external module
-
 
 # Defines a Comment document associated with users and their interactions
 class Comment(db.Document):
@@ -55,11 +55,11 @@ class User(db.Document):
 
     # Method to set the password for the user
     def set_password(self, password):
-        self.password = password
+        self.password = generate_password_hash(password)
 
     # Method to check if the provided password matches the user's password
     def check_password(self, password):
-        return self.password == password
+        return self.password == check_password_hash(self.password,password)
 
     def get_create_routes(self):
         routes = [route.to_json() for route in self.create_routes]
