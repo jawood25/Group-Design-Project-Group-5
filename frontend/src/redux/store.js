@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 import loginStatusReducer from './loginStatus'
+import userInfoReducer from './userInfo'
 
 export default configureStore({
     reducer: {
-        loginStaus: loginStatusReducer
+        loginStatus: loginStatusReducer,
+        userInfo:userInfoReducer
     }
 })
 

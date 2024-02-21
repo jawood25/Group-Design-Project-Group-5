@@ -1,7 +1,17 @@
+import os
+from dotenv import load_dotenv
 from flask import Flask
 from flask_cors import CORS
 from .exts import init_exts
 from .routes import *
+
+from .test import *
+
+load_dotenv()
+NAME=os.getenv("DB_NAME")
+HOST=os.getenv("DB_HOST")
+USERNAME=os.getenv("DB_USERNAME")
+PASSWORD=os.getenv("DB_PASSWORD")
 
 # Function to create and configure the Flask app
 def create_apis():
@@ -12,10 +22,10 @@ def create_apis():
 
     # Configure MongoDB settings for the Flask app
     app.config['MONGODB_SETTINGS'] = {
-        'db': 'pathpal',  # Name of the database
-        'host': 'mongodb+srv://cluster0.b6yu9ji.mongodb.net',  # MongoDB Atlas cluster URL
-        'username': 'PathPalAdmin',  # Username for MongoDB
-        'password': 'YOAybG23XVTqQnri',  # Password for MongoDB
+        'db': NAME,  # Name of the database
+        'host': HOST,  # MongoDB Atlas cluster URL
+        'username': USERNAME,  # Username for MongoDB
+        'password': PASSWORD,  # Password for MongoDB
         'retryWrites': True,  # Enable retryable writes
         'w': 'majority'  # Write concern set to "majority" for data integrity
     }

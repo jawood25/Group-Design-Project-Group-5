@@ -3,6 +3,7 @@ import Header from '../components/Header';
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux'
 import { login, logout } from '../redux/loginStatus';
+import { saveUsername } from '../redux/userInfo';
 import { Link } from 'react-router-dom';
 
 
@@ -35,7 +36,8 @@ const Login = () => {
             if (response.ok) {
                 console.log('Login successful');
                 const responseData = await response.json();
-                console.log(responseData)
+                const username = responseData.username
+                dispatch(saveUsername(username))
                 dispatch(login());
                 navigate("/");
             }
