@@ -7,6 +7,12 @@ backend/
 │   ├── models.py         # Data models module, contains ORM models for the database
 │   ├── config.py         # Configuration module, contains configuration classes for different environments
 │   └── routes.py         # Routes module, defines API endpoints and view functions
+├── tests/
+│   ├── __init__.py
+│   ├── conftest.py       # Configuration module for the tests
+│   ├── test_models.py    # Test module for the models
+│   ├── test_routes.py    # Test module for the routes 
+│   └── test_utils.py     # Test module for the utility functions 
 ├── README.md             # Project's README file, includes project information, setup instructions, and documentation
 ├── .env                  # Environment file, contains environment variables for the project
 ├── requirements.txt      # Contains a list of project dependencies to be installed using pip
