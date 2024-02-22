@@ -1,7 +1,8 @@
 import datetime
-from mongoengine import StringField, IntField, ListField, ReferenceField, DateTimeField,FloatField
+from mongoengine import StringField, IntField, ListField, ReferenceField, DateTimeField, FloatField
 from werkzeug.security import generate_password_hash, check_password_hash
 from .exts import db  # Importing the database instance from an external module
+
 
 # Defines a Comment document associated with users and their interactions
 class Comment(db.Document):
@@ -10,6 +11,7 @@ class Comment(db.Document):
     dislikes = IntField(default=0)
     likes = IntField(default=0)
     body = StringField(required=True)
+
 
 # Defines a Route document for storing information about specific routes
 class Route(db.Document):
@@ -28,8 +30,9 @@ class Route(db.Document):
     creator_username = StringField(required=True)
     comment = ReferenceField(Comment, reverse_delete_rule='PULL')
 
-    # def __repr__(self):
-    #     return f"Route {self.RouteID}"
+    # Returns a string representation of the Route instance
+    def __repr__(self):
+        return f"Route {self.id}"
 
     # Class method to retrieve a route by its ID
     @classmethod
@@ -40,7 +43,7 @@ class Route(db.Document):
 # Defines a User document with various fields to store user information
 class User(db.Document):
     username = StringField(required=True, unique=True)
-    password = StringField(required=True)
+    password_hash = StringField(required=True)
     email = StringField()
     name = StringField()
     age = IntField(default=0)
@@ -53,13 +56,18 @@ class User(db.Document):
     def __repr__(self):
         return f"User {self.username}"
 
+    @property
+    def password(self):
+        raise AttributeError("password is not a readable attribute")
+
     # Method to set the password for the user
-    def set_password(self, password):
-        self.password = generate_password_hash(password)
+    @password.setter
+    def password(self, password):
+        self.password_hash = generate_password_hash(password)
 
     # Method to check if the provided password matches the user's password
     def check_password(self, password):
-        return self.password == check_password_hash(self.password,password)
+        return check_password_hash(self.password_hash, password)
 
     def get_create_routes(self):
         routes = [route.to_json() for route in self.create_routes]
@@ -69,11 +77,11 @@ class User(db.Document):
         routes = [route.to_json() for route in self.saved_routes]
         return routes
 
-    def add_create_routes(self,new_route):
+    def add_create_routes(self, new_route):
         self.create_routes.append(new_route)
         self.save()
 
-    def add_saved_routes(self,new_route):
+    def add_saved_routes(self, new_route):
         self.saved_routes.append(new_route)
         self.save()
 
@@ -82,9 +90,9 @@ class User(db.Document):
     def get_by_username(cls, username):
         return cls.objects(username=username).first()
 
-### code for further use ###
+
+"""code for further use"""
 
 # class EventList(Document):
 #     number_of_events = IntField(default=0)
 #     events = ListField(ReferenceField('Event'))
-

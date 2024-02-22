@@ -52,7 +52,7 @@ class UserSignUp(Resource):
             if user:
                 return {"success": False, "msg": "User exist"}, 400
             new_user = User(username=_username)  # Create new user if not exist
-            new_user.set_password(_password)
+            new_user.password = _password
             new_user.save()  # Save the new user to the database
         except ValidationError as ve:
             # handle data validation errors
