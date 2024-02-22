@@ -72,6 +72,10 @@ class User(db.Document):
     def get_create_routes(self):
         routes = [route.to_json() for route in self.create_routes]
         return routes
+    def get_create_routes_id(self):
+        routes = [str(route.id) for route in self.create_routes]
+        return routes
+
 
     def get_saved_routes(self):
         routes = [route.to_json() for route in self.saved_routes]

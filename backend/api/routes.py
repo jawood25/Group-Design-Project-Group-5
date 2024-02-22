@@ -1,3 +1,5 @@
+import json
+
 from flask import current_app, request, jsonify
 from flask_restx import Resource, fields
 from mongoengine.errors import ValidationError, NotUniqueError
@@ -132,5 +134,5 @@ class UserRoutes(Resource):
             current_app.logger.error(e)
             return {"success": False, "msg": str(e)}, 403
 
-        return {"success": True, "route_ids": jsonify(routes),
+        return {"success": True, "routes": json.dumps(routes),
                 "msg": "Route is created"}, 200

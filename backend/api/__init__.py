@@ -8,7 +8,7 @@ from logging.handlers import RotatingFileHandler
 from .exts import init_exts
 from .routes import *
 from .config import config
-from .test import *
+
 
 
 # Define a log filter to remove ANSI escape sequences from log messages
