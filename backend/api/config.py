@@ -32,7 +32,12 @@ class ProductionConfig(BaseConfig):
     pass
 
 
+class TestingConfig(BaseConfig):
+    DEBUG = True
+
+
 config = {
     "development": DevelopmentConfig,  # Development environment configuration
-    "production": ProductionConfig  # Production environment configuration
+    "production": ProductionConfig,  # Production environment configuration
+    "testing": TestingConfig  # Testing environment configuration
 }

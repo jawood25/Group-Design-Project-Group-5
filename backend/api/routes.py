@@ -1,4 +1,4 @@
-from flask import current_app,request,jsonify
+from flask import current_app, request, jsonify
 from flask_restx import Resource, fields
 from mongoengine.errors import ValidationError, NotUniqueError
 from .exts import api
@@ -8,7 +8,7 @@ from .models import Route, User
 # need JSON data
 upload_model = api.model('UploadModel', {
     "username": fields.String(required=True, min_length=2, max_length=32),
-    "kmlURL" : fields.String(required=True, max_length=100),
+    "kmlURL": fields.String(required=True, max_length=100),
     "city": fields.String(required=True, min_length=2, max_length=32),
     "location": fields.String(required=True, min_length=2, max_length=32),
     "hours": fields.Integer(required=True),
@@ -31,12 +31,6 @@ login_model = api.model('LoginModel', {
     "password": fields.String(required=True, min_length=4, max_length=16)
 })
 
-
-# Define a Resource to check user login status (example implementation)
-@api.route('/api/check-login-status/')
-class UserStatus(Resource):
-    def get(self):
-        return {'message': 'test from UserStatus'}
 
 # Define a Resource for user sign-up
 @api.route('/api/sign-up/', methods=['POST'])
@@ -62,6 +56,7 @@ class UserSignUp(Resource):
         return {"success": True, "username": new_user.username,
                 "msg": "User was successfully registered"}, 200
 
+
 # Define a Resource for user login
 @api.route('/api/login/', methods=['POST'])
 class UserLogin(Resource):
@@ -86,6 +81,7 @@ class UserLogin(Resource):
         # Successful login response
         return {"success": True, "username": user.username,
                 "msg": "User was successfully logined"}, 200
+
 
 # Define a Resource to upload a route
 @api.route('/api/upload/')
@@ -115,8 +111,9 @@ class UploadRoute(Resource):
             current_app.logger.error(e)
             return {"success": False, "msg": str(e)}, 403
 
-        return {"success": True,"route_id": str(new_route.id),
+        return {"success": True, "route_id": str(new_route.id),
                 "msg": "Route is created"}, 200
+
 
 @api.route('/api/userroutes/')
 class UserRoutes(Resource):
