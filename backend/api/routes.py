@@ -1,4 +1,4 @@
-from flask import request,jsonify
+from flask import current_app,request,jsonify
 from flask_restx import Resource, fields
 from mongoengine.errors import ValidationError, NotUniqueError
 from .exts import api
@@ -54,13 +54,8 @@ class UserSignUp(Resource):
             new_user = User(username=_username)  # Create new user if not exist
             new_user.password = _password
             new_user.save()  # Save the new user to the database
-        except ValidationError as ve:
-            # handle data validation errors
-            return {"success": False, "msg": str(ve)}, 401
-        except NotUniqueError:
-            # handle non-unique error
-            return {"success": False, "msg": "This username is already taken"}, 401
         except Exception as e:
+            current_app.logger.error(e)
             # catch all other exceptions
             return {"success": False, "msg": str(e)}, 401
 
@@ -83,13 +78,8 @@ class UserLogin(Resource):
             if not user.check_password(_password):
                 # If user not found or password mismatch
                 return {"success": False, "msg": "Wrong credentials."}, 400
-        except ValidationError as ve:
-            # handle data validation errors
-            return {"success": False, "msg": str(ve)}, 403
-        except NotUniqueError:
-            # handle non-unique error
-            return {"success": False, "msg": "This username is already taken"}, 403
         except Exception as e:
+            current_app.logger.error(e)
             # catch all other exceptions
             return {"success": False, "msg": str(e)}, 403
 
@@ -120,14 +110,9 @@ class UploadRoute(Resource):
                               min=_minutes, difficulty=_difficulty, desc=_desc)
             new_route.save()
             user.add_create_routes(new_route)
-        except ValidationError as ve:
-            # handle data validation errors
-            return {"success": False, "msg": str(ve)}, 403
-        except NotUniqueError:
-            # handle non-unique error
-            return {"success": False, "msg": "This username is already taken"}, 403
         except Exception as e:
             # catch all other exceptions
+            current_app.logger.error(e)
             return {"success": False, "msg": str(e)}, 403
 
         return {"success": True,"route_id": str(new_route.id),
@@ -145,14 +130,9 @@ class UserRoutes(Resource):
             if not user:
                 return {"success": False, "msg": "User not exist"}, 401
             routes = user.get_create_routes()
-        except ValidationError as ve:
-            # handle data validation errors
-            return {"success": False, "msg": str(ve)}, 403
-        except NotUniqueError:
-            # handle non-unique error
-            return {"success": False, "msg": "This username is already taken"}, 403
         except Exception as e:
             # catch all other exceptions
+            current_app.logger.error(e)
             return {"success": False, "msg": str(e)}, 403
 
         return {"success": True, "route_ids": jsonify(routes),

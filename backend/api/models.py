@@ -58,7 +58,7 @@ class User(db.Document):
 
     @property
     def password(self):
-        raise AttributeError("password is not a readable attribute")
+        raise AttributeError("not a readable attribute")
 
     # Method to set the password for the user
     @password.setter
