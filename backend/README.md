@@ -5,8 +5,10 @@ backend/
 │   ├── __init__.py       # Module initializer, contains creation and configuration of API
 │   ├── exts.py           # Extensions module, used to initialize external extensions like database etc.
 │   ├── models.py         # Data models module, contains ORM models for the database
+│   ├── config.py         # Configuration module, contains configuration classes for different environments
 │   └── routes.py         # Routes module, defines API endpoints and view functions
 ├── README.md             # Project's README file, includes project information, setup instructions, and documentation
+├── .env                  # Environment file, contains environment variables for the project
 ├── requirements.txt      # Contains a list of project dependencies to be installed using pip
 └── run.py                # The entry point to run the Flask application
 ```
