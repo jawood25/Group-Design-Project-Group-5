@@ -41,12 +41,12 @@ const Login = () => {
                 dispatch(login());
                 navigate("/");
             }
-            else if (response.status == 400){
+            else if (response.status === 400){
                 console.log('Incorrect password')
                 setIncorrect_password(true);
                 dispatch(logout());
             }
-            else if (response.status == 401) {
+            else if (response.status === 401) {
                 console.log('Username does not exist')
                 setUsername_does_not_exist(true);
                 dispatch(logout());
