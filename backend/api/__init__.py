@@ -1,3 +1,4 @@
+import os
 import re
 import logging
 
@@ -18,13 +19,21 @@ class RemoveAnsiEscapeCodesFilter(logging.Filter):
         return True
 
 
+# Define the log directory and file path
+log_directory = 'logs'
+log_file_path = os.path.join(log_directory, 'log')
+
+# Check if the log directory exists, create it if it does not
+if not os.path.exists(log_directory):
+    os.makedirs(log_directory)  # This will create the directory and any necessary parent directories
+
 # Set basic logging configuration with a specific format and date format
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S')
 
 # Create a file handler with UTF-8 encoding and a specific formatter
-file_handler = RotatingFileHandler("logs/log", maxBytes=100 * 1024 * 1024, backupCount=5, encoding='utf-8')
+file_handler = RotatingFileHandler(log_directory, maxBytes=100 * 1024 * 1024, backupCount=5, encoding='utf-8')
 formatter = logging.Formatter('[%(asctime)s] %(levelname)s in %(module)s: %(message)s')
 file_handler.setFormatter(formatter)
 
