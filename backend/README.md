@@ -2,21 +2,27 @@
 ```
 backend/
 ├── api/                  # Package for the API module
-│   ├── __init__.py       # Module initializer, contains creation and configuration of API
-│   ├── exts.py           # Extensions module, used to initialize external extensions like database etc.
-│   ├── models.py         # Data models module, contains ORM models for the database
-│   ├── config.py         # Configuration module, contains configuration classes for different environments
-│   └── routes.py         # Routes module, defines API endpoints and view functions
-├── tests/
-│   ├── __init__.py
-│   ├── conftest.py       # Configuration module for the tests
-│   ├── test_models.py    # Test module for the models
-│   ├── test_routes.py    # Test module for the routes 
-│   └── test_utils.py     # Test module for the utility functions 
-├── README.md             # Project's README file, includes project information, setup instructions, and documentation
-├── .env                  # Environment file, contains environment variables for the project
-├── requirements.txt      # Contains a list of project dependencies to be installed using pip
-└── run.py                # The entry point to run the Flask application
+│   ├── __init__.py       # Module initializer, sets up the Flask application and registers blueprints
+│   ├── config.py         # Configuration module, holds settings for various environments (development, production)
+│   ├── exts.py           # Extensions module, initializes extensions like SQLAlchemy, Marshmallow, etc.
+│   ├── models.py         # Data models module, contains ORM models defining the database schema
+│   └── routes.py         # Routes module, includes the routes and view functions for the API endpoints
+├── tests/                # Contains all test cases for the application
+│   ├── integration/      # Integration tests assessing how different parts of the app work together
+│   │   └── ...
+│   ├── units/            # Unit tests for individual components of the app
+│   │   ├── data/         # Directory for test data files, to be used in test cases
+│   │   └── ...
+│   └── conftest.py       # Test configuration file used by pytest for setting up test environments
+├── utils/                # Utility functions and classes for the app's various operations
+│   ├── file/             # Sub-package for file manipulation utilities
+│   │   └── ...
+│   └── log/              # Sub-package dedicated to logging mechanisms 
+│       └── ...
+├── README.md             # Comprehensive guide on the project's overview, setup, and usage instructions
+├── .env                  # File holding key-value pairs for environment variables, not tracked by version control
+├── requirements.txt      # List of all the necessary Python packages for the project, used for easy setup
+└── run.py                # Main executable script to start the Flask application server
 ```
 
 ## How to run the app
