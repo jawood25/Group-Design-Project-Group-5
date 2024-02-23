@@ -1,0 +1,6 @@
+# user_creation_data.yaml
+- username: "testuser1"
+  expected_success: False
+
+- username: "testuser"
+  expected_success: True

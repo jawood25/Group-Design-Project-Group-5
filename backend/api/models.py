@@ -6,10 +6,10 @@ from .exts import db  # Importing the database instance from an external module
 # pylint: disable=no-member
 # Defines a Comment document associated with users and their interactions
 class Comment(db.Document):
-    author_username = db.StringField(required=True) # pylint: disable=E1101
-    date_posted = db.DateTimeField(default=datetime.datetime.utcnow()) # pylint: disable=E1101
-    dislikes = db.IntField(default=0) # pylint: disable=E1101
-    likes = db.IntField(default=0) # pylint: disable=E1101
+    author_username = db.StringField(required=True)  # pylint: disable=E1101
+    date_posted = db.DateTimeField(default=datetime.datetime.utcnow())  # pylint: disable=E1101
+    dislikes = db.IntField(default=0)  # pylint: disable=E1101
+    likes = db.IntField(default=0)  # pylint: disable=E1101
     body = db.StringField(required=True)
 
 
@@ -72,10 +72,10 @@ class User(db.Document):
     def get_create_routes(self):
         routes = [route.to_json() for route in self.create_routes]
         return routes
+
     def get_create_routes_id(self):
         routes = [str(route.id) for route in self.create_routes]
         return routes
-
 
     def get_saved_routes(self):
         routes = [route.to_json() for route in self.saved_routes]
@@ -93,7 +93,6 @@ class User(db.Document):
     @classmethod
     def get_by_username(cls, username):
         return cls.objects(username=username).first()
-
 
 
 """code for further use"""
