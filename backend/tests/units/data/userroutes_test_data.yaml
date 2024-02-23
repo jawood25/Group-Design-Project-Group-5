@@ -1,0 +1,30 @@
+# userroutes_test_data.yaml
+- username: testuser
+  content_type: application/json
+  expected_routes:
+  - username: testuser
+    city: Mountain View
+    creator_username: testuser
+    desc: A beautiful trail.
+    difficulty: Moderate
+    hours: 2
+    kmlURL: https://example.com/path/to/kml/file.kml
+    location: Rancho San Antonio
+    minutes: 30
+  expected_status: 200
+
+
+- username: "newuser"
+  content_type: "application/json"
+  expected_routes: []
+  expected_status: 401
+
+- username: null
+  content_type: "application/json"
+  expected_routes: []
+  expected_status: 400
+
+- username: "testuser"
+  content_type: "text/plain"
+  expected_routes: []
+  expected_status: 415

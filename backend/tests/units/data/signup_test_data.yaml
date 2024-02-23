@@ -1,0 +1,20 @@
+# signup_test_data.yaml
+- username: "newuser1"
+  password: "newpassword1"
+  content_type: "text/plain"
+  expected_status: 415
+
+- username: "testuser1"
+  password: null
+  content_type: "application/json"
+  expected_status: 400
+
+- username: "testuser"
+  password: "testpassword"
+  content_type: "application/json"
+  expected_status: 400
+
+- username: "newuser"
+  password: "newpassword"
+  content_type: "application/json"
+  expected_status: 200
