@@ -1,5 +1,6 @@
-import pytest
 from pathlib import Path
+import pytest
+
 from backend.utils.file.yaml_op import load_test_data
 
 yaml_file_path = Path(__file__).parent / "data/uploadroutes_test_data.yaml"
@@ -23,7 +24,6 @@ class TestUploadRoute:
         assert response.status_code == test_case["expected_status"], f"Failed test case: {test_case}"
 
         if response.status_code == 200:
-            # Assuming the route creation is successful, check for the 'success' field in the response
             assert response.json['success'] is True
             assert 'route_id' in response.json, "Route ID not found in response."
             assert 'msg' in response.json, "Message not found in response."

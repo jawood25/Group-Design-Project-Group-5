@@ -1,5 +1,6 @@
-import pytest
 from pathlib import Path
+import pytest
+
 from backend.utils.file.yaml_op import load_test_data
 
 yaml_file_path = Path(__file__).parent / "data/login_test_data.yaml"

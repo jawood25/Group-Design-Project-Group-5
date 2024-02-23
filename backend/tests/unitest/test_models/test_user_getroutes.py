@@ -18,7 +18,7 @@ def new_routes(request):
     if not user:
         # Handle case where user does not exist; possibly create one or skip tests
         pytest.skip("User does not exist")
-    for i in range(1, 10):
+    for _ in range(1, 10):
         new_route = Route(creator_username=user.username)
         new_route.save()
         new_routes.append(new_route)

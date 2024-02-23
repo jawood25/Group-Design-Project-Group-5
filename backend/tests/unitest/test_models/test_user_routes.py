@@ -26,4 +26,5 @@ class TestUserRoutes:
         if test_case['expected_success']:
             user = User.objects(username=test_case['username']).first()
             user.add_create_routes(new_route)
-            assert new_route in user.create_routes, "New route should be added to the user's created routes."
+            assert new_route in user.create_routes,\
+                "New route should be added to the user's created routes."
