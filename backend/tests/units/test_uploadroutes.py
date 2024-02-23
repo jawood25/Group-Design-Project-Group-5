@@ -3,11 +3,11 @@ from pathlib import Path
 from backend.utils.file.yaml_op import load_test_data
 
 yaml_file_path = Path(__file__).parent / "data/uploadroutes_test_data.yaml"
-test_data = load_test_data(yaml_file_path)
+test_cases = load_test_data(yaml_file_path)
 
 
 class TestUploadRoute:
-    @pytest.mark.parametrize("test_case", test_data)
+    @pytest.mark.parametrize("test_case", test_cases)
     def test_upload_route(self, test_client, test_case):
         response = test_client.post('/api/upload/', json={
             "username": test_case["username"],
