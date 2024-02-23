@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 # Load environment variables from a .env file
 load_dotenv()
 
-class BaseConfig(object):
+class BaseConfig():
     # Base configuration
     HOST = 'localhost'  # Default host
     PORT = 3001  # Default port
