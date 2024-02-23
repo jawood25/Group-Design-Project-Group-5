@@ -3,12 +3,13 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from .exts import db  # Importing the database instance from an external module
 
 
+# pylint: disable=no-member
 # Defines a Comment document associated with users and their interactions
 class Comment(db.Document):
-    author_username = db.StringField(required=True)
-    date_posted = db.DateTimeField(default=datetime.datetime.utcnow())
-    dislikes = db.IntField(default=0)
-    likes = db.IntField(default=0)
+    author_username = db.StringField(required=True) # pylint: disable=E1101
+    date_posted = db.DateTimeField(default=datetime.datetime.utcnow()) # pylint: disable=E1101
+    dislikes = db.IntField(default=0) # pylint: disable=E1101
+    likes = db.IntField(default=0) # pylint: disable=E1101
     body = db.StringField(required=True)
 
 
@@ -94,8 +95,11 @@ class User(db.Document):
         return cls.objects(username=username).first()
 
 
+
 """code for further use"""
 
 # class EventList(Document):
 #     number_of_events = db.IntField(default=0)
 #     events = db.ListField(db.ReferenceField('Event'))
+
+# pylint: enable=no-member
