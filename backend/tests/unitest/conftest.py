@@ -1,8 +1,9 @@
-# test_routes/conftest.py
-import pytest
+# unittest/conftest.py
 import logging
-from backend.api import create_app
+import pytest
 from mongoengine.connection import get_db
+
+from backend.api import create_app
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -18,6 +19,7 @@ def test_client():
 
     with app.app_context():
         yield testing_client
+
 
 @pytest.fixture(scope='class', autouse=True)
 def clear_data():

@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-class BaseConfig(object):
+class BaseConfig():
     HOST = 'localhost'
     PORT = 3001
 

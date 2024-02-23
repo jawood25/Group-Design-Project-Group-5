@@ -1,6 +1,7 @@
-# test_user.py
-import pytest
+# test_user_getroutes.py
 from pathlib import Path
+import pytest
+
 from backend.api.models import User, Route
 from backend.utils.file.yaml_op import load_test_data
 
@@ -9,6 +10,7 @@ test_cases = load_test_data(yaml_file_path)
 
 
 # TODO: add a failed test case
+
 @pytest.fixture(scope='class', params=test_cases)
 def new_routes(request):
     new_routes = []
@@ -33,13 +35,13 @@ class TestUserGetRoutes:
         if test_case['expected_success']:
             user = User.objects(username=test_case['username']).first()
             routes = user.get_create_routes()
-            assert routes == [r.to_json() for r in
-                              new_routes], "New routes should be added to the user's created routes."
+            assert routes == [r.to_json() for r in new_routes], \
+                "New routes should be added to the user's created routes."
 
     def test_get_create_routes_id(self, test_client, test_case, new_routes):
         # Test adding routes only for cases where user creation is expected to succeed
         if test_case['expected_success']:
             user = User.objects(username=test_case['username']).first()
             routes_id = user.get_create_routes_id()
-            assert routes_id == [str(r.id) for r in
-                                 new_routes], "New routes id should be added to the user's created routes."
+            assert routes_id == [str(r.id) for r in new_routes],\
+                "New routes id should be added to the user's created routes."

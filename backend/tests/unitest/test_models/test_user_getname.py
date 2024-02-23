@@ -1,7 +1,8 @@
-# test_user.py
-import pytest
+# test_user_getname.py
 from pathlib import Path
-from backend.api.models import User, Route
+import pytest
+
+from backend.api.models import User
 from backend.utils.file.yaml_op import load_test_data
 
 yaml_file_path = Path(__file__).parent / "data/user_getname_data.yaml"

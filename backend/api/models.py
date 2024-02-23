@@ -94,8 +94,7 @@ class User(db.Document):
     def get_by_username(cls, username):
         return cls.objects(username=username).first()
 
-
-"""code for further use"""
+### code for further use ###
 
 # class EventList(Document):
 #     number_of_events = db.IntField(default=0)
