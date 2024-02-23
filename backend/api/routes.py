@@ -1,14 +1,12 @@
 import json
-
-from flask import current_app, request, jsonify
+from flask import current_app, request
 from flask_restx import Resource, fields
-from mongoengine.errors import ValidationError, NotUniqueError
 from .exts import api
 from .models import Route, User
 
-# Define API models for data validation and documentation
-# need JSON data
+# Define API models for validating and documenting incoming data
 upload_model = api.model('UploadModel', {
+    # Model for route upload, includes various route details
     "username": fields.String(required=True, min_length=2, max_length=32),
     "kmlURL": fields.String(required=True, max_length=100),
     "city": fields.String(required=True, min_length=2, max_length=32),
@@ -18,31 +16,35 @@ upload_model = api.model('UploadModel', {
     "difficulty": fields.String(required=True, min_length=2, max_length=32),
     "desc": fields.String(required=True, max_length=200)
 })
+
 userroutes_model = api.model('UserRoutesModel', {
+    # Model for fetching routes created by a user
     "username": fields.String(required=True, min_length=2, max_length=32),
 })
+
 signup_model = api.model('SignUpModel', {
-    # Model for user sign-up, requires username and password (email commented out)
+    # Model for user sign-up, includes username and password
     "username": fields.String(required=True, min_length=2, max_length=32),
     "password": fields.String(required=True, min_length=4, max_length=16)
 })
 
 login_model = api.model('LoginModel', {
-    # Model for user login, requires username and password
+    # Model for user login, includes username and password
     "username": fields.String(required=True, min_length=2, max_length=32),
     "password": fields.String(required=True, min_length=4, max_length=16)
 })
-
 
 # Define a Resource for user sign-up
 @api.route('/api/sign-up/', methods=['POST'])
 class UserSignUp(Resource):
     @api.expect(signup_model, validate=True)  # Expecting data matching the signup_model
     def post(self):
+        # Extract JSON data from the request
         req_data = request.get_json()  # Extract JSON data from the request
         _username = req_data.get("username")
         _password = req_data.get("password")
 
+        # Create a new user with the provided details
         try:
             user = User.get_by_username(_username)  # Check if user already exists
             if user:
@@ -64,10 +66,11 @@ class UserSignUp(Resource):
 class UserLogin(Resource):
     @api.expect(login_model, validate=True)  # Expecting data matching the login_model
     def post(self):
+        # Extract JSON data from the request
         req_data = request.get_json()
         _username = req_data.get("username")
         _password = req_data.get("password")
-
+        # Check if user exists and password matches
         try:
             user = User.get_by_username(_username)  # Fetch user by username
             if not user:
@@ -90,6 +93,7 @@ class UserLogin(Resource):
 class UploadRoute(Resource):
     @api.expect(upload_model, validate=True)  # Expecting data matching the route_model
     def post(self):
+        # Extract JSON data from the request
         req_data = request.get_json()
         _username = req_data.get("username")
         _url = req_data.get("kmlURL")
@@ -99,8 +103,9 @@ class UploadRoute(Resource):
         _minutes = req_data.get("minutes")
         _difficulty = req_data.get("difficulty")
         _desc = req_data.get("desc")
-        user = User.get_by_username(_username)  # Fetch route by username
+        # Create a new route with the provided details
         try:
+            user = User.get_by_username(_username)  # Fetch route by username
             if not user:
                 return {"success": False, "msg": "User not exist"}, 401
             new_route = Route(creator_username=_username, kmlURL=_url,
@@ -121,11 +126,12 @@ class UploadRoute(Resource):
 class UserRoutes(Resource):
     @api.expect(userroutes_model, validate=True)  # Expecting data matching the route_model
     def post(self):
-
+        # Extract JSON data from the request
         req_data = request.get_json()
         _username = req_data.get("username")
-        user = User.get_by_username(_username)  # Fetch route by username
+        # Fetch routes created by the user
         try:
+            user = User.get_by_username(_username)  # Fetch route by username
             if not user:
                 return {"success": False, "msg": "User not exist"}, 401
             routes = user.get_create_routes()

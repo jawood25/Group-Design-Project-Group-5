@@ -56,6 +56,7 @@ class User(db.Document):
     def __repr__(self):
         return f"User {self.username}"
 
+    # set password as a write-only attribute
     @property
     def password(self):
         raise AttributeError("not a readable attribute")
@@ -69,22 +70,27 @@ class User(db.Document):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    # Method to get routes created by the user
     def get_create_routes(self):
         routes = [route.to_json() for route in self.create_routes]
         return routes
+
+    # Method to get routes' id created by the user
     def get_create_routes_id(self):
         routes = [str(route.id) for route in self.create_routes]
         return routes
 
-
+    # Method to get routes saved by the user
     def get_saved_routes(self):
         routes = [route.to_json() for route in self.saved_routes]
         return routes
 
+    # Method to add a route to the user's created routes
     def add_create_routes(self, new_route):
         self.create_routes.append(new_route)
         self.save()
 
+    # Method to add a route to the user's saveed routes
     def add_saved_routes(self, new_route):
         self.saved_routes.append(new_route)
         self.save()

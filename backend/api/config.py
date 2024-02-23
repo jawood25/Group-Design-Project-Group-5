@@ -1,43 +1,49 @@
 import os
 from dotenv import load_dotenv
 
+# Load environment variables from a .env file
 load_dotenv()
 
-
 class BaseConfig(object):
-    HOST = 'localhost'
-    PORT = 3001
+    # Base configuration
+    HOST = 'localhost'  # Default host
+    PORT = 3001  # Default port
 
-    DBNAME = os.getenv("DB_NAME")
-    DBHOST = os.getenv("DB_HOST")
-    DBUSERNAME = os.getenv("DB_USERNAME")
-    DBPASSWORD = os.getenv("DB_PASSWORD")
+    # Environment variables for database connection
+    DBNAME = os.getenv("DB_NAME")  # Database name
+    DBHOST = os.getenv("DB_HOST")  # Database host URL
+    DBUSERNAME = os.getenv("DB_USERNAME")  # Database username
+    DBPASSWORD = os.getenv("DB_PASSWORD")  # Database password
 
-    # Configure MongoDB settings for the Flask app
+    # MongoDB connection settings
     MONGODB_SETTINGS = {
         'db': DBNAME,  # Name of the database
-        'host': DBHOST,  # MongoDB Atlas cluster URL
-        'username': DBUSERNAME,  # Username for MongoDB
-        'password': DBPASSWORD,  # Password for MongoDB
-        'retryWrites': True,  # Enable retryable writes
-        'w': 'majority'  # Write concern set to "majority" for data integrity
+        'host': DBHOST,  # Database host URL
+        'username': DBUSERNAME,  # Database username
+        'password': DBPASSWORD,  # Database password
+        'retryWrites': True,  # Enable retryable writes for reliability
+        'w': 'majority'  # Ensure write operations are acknowledged by the majority of replica set members
     }
 
 
 class DevelopmentConfig(BaseConfig):
-    DEBUG = True
+    # Configuration for the development environment
+    DEBUG = True  # Enable debug mode
 
 
 class ProductionConfig(BaseConfig):
-    pass
+    # Configuration for the production environment
+    pass  # No specific changes from BaseConfig
 
 
 class TestingConfig(BaseConfig):
-    DEBUG = True
+    # Configuration for the testing environment
+    DEBUG = True  # Enable debug mode for testing
 
 
+# Dictionary to select the configuration based on the environment
 config = {
-    "development": DevelopmentConfig,  # Development environment configuration
-    "production": ProductionConfig,  # Production environment configuration
-    "testing": TestingConfig  # Testing environment configuration
+    "development": DevelopmentConfig,  # Development configuration
+    "production": ProductionConfig,  # Production configuration
+    "testing": TestingConfig  # Testing configuration
 }
