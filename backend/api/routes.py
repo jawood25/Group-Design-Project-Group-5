@@ -1,8 +1,7 @@
 import json
 
-from flask import current_app, request, jsonify
+from flask import current_app, request
 from flask_restx import Resource, fields
-from mongoengine.errors import ValidationError, NotUniqueError
 from .exts import api
 from .models import Route, User
 
@@ -99,8 +98,9 @@ class UploadRoute(Resource):
         _minutes = req_data.get("minutes")
         _difficulty = req_data.get("difficulty")
         _desc = req_data.get("desc")
-        user = User.get_by_username(_username)  # Fetch route by username
+
         try:
+            user = User.get_by_username(_username)  # Fetch route by username
             if not user:
                 return {"success": False, "msg": "User not exist"}, 401
             new_route = Route(creator_username=_username, kmlURL=_url,
@@ -124,8 +124,9 @@ class UserRoutes(Resource):
 
         req_data = request.get_json()
         _username = req_data.get("username")
-        user = User.get_by_username(_username)  # Fetch route by username
+
         try:
+            user = User.get_by_username(_username)  # Fetch route by username
             if not user:
                 return {"success": False, "msg": "User not exist"}, 401
             routes = user.get_create_routes()
