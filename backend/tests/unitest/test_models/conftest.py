@@ -9,7 +9,7 @@ def add_user():
     user = User(username="testuser")
     user.password = "testpassword"
     user.save()
-    added_user = user = User.objects(username=user_info['username']).first()
+    added_user = User.objects(username=user_info['username']).first()
     assert added_user is not None, "User should be added to the database"
     assert added_user.username == user_info['username'], "Added user should have the correct username"
     yield
