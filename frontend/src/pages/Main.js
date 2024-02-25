@@ -1,3 +1,4 @@
+
 import Header from '../components/Header';
 
 const Main = () => {
@@ -10,3 +11,4 @@ const Main = () => {
 };
 
 export default Main;
+
