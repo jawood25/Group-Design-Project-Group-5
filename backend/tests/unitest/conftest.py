@@ -1,10 +1,13 @@
-# tests/conftest.py
+# unittest/conftest.py
+import logging
 import pytest
-from backend.api import create_app
 from mongoengine.connection import get_db
 
+from backend.api import create_app
+from backend.api.models import User
 
 
+# provide a test client for the application
 @pytest.fixture(scope='module')
 def test_client():
     app = create_app('testing')
@@ -14,6 +17,7 @@ def test_client():
         yield testing_client
 
 
+# clear the database after running the each tests
 @pytest.fixture(scope='class', autouse=True)
 def clear_data():
     yield

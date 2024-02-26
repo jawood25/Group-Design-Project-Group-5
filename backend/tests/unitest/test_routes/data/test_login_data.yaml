@@ -1,0 +1,25 @@
+# test_login_data.yaml
+- username: "testuser"
+  password: "testpassword"
+  content_type: "application/json"
+  expected_status: 200
+
+- username: "newuser"
+  password: "newpassword"
+  content_type: "application/json"
+  expected_status: 401
+
+- username: "testuser"
+  password: "testpassword1"
+  content_type: "application/json"
+  expected_status: 400
+
+- username: "testuser"
+  password: null
+  content_type: "application/json"
+  expected_status: 400
+
+- username: "testuser"
+  password: "testpassword"
+  content_type: "text/plain"
+  expected_status: 415
