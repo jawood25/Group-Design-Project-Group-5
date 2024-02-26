@@ -11,5 +11,6 @@ def add_user():
     user.save()
     added_user = User.get_by_username(username=user_info['username'])
     assert added_user is not None, "User should be added to the database"
-    assert added_user.username == user_info['username'], "Added user should have the correct username"
+    assert added_user.username == user_info['username'],\
+        "Added user should have the correct username"
     yield
