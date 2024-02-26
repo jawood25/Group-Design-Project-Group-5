@@ -12,10 +12,15 @@
 - username: "testuser"
   password: "testpassword1"
   content_type: "application/json"
-  expected_status: 400
+  expected_status: 405
 
 - username: "testuser"
   password: null
+  content_type: "application/json"
+  expected_status: 400
+
+- username: null
+  password: "testpassword"
   content_type: "application/json"
   expected_status: 400
 
