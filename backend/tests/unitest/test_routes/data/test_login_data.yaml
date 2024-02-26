@@ -14,13 +14,13 @@
   content_type: "application/json"
   expected_status: 405
 
-- username:  null
-  password: "newpassword"
+- username: "testuser"
+  password: null
   content_type: "application/json"
   expected_status: 400
 
-- username: "testuser"
-  password: null
+- username: null
+  password: "testpassword"
   content_type: "application/json"
   expected_status: 400
 

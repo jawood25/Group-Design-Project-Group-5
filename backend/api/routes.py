@@ -1,3 +1,4 @@
+# /api/routes.py
 import json
 from flask import current_app, request
 from flask_restx import Resource, fields
@@ -48,7 +49,7 @@ class UserSignUp(Resource):
         try:
             user = User.get_by_username(_username)  # Check if user already exists
             if user:
-                return {"success": False, "msg": "User exist"}, 400
+                return {"success": False, "msg": "User exist"}, 405
             new_user = User(username=_username)  # Create new user if not exist
             new_user.password = _password
             new_user.save()  # Save the new user to the database
@@ -77,7 +78,7 @@ class UserLogin(Resource):
                 return {"success": False, "msg": "User not exist"}, 401
             if not user.check_password(_password):
                 # If user not found or password mismatch
-                return {"success": False, "msg": "Wrong credentials."}, 400
+                return {"success": False, "msg": "Wrong credentials."}, 405
         except Exception as e:
             current_app.logger.error(e)
             # catch all other exceptions

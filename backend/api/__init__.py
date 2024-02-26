@@ -1,7 +1,6 @@
-
+# /api/__init__.py
 from flask import Flask
 from flask_cors import CORS
-
 from .exts import init_exts
 from .routes import *
 from .config import config

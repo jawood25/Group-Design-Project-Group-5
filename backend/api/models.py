@@ -1,3 +1,4 @@
+# /api/models.py
 import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from .exts import db  # Importing the database instance from an external module
