@@ -24,7 +24,8 @@ class TestUploadRoute:
             "desc": test_case["desc"]
         }, content_type=test_case["content_type"])
 
-        assert response.status_code == test_case["expected_status"], f"Failed test case: {test_case}"
+        assert response.status_code == test_case["expected_status"],\
+            f"Failed test case: {test_case}"
 
         if response.status_code == 200:
             assert response.json['success'] is True
