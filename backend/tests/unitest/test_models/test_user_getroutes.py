@@ -14,7 +14,7 @@ test_cases = load_data(yaml_file_path)
 # Create new routes for each user
 @pytest.fixture(scope='class', params=test_cases)
 def new_routes(request):
-    new_routes = []
+    n_routes = []
     user = User.objects(username=request.param['username']).first()
     if not user:
         # Handle case where user does not exist; possibly create one or skip tests
@@ -22,10 +22,10 @@ def new_routes(request):
     for _ in range(1, 10):
         new_route = Route(creator_username=user.username)
         new_route.save()
-        new_routes.append(new_route)
+        n_routes.append(new_route)
         user.create_routes.append(new_route)
     user.save()
-    return new_routes
+    return n_routes
 
 
 # Test get_create_routes and get_create_routes_id in user
