@@ -1,10 +1,8 @@
 # unittest/conftest.py
-import logging
 import pytest
 from mongoengine.connection import get_db
 
 from backend.api import create_app
-from backend.api.models import User
 
 
 # provide a test client for the application
