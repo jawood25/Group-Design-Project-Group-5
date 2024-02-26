@@ -1,16 +1,18 @@
-#
+# test_route_getbyid.py
 from pathlib import Path
 import pytest
 
 from backend.api.models import Route
-from backend.utils.file.yaml_op import load_test_data
+from backend.utils.file.yaml_op import load_data
 
-yaml_file_path = Path(__file__).parent / "data/route_getid_data.yaml"
-test_cases = load_test_data(yaml_file_path)
+yaml_file_path = Path(__file__).parent / "data/test_route_getbyid.yaml"
+test_cases = load_data(yaml_file_path)
 
 
+# Test get_by_id in route
 @pytest.mark.parametrize("test_case", test_cases)
 class TestRouteGetID:
+    # test by providing new route info
     def test_get_by_rid(self, test_client, test_case):
         new_route1 = Route(creator_username=test_case['username'])
         new_route1.save()

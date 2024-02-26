@@ -1,4 +1,4 @@
-# user_route_data.yaml
+# test_user_getbyname.yaml
 - username: "testuser"
   expected_success: True
 

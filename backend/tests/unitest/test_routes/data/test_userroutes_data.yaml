@@ -1,4 +1,4 @@
-# userroutes_test_data.yaml
+# test_userroutes_data.yaml
 - username: testuser
   content_type: application/json
   expected_routes:

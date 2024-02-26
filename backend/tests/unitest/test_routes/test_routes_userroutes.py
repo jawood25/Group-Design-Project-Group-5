@@ -3,14 +3,16 @@ import json
 import pytest
 
 from backend.api.models import User, Route
-from backend.utils.file.yaml_op import load_test_data
+from backend.utils.file.yaml_op import load_data
 
-yaml_file_path = Path(__file__).parent / "data/userroutes_test_data.yaml"
-test_cases = load_test_data(yaml_file_path)
+yaml_file_path = Path(__file__).parent / "data/test_userroutes_data.yaml"
+test_cases = load_data(yaml_file_path)
 
 
+# Test the /api/userroutes/ route
 @pytest.mark.parametrize("test_case", test_cases)
 class TestUserRoutes:
+    # Add the temporary routes to the database
     @pytest.fixture(scope='function', autouse=True)
     def add_route(self, test_case):
         for routeinfo in test_case['expected_routes']:
@@ -32,6 +34,7 @@ class TestUserRoutes:
             assert added_route.creator_username == "testuser", \
                 "Added route should have the correct creator username"
 
+    # test by providing the username
     def test_user_routes(self, test_client, test_case):
         response = test_client.post('/api/userroutes/', json={"username": test_case["username"]},
                                     content_type=test_case["content_type"])

@@ -1,4 +1,4 @@
-# signup_test_data.yaml
+# test_signup_data.yaml
 - username: "newuser1"
   password: "newpassword1"
   content_type: "text/plain"

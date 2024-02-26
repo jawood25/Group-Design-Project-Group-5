@@ -1,4 +1,4 @@
-# user_creation_data.yaml
+# test_user_creation.yaml
 - username: "testuser1"
   password: "testpassword1"
   expected_success: True

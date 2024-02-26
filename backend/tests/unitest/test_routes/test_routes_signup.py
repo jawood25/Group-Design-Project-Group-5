@@ -1,12 +1,13 @@
 from pathlib import Path
 import pytest
 
-from backend.utils.file.yaml_op import load_test_data
-yaml_file_path = Path(__file__).parent / "data/signup_test_data.yaml"
-test_cases = load_test_data(yaml_file_path)
+from backend.utils.file.yaml_op import load_data
+yaml_file_path = Path(__file__).parent / "data/test_signup_data.yaml"
+test_cases = load_data(yaml_file_path)
 
-
+# Test the /api/sign-up/ route
 class TestUserSignUp:
+    # test by adding a user
     @pytest.mark.parametrize("test_case", test_cases)
     def test_user_sign_up(self, test_client, test_case):
         # Simulate a POST request to the sign-up endpoint
@@ -23,6 +24,6 @@ class TestUserSignUp:
             assert response.json['success'] is True
             assert response.json['username'] == test_case["username"]
 
-# TODO: test for 401 - other failure
-# def test_user_routes_other(self, test_client, test_case):
-#     pass
+    # TODO: test for 401 - other failure
+    # def test_user_routes_other(self, test_client, test_case):
+    #     pass

@@ -1,13 +1,14 @@
 from pathlib import Path
 import pytest
 
-from backend.utils.file.yaml_op import load_test_data
+from backend.utils.file.yaml_op import load_data
 
-yaml_file_path = Path(__file__).parent / "data/login_test_data.yaml"
-test_cases = load_test_data(yaml_file_path)
+yaml_file_path = Path(__file__).parent / "data/test_login_data.yaml"
+test_cases = load_data(yaml_file_path)
 
-
+# Test the /api/login/ route
 class TestUserLogin:
+    # test by providing a username and password
     @pytest.mark.parametrize("test_case", test_cases)
     def test_user_login(self, test_client, test_case):
         # Use the correct password for login test

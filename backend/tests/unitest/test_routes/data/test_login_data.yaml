@@ -1,4 +1,4 @@
-# login_test_data.yaml
+# test_login_data.yaml
 - username: "testuser"
   password: "testpassword"
   content_type: "application/json"

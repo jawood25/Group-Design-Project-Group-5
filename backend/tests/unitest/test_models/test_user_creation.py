@@ -3,14 +3,16 @@ from pathlib import Path
 import pytest
 
 from backend.api.models import User
-from backend.utils.file.yaml_op import load_test_data
+from backend.utils.file.yaml_op import load_data
 
-yaml_file_path = Path(__file__).parent / "data/user_creation_data.yaml"
-test_cases = load_test_data(yaml_file_path)
+yaml_file_path = Path(__file__).parent / "data/test_user_creation.yaml"
+test_cases = load_data(yaml_file_path)
 
 
+# Test user creation
 @pytest.mark.parametrize("test_case", test_cases)
 class TestUserCreation:
+    # test by providing new user info
     def test_create_user(self, test_client, test_case):
         # Attempt to create a user, checking if it should succeed based on expected_success
         try:

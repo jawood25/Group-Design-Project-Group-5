@@ -2,7 +2,7 @@
 import pytest
 from backend.api.models import User
 
-
+# Add a user to the database before running the tests
 @pytest.fixture(scope='class', autouse=True)
 def add_user():
     user_info = {"username": "testuser", "password": "testpassword"}

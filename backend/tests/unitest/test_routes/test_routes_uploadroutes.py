@@ -1,13 +1,16 @@
 from pathlib import Path
 import pytest
 
-from backend.utils.file.yaml_op import load_test_data
+from backend.utils.file.yaml_op import load_data
 
-yaml_file_path = Path(__file__).parent / "data/uploadroutes_test_data.yaml"
-test_cases = load_test_data(yaml_file_path)
+yaml_file_path = Path(__file__).parent / "data/test_uploadroutes_data.yaml"
+test_cases = load_data(yaml_file_path)
 
 
+# Test the /api/upload/ route
 class TestUploadRoute:
+
+    # test by adding a route
     @pytest.mark.parametrize("test_case", test_cases)
     def test_upload_route(self, test_client, test_case):
         response = test_client.post('/api/upload/', json={
