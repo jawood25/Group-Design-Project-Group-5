@@ -1,0 +1,6 @@
+# test_user_getbyname.yaml
+- username: "testuser1"
+  expected_success: False
+
+- username: "testuser"
+  expected_success: True

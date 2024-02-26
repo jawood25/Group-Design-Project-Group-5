@@ -1,0 +1,9 @@
+# test_route_creation.yaml
+- username: "testuser"
+  expected_success: True
+
+- username: "newtestuser"
+  expected_success: True
+
+- username:
+  expected_success: False
