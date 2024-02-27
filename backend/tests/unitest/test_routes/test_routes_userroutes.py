@@ -21,7 +21,7 @@ class TestUserRoutes:
     def add_route(self, test_case):
         for routeinfo in test_case['expected_routes']:
             route = Route(
-                creator_username=routeinfo['username'],
+                creator_username=test_case['username'],
                 kmlURL=routeinfo['kmlURL'],
                 city=routeinfo['city'],
                 location=routeinfo['location'],
@@ -56,8 +56,7 @@ class TestUserRoutes:
             data = response.get_json()
             assert data['success'] is True
             # Assuming 'routes' is a JSON string of the routes list
-            data['routes'] = json.dumps(test_case['expected_routes'])
-            routes = json.loads(data['routes'])
+            routes = data['routes']
             for route in routes:
                 assert route in test_case["expected_routes"], \
                     "The returned routes do not match the expected routes."

@@ -22,7 +22,7 @@ class TestUserGetRoutes:
 
         if test_case['expected_success']:
             # Verify that the newly added routes are included in the user's list of created routes
-            assert routes == [r.to_json() for r in n_routes], \
+            assert routes == [r.toDICT() for r in n_routes], \
                 "The new routes should be included in the user's list of created routes."
         else:
             # In scenarios where data retrieval is expected to fail, ensure the validation is correct

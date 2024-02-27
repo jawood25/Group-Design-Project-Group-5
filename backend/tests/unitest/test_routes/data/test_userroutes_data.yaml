@@ -2,8 +2,7 @@
 - username: "testuser"
   content_type: "application/json"
   expected_routes:
-  - username: "testuser"
-    city: "Mountain View"
+  - city: "Mountain View"
     creator_username: "testuser"
     desc: "A beautiful trail."
     difficulty: "Moderate"
@@ -11,6 +10,10 @@
     minutes: 30
     kmlURL: "https://example.com/path/to/kml/file.kml"
     location: "Rancho San Antonio"
+    dislike: 0
+    distance: 0.0
+    saves: 0
+    like: 0
   expected_status: 200
 
 - username: null

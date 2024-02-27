@@ -45,8 +45,8 @@ class Route(db.Document):
         cls_dict['kmlURL'] = self.kmlURL
         cls_dict['city'] = self.city
         cls_dict['location'] = self.location
-        cls_dict['hour'] = self.hour
-        cls_dict['min'] = self.min
+        cls_dict['hours'] = self.hour
+        cls_dict['minutes'] = self.min
         cls_dict['difficulty'] = self.difficulty
         cls_dict['desc'] = self.desc
         cls_dict['dislike'] = self.dislike
