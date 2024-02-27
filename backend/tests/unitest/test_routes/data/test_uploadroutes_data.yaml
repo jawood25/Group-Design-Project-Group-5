@@ -10,6 +10,17 @@
   content_type: "application/json"
   expected_status: 200
 
+- username: "u"
+  kmlURL: "https://example.com/path/to/kml/file.kml"
+  city: "MV"
+  location: "Rancho"
+  hours: 1
+  minutes: 15
+  difficulty: "Easy"
+  desc: "Short trail with minimal elevation gain."
+  content_type: "application/json"
+  expected_status: 400
+
 - username: "testuser1"
   kmlURL: "https://example.com/path/to/kml/file.kml"
   city: "Mountain View"
@@ -21,16 +32,16 @@
   content_type: "application/json"
   expected_status: 401
 
-- username: "u"
+- username: "testuser"
   kmlURL: "https://example.com/path/to/kml/file.kml"
-  city: "MV"
-  location: "Rancho"
-  hours: 1
-  minutes: 15
-  difficulty: "Easy"
-  desc: "Short trail with minimal elevation gain."
+  city: "Mountain View"
+  location: "Rancho San Antonio"
+  hours: 2
+  minutes: 30
+  difficulty: "Moderate"
+  desc: "This trail offers a good mix of uphill and downhill sections, with beautiful views of the valley."
   content_type: "application/json"
-  expected_status: 400
+  expected_status: 403
 
 - username: "u"
   kmlURL: "https://example.com/path/to/kml/file.kml"

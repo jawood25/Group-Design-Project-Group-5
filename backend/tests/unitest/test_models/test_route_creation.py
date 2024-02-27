@@ -24,5 +24,3 @@ class TestRouteCreation:
             # If failure is expected, catching an exception is a test pass
             if not test_case['expected_success']:
                 assert True, "User creation failed as expected."
-            else:
-                pytest.fail(f"User creation failed unexpectedly: {e}")

@@ -1,5 +1,5 @@
 from pathlib import Path
-import json
+from flask import json
 import pytest
 
 from backend.api.models import User, Route
@@ -12,6 +12,10 @@ test_cases = load_data(yaml_file_path)
 # Test the /api/userroutes/ route
 @pytest.mark.parametrize("test_case", test_cases)
 class TestUserRoutes:
+    # Simulate a server disconnect
+    def mock_get_by_username(self, *args, **kwargs):
+        raise ConnectionError("Simulated server disconnect")
+
     # Add the temporary routes to the database
     @pytest.fixture(scope='function', autouse=True)
     def add_route(self, test_case):
@@ -35,7 +39,12 @@ class TestUserRoutes:
                 "Added route should have the correct creator username"
 
     # test by providing the username
-    def test_user_routes(self, test_client, test_case):
+    def test_user_routes(self, test_client, test_case, monkeypatch):
+        expected_status = test_case.get("expected_status")
+        # If the expected status is 403, simulate server disconnect using monkeypatch
+        if expected_status == 403:
+            monkeypatch.setattr(User, "get_by_username", self.mock_get_by_username)
+
         response = test_client.post('/api/userroutes/', json={"username": test_case["username"]},
                                     content_type=test_case["content_type"])
 
@@ -52,7 +61,7 @@ class TestUserRoutes:
             for route in routes:
                 assert route in test_case["expected_routes"], \
                     "The returned routes do not match the expected routes."
-
-    # TODO: test for 403 - other failure
-    # def test_user_routes_other(self, test_client, test_case):
-    #     pass
+        if response.status_code == 403:
+            # Expected failure message
+            assert response.json['success'] is False
+            assert response.json['msg'] == "Simulated server disconnect"
