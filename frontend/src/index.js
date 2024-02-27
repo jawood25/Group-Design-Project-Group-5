@@ -8,7 +8,6 @@ import Login from './pages/Login';
 import MyAccount from './pages/MyAccount';
 import Map from './components/Map';
 import Upload from './pages/Upload';
-import MapNpm from './pages/MapNpm';
 import './style/style.css';
 import store from './redux/store';
 import { Provider } from 'react-redux';

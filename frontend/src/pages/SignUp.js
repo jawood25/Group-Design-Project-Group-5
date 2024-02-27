@@ -29,7 +29,7 @@ const SignUp = () => {
                 console.log('Sign up successful');
             }
             
-            else if (response.status == 405){
+            else if (response.status === 405){
                 console.log('Username already exists')
                 setUsername_already_exists(true);
             }
