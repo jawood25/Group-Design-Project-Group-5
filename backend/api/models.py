@@ -82,9 +82,10 @@ class User(db.Document):
         return routes
 
     # Method to get routes saved by the user
-    def get_saved_routes(self):
-        routes = [route.to_json() for route in self.saved_routes]
-        return routes
+    # in development
+    # def get_saved_routes(self):
+    #     routes = [route.to_json() for route in self.saved_routes]
+    #     return routes
 
     # Method to add a route to the user's created routes
     def add_create_routes(self, new_route):
@@ -92,9 +93,10 @@ class User(db.Document):
         self.save()
 
     # Method to add a route to the user's saveed routes
-    def add_saved_routes(self, new_route):
-        self.saved_routes.append(new_route)
-        self.save()
+    # in development
+    # def add_saved_routes(self, new_route):
+    #     self.saved_routes.append(new_route)
+    #     self.save()
 
     # Class method to retrieve a user by their username
     @classmethod
