@@ -65,6 +65,11 @@ Follow these steps to run the app. You'll need to split your terminal into **two
 
 ## Backends
 
+### Flask
+ Running on http://localhost:3001
+
+ More info about the backend [here](./backend/README.md)
+
 ### DataBase
 
 
