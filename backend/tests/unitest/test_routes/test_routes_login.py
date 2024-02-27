@@ -18,7 +18,7 @@ class TestUserLogin:
     @pytest.mark.parametrize("test_case", test_cases)
     def test_user_login(self, test_client, test_case, monkeypatch):
         # Assert that the response status code matches the expected outcome for login
-        expected_status = test_case.get("expected_status")
+        expected_status = test_case["expected_status"]
 
         # If the expected status is 403, simulate server disconnect using monkeypatch
         if expected_status == 403:

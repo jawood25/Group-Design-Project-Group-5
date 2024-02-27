@@ -17,7 +17,7 @@ class TestUploadRoute:
     # test by adding a route
     @pytest.mark.parametrize("test_case", test_cases)
     def test_upload_route(self, test_client, test_case, monkeypatch):
-        expected_status = test_case.get("expected_status")
+        expected_status = test_case["expected_status"]
         # If the expected status is 403, simulate server disconnect using monkeypatch
         if expected_status == 403:
             monkeypatch.setattr(User, "get_by_username", self.mock_get_by_username)

@@ -3,10 +3,10 @@ import pytest
 if __name__ == '__main__':
     pytest.main([
         "-v",
-        "--html=report.html",
+        "--html=./backend/report.html",
         "--cov=backend",
         '--cov-report=term',
-        "--cov-report=html",
+        "--cov-report=html:backend/coverage",
         '--cov-config=.coveragerc',
         "-W",
         "ignore"
