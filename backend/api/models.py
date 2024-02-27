@@ -40,6 +40,24 @@ class Route(db.Document):
     def get_by_rid(cls, rid):
         return cls.objects(id=rid).first()
 
+    def toDICT(self):
+        cls_dict = {}
+        cls_dict['kmlURL'] = self.kmlURL
+        cls_dict['city'] = self.city
+        cls_dict['location'] = self.location
+        cls_dict['hour'] = self.hour
+        cls_dict['min'] = self.min
+        cls_dict['difficulty'] = self.difficulty
+        cls_dict['desc'] = self.desc
+        cls_dict['dislike'] = self.dislike
+        cls_dict['like'] = self.like
+        cls_dict['saves'] = self.saves
+        cls_dict['distance'] = self.distance
+        cls_dict['creator_username'] = self.creator_username
+
+        return cls_dict
+
+
 
 # Defines a User document with various fields to store user information
 class User(db.Document):
@@ -73,7 +91,7 @@ class User(db.Document):
 
     # Method to get routes created by the user
     def get_create_routes(self):
-        routes = [route.to_json() for route in self.create_routes]
+        routes = [route.toDICT() for route in self.create_routes]
         return routes
 
     # Method to get routes' id created by the user

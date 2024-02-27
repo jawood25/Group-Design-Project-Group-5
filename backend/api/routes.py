@@ -142,5 +142,5 @@ class UserRoutes(Resource):
             current_app.logger.error(e)
             return {"success": False, "msg": str(e)}, 403
 
-        return {"success": True, "routes": json.dumps(routes),
+        return {"success": True, "routes": routes,
                 "msg": "Route is created"}, 200
