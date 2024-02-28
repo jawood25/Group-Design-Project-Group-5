@@ -58,27 +58,15 @@ Follow these steps to run the app. You'll need to split your terminal into **two
 #### Backend Testing
 
 #### Running Backend Tests
-1. **create .coveragerc file**
-   - create a file named `.coveragerc` in the backend directory.
-   add the following content to the file:
-   ```
-   [run]
-   omit =
-       __init__.py
-       test_*.py
-       run*.py
-       */tests/*
-       */utils/*
-   ```
 
-2. **Navigate to the Backend Director and Execute the Tests**
+1. **Navigate to the Backend Director and Execute the Tests**
    - Run the following command to execute the tests. This will trigger the backend tests and display a summary in the terminal:
    ```bash
    cd ./backend
    python run_pytest.py
    ```
      
-3. **View Test Coverage and Report**
+2. **View Test Coverage and Report**
    - Coverage report.
      - Open `./backend/backend_test/coverage/index.html` to view the coverage report.
    - Summary report.
