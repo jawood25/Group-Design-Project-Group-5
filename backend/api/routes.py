@@ -1,6 +1,6 @@
 # /api/routes.py
-import json
-from flask import current_app, request
+# import json
+from flask import current_app, request, json
 from flask_restx import Resource, fields
 from .exts import api
 from .models import Route, User
@@ -34,6 +34,7 @@ login_model = api.model('LoginModel', {
     "username": fields.String(required=True, min_length=2, max_length=32),
     "password": fields.String(required=True, min_length=4, max_length=16)
 })
+
 
 # Define a Resource for user sign-up
 @api.route('/api/sign-up/', methods=['POST'])
@@ -141,5 +142,5 @@ class UserRoutes(Resource):
             current_app.logger.error(e)
             return {"success": False, "msg": str(e)}, 403
 
-        return {"success": True, "routes": json.dumps(routes),
+        return {"success": True, "routes": routes,
                 "msg": "Route is created"}, 200

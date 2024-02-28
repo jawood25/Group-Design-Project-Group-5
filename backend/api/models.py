@@ -40,6 +40,24 @@ class Route(db.Document):
     def get_by_rid(cls, rid):
         return cls.objects(id=rid).first()
 
+    def toDICT(self):
+        cls_dict = {}
+        cls_dict['kmlURL'] = self.kmlURL
+        cls_dict['city'] = self.city
+        cls_dict['location'] = self.location
+        cls_dict['hours'] = self.hour
+        cls_dict['minutes'] = self.min
+        cls_dict['difficulty'] = self.difficulty
+        cls_dict['desc'] = self.desc
+        cls_dict['dislike'] = self.dislike
+        cls_dict['like'] = self.like
+        cls_dict['saves'] = self.saves
+        cls_dict['distance'] = self.distance
+        cls_dict['creator_username'] = self.creator_username
+
+        return cls_dict
+
+
 
 # Defines a User document with various fields to store user information
 class User(db.Document):
@@ -73,7 +91,7 @@ class User(db.Document):
 
     # Method to get routes created by the user
     def get_create_routes(self):
-        routes = [route.to_json() for route in self.create_routes]
+        routes = [route.toDICT() for route in self.create_routes]
         return routes
 
     # Method to get routes' id created by the user
@@ -82,9 +100,10 @@ class User(db.Document):
         return routes
 
     # Method to get routes saved by the user
-    def get_saved_routes(self):
-        routes = [route.to_json() for route in self.saved_routes]
-        return routes
+    # in development
+    # def get_saved_routes(self):
+    #     routes = [route.to_json() for route in self.saved_routes]
+    #     return routes
 
     # Method to add a route to the user's created routes
     def add_create_routes(self, new_route):
@@ -92,9 +111,10 @@ class User(db.Document):
         self.save()
 
     # Method to add a route to the user's saveed routes
-    def add_saved_routes(self, new_route):
-        self.saved_routes.append(new_route)
-        self.save()
+    # in development
+    # def add_saved_routes(self, new_route):
+    #     self.saved_routes.append(new_route)
+    #     self.save()
 
     # Class method to retrieve a user by their username
     @classmethod

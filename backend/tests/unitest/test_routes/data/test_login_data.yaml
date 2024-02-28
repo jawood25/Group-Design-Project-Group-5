@@ -10,6 +10,11 @@
   expected_status: 401
 
 - username: "testuser"
+  password: "testpassword"
+  content_type: "application/json"
+  expected_status: 403
+
+- username: "testuser"
   password: "testpassword1"
   content_type: "application/json"
   expected_status: 405
@@ -28,3 +33,5 @@
   password: "testpassword"
   content_type: "text/plain"
   expected_status: 415
+
+
