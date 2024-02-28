@@ -54,3 +54,24 @@ backend/
 - **Method**: POST
 - **Data Model**: `UserRoutesModel`
 - **Description**: Retrieves routes created by a specified user.
+
+## Setting Up the Database
+1. Create an account on MongoDB Atlas.
+2. Create a free shared cluster with default settings.
+3. Create a new project if one hasn't already been created.
+4. Click the Database tab on the left and select the free database.
+5. You will be prompted to create an admin user, save the password somewhere for later.
+6. Add the IP address "0.0.0.0" so that anyone can connect to the database or a specific one from a specific machine and continue.
+5. Once the database has been created, go to the Overview tab and click on the connect button.
+7. Connect to the application via Drivers and select the Python driver. Choose the most stable version and copy the connection string.
+8. Replace "\<password>" in the connection string with the previously saved admin password
+9. Create a .env file in the backend directory with the following format:
+```
+DB_NAME=pathpal
+DB_HOST=host
+DB_USERNAME=user
+DB_PASSWORD=password
+```
+10. Take the admin name from the connection string and replace user in the .env file with it. Delete the colon after it.
+11. Take the password from the connection string and replace password in the .env file with it. Delete the "@" after it.
+12. Delete everything after "mongodb.net/" in the connection string and use what is left to replace host in the .env file. Append "palpath" after it so a collection named "palpath" is created when any data is stored.
