@@ -29,7 +29,7 @@ Follow these steps to run the app. You'll need to split your terminal into **two
    DB_USERNAME=[YOUR_USERNAME]
    DB_PASSWORD=[YOUR_PASSWORD]
    ```
-   - Replace `DB_USERNAME` and `DB_PASSWORD` with given an username and a password in **Backends** section.
+   - Replace `[YOUR_USERNAME]` and `[YOUR_PASSWORD]` with given an username and a password in **Backends** section.
 
 4. Start the backend server by running:
    ```bash
@@ -58,8 +58,8 @@ Follow these steps to run the app. You'll need to split your terminal into **two
 #### Backend Testing
 
 #### Running Backend Tests
-1. **create .coverage file**
-   - create a file named `.coverage` in the backend directory.
+1. **create .coveragerc file**
+   - create a file named `.coveragerc` in the backend directory.
    add the following content to the file:
    ```
    [run]
@@ -99,7 +99,7 @@ Follow these steps to run the app. You'll need to split your terminal into **two
 information about the database:
  ```
  DB_USERNAME=PathPalAdmin
-  DB_PASSWORD=YOAybG23XVTqQnri
+ DB_PASSWORD=YOAybG23XVTqQnri
  ```
 
 
