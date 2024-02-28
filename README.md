@@ -20,7 +20,18 @@ Follow these steps to run the app. You'll need to split your terminal into **two
    ```bash
    pip install -r requirements.txt
    ```
-3. Start the backend server by running:
+3. **Create a .env file**
+   - Create a file named `.env` in the backend directory.
+   - Add the following content to the file:
+   ```
+   DB_NAME=pathpal
+   DB_HOST=mongodb+srv://cluster0.b6yu9ji.mongodb.net
+   DB_USERNAME=[YOUR_USERNAME]
+   DB_PASSWORD=[YOUR_PASSWORD]
+   ```
+   - Replace `DB_USERNAME` and `DB_PASSWORD` with given an username and a password in **Backends** section.
+
+4. Start the backend server by running:
    ```bash
    python run.py
    ```
@@ -47,14 +58,26 @@ Follow these steps to run the app. You'll need to split your terminal into **two
 #### Backend Testing
 
 #### Running Backend Tests
+1. **create .coverage file**
+   - create a file named `.coverage` in the backend directory.
+   add the following content to the file:
+   ```
+   [run]
+   omit =
+       __init__.py
+       test_*.py
+       run*.py
+       */tests/*
+       */utils/*
+   ```
 
-1. **Execute the Tests**
+2. **Execute the Tests**
    - Run the following command to execute the tests. This will trigger the backend tests and display a summary in the terminal:
    ```bash
     python ./backend/run_pytest.py
    ```
      
-2. **View Test Coverage and Report**
+3. **View Test Coverage and Report**
    - Coverage report.
      - Open `./backend/coverage/index.html` to view the coverage report.
    - Summary report.
@@ -68,8 +91,15 @@ Follow these steps to run the app. You'll need to split your terminal into **two
 ### Flask
  Running on http://localhost:3001
 
- More info about the backend [here](./backend/README.md)
+ More information about API [here](./backend/README.md)
 
 ### DataBase
+ **MongoDB** is used as the database for this project.
+ 
+information about the database:
+ ```
+ DB_USERNAME=PathPalAdmin
+  DB_PASSWORD=YOAybG23XVTqQnri
+ ```
 
 
