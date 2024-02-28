@@ -71,18 +71,19 @@ Follow these steps to run the app. You'll need to split your terminal into **two
        */utils/*
    ```
 
-2. **Execute the Tests**
+2. **Navigate to the Backend Director and Execute the Tests**
    - Run the following command to execute the tests. This will trigger the backend tests and display a summary in the terminal:
    ```bash
-    python ./backend/run_pytest.py
+   cd ./backend
+   python run_pytest.py
    ```
      
 3. **View Test Coverage and Report**
    - Coverage report.
-     - Open `./backend/coverage/index.html` to view the coverage report.
+     - Open `./backend/backend_test/coverage/index.html` to view the coverage report.
    - Summary report.
-     - Open `./backend/report.html` to view the summary report.
-†
+     - Open `./backend/backend_test/report.html` to view the summary report.
+
 
 #### Running Frontend Tests
 
