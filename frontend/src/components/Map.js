@@ -1,30 +1,65 @@
-import Header from './Header';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 
+const Map = () => { 
+    const username = useSelector((state) => state.userInfo.username)
+    const initialFlag = useRef(true);
 
-const Map = () => {
     useEffect(() => {
-        const map1 = new window.google.maps.Map(document.getElementById('map1'), {
-            center: { lat: 53.3437935, lng: -6.2545716 },
-            zoom: 16,
-            mapTypeId: 'terrain',
-            streetViewControl: false
-        });
+        const fetchUserData = async () => {
+            try {
+                const response = await fetch('/api/userroutes', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username }),
+                });
+                if (!response.ok) {
+                    throw new Error('fetch api failed');
+                }
+                const data = await response.json();
+                console.log(data);
+                console.log("Data fetched successfully");
+                data.routes.forEach((route, index) => {
+                    const mapContainer = document.createElement('div'); 
+                    mapContainer.id = `map${index}`; 
+                    mapContainer.style.height = '400px'; 
+                    mapContainer.style.width = '800px';
+                    mapContainer.style.overflow = 'hidden';
+                    mapContainer.style.float = 'left';
+                    mapContainer.style.border = 'thin solid #333';
+                    document.querySelector('.Map').appendChild(mapContainer);
+                    console.log(document.querySelector('.Map'))
 
-        const src1 = 'https://www.google.com/maps/d/u/0/kml?mid=1ffe5YOOBsVC5bw-OmLPSumWbzhREELA&forcekml=1';
-        const kmlLayer1 = new window.google.maps.KmlLayer(src1, {
-            suppressInfoWindows: true,
-            preserveViewport: false,
-            map: map1
-        });
-    }, []);
+                    const map = new window.google.maps.Map(mapContainer, { 
+                        center: { lat: 53.3437935, lng: -6.2545716 },
+                        zoom: 16,
+                        mapTypeId: 'terrain',
+                        streetViewControl: false
+                    });
+
+                    const kmlLayer = new window.google.maps.KmlLayer(route.kmlURL, { // ルートごとにKMLレイヤーを追加
+                        suppressInfoWindows: true,
+                        preserveViewport: false,
+                        map: map
+                    });
+                });
+            } catch (error) {
+                console.error('fetch api failed 2', error);
+            }
+        };
+
+        if (initialFlag.current) {
+            fetchUserData(); 
+            initialFlag.current = false;
+        }
+        
+    }, [username])
+
     return (
-        <div className='Map'>
-            <Header />
-            <h2>Test Rendering Map</h2>
-            <div id="map1" style={{ height: '400px', width: '800px', overflow: 'hidden', float: 'left', border: 'thin solid #333' }}></div>
-        </div>
-    );
+        <div className='Map'></div> 
+    )
 };
 
 export default Map;
