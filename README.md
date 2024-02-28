@@ -75,6 +75,13 @@ Follow these steps to run the app. You'll need to split your terminal into **two
 
 #### Running Frontend Tests
 
+1. **Geeting User Routes**
+   - The frontend is running on http://localhost:3000.
+   - Go to the login page by clicking the login button on the header.
+   - Login with the username: test, password: 1234.
+   - Go to the My Account page by clicking the my account button on the header.
+   - On the My Account Page, it will show a route uploaded by the user.
+
 ## Backends
 
 ### Flask
