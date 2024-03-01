@@ -12,7 +12,7 @@ const Header = () => {
                         <div className="dropdown">
                             <button className="navbar-toggler" type="button" data-bs-toggle="dropdown" aria-expanded="false"><span className="navbar-toggler-icon"></span></button>
                             <ul className="dropdown-menu">
-                                <li></li>
+                                <li><Link to="/upload-route" className="dropdown-item">Mapbox Upload Route</Link></li>
                             </ul>
                         </div>
                         <Link to="/" className="navbar-brand ms-2">PathPal</Link>

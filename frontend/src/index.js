@@ -7,7 +7,6 @@ import SignUp from './pages/SignUp';
 import Login from './pages/Login';
 import MyAccount from './pages/MyAccount';
 import MapboxRenderLine from './pages/MapboxRenderLine'
-import MapBoxDrawLine from './pages/MapBoxDrawLine';
 import UploadRoute from './pages/UploadRoute'
 import './style/style.css';
 import store from './redux/store';
@@ -34,10 +33,6 @@ const router = createBrowserRouter([
   {
     path: "/mapbox-render-line",
     element: <MapboxRenderLine />
-  },
-  {
-    path: "/mapbox-draw-line",
-    element: <MapBoxDrawLine />
   },
   {
     path: "/upload-route",

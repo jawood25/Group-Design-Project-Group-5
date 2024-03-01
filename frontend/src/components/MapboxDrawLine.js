@@ -6,8 +6,7 @@ import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import "../style/map.css";
 
-mapboxgl.accessToken =
-    "";
+mapboxgl.accessToken = "put the api key";
 
 const MapboxDrawLine = (geoData) => {
     const lat = geoData.geoData.geometry.location.lat

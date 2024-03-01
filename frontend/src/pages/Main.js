@@ -7,7 +7,6 @@ const Main = () => {
             <Header />
             <h2>Main Page</h2>
             <Link to="/mapbox-render-line" className="btn btn-info text-white me-2">Mapbox Render Line</Link>
-            <Link to="/mapbox-draw-line" className="btn btn-info text-white me-2">Mapbox Draw Line</Link>
             <Link to="/upload-route" className="btn btn-info text-white me-2">Mapbox Upload Route</Link>
         </div>
     );
