@@ -6,8 +6,9 @@ import Error from './pages/Error';
 import SignUp from './pages/SignUp';
 import Login from './pages/Login';
 import MyAccount from './pages/MyAccount';
-import Map from './components/Map';
-import Upload from './pages/Upload';
+import MapboxRenderLine from './pages/MapboxRenderLine'
+import MapBoxDrawLine from './pages/MapBoxDrawLine';
+import UploadRoute from './pages/UploadRoute'
 import './style/style.css';
 import store from './redux/store';
 import { Provider } from 'react-redux';
@@ -31,17 +32,17 @@ const router = createBrowserRouter([
     element: <MyAccount />
   },
   {
-    path: "/test-map",
-    element: <Map />
+    path: "/mapbox-render-line",
+    element: <MapboxRenderLine />
   },
   {
-    path: "/upload",
-    element: <Upload />
+    path: "/mapbox-draw-line",
+    element: <MapBoxDrawLine />
+  },
+  {
+    path: "/upload-route",
+    element: <UploadRoute />
   }
-  // {
-  //   path: "/test-map-npm",
-  //   element: <MapNpm />
-  // }
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

@@ -1,7 +1,6 @@
 import Header from '../components/Header';
-import Map from "../components/Map"
 import { useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 const MyAccount = () => {
     const username = useSelector((state) => state.userInfo.username)
@@ -14,7 +13,6 @@ const MyAccount = () => {
             <Header />
             <h2>My Account Page</h2>
             <h3>Username: {username}</h3>
-            <Map />
         </div>
     );
 };
