@@ -7,16 +7,21 @@ from .exts import db  # Importing the database instance from an external module
 # pylint: disable=no-member
 # Defines a Comment document associated with users and their interactions
 class Comment(db.Document):
-    author_username = db.StringField(required=True) # pylint: disable=E1101
-    date_posted = db.DateTimeField(default=datetime.datetime.utcnow()) # pylint: disable=E1101
-    dislikes = db.IntField(default=0) # pylint: disable=E1101
-    likes = db.IntField(default=0) # pylint: disable=E1101
+    author_username = db.StringField(required=True)  # pylint: disable=E1101
+    date_posted = db.DateTimeField(default=datetime.datetime.utcnow())  # pylint: disable=E1101
+    dislikes = db.IntField(default=0)  # pylint: disable=E1101
+    likes = db.IntField(default=0)  # pylint: disable=E1101
     body = db.StringField(required=True)
+
+
+class Coordinate(db.EmbeddedDocument):
+    latitude = db.IntField(required=True)
+    longitude = db.IntField(required=True)
 
 
 # Defines a Route document for storing information about specific routes
 class Route(db.Document):
-    kmlURL = db.StringField()
+    coordinates = db.ListField(db.EmbeddedDocumentField(Coordinate))
     city = db.StringField()
     location = db.StringField()
     hour = db.IntField()
@@ -42,7 +47,7 @@ class Route(db.Document):
 
     def toDICT(self):
         cls_dict = {}
-        cls_dict['kmlURL'] = self.kmlURL
+        cls_dict['coordinates'] = [[coord.latitude,coord.longitude] for coord in self.coordinates]
         cls_dict['city'] = self.city
         cls_dict['location'] = self.location
         cls_dict['hours'] = self.hour
@@ -56,7 +61,6 @@ class Route(db.Document):
         cls_dict['creator_username'] = self.creator_username
 
         return cls_dict
-
 
 
 # Defines a User document with various fields to store user information
@@ -120,7 +124,6 @@ class User(db.Document):
     @classmethod
     def get_by_username(cls, username):
         return cls.objects(username=username).first()
-
 
 
 """code for further use"""

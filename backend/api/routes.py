@@ -3,19 +3,19 @@
 from flask import current_app, request, json
 from flask_restx import Resource, fields
 from .exts import api
-from .models import Route, User
+from .models import Route, User, Coordinate
 
 # Define API models for validating and documenting incoming data
 upload_model = api.model('UploadModel', {
     # Model for route upload, includes various route details
     "username": fields.String(required=True, min_length=2, max_length=32),
-    "kmlURL": fields.String(required=True, max_length=100),
+    "coordinates": fields.String(required=True),
     "city": fields.String(required=True, min_length=2, max_length=32),
     "location": fields.String(required=True, min_length=2, max_length=32),
     "hours": fields.Integer(required=True),
     "minutes": fields.Integer(required=True),
     "difficulty": fields.String(required=True, min_length=2, max_length=32),
-    "desc": fields.String(required=True, max_length=200)
+    "comment": fields.String(required=True, max_length=200)
 })
 
 userroutes_model = api.model('UserRoutesModel', {
@@ -98,21 +98,26 @@ class UploadRoute(Resource):
         # Extract JSON data from the request
         req_data = request.get_json()
         _username = req_data.get("username")
-        _url = req_data.get("kmlURL")
+        _coordinates_str = req_data.get("coordinates")
         _city = req_data.get("city")
         _location = req_data.get("location")
         _hours = req_data.get("hours")
         _minutes = req_data.get("minutes")
         _difficulty = req_data.get("difficulty")
-        _desc = req_data.get("desc")
+        _desc = req_data.get("comment")
         # Create a new route with the provided details
         try:
             user = User.get_by_username(_username)  # Fetch route by username
             if not user:
                 return {"success": False, "msg": "User not exist"}, 401
-            new_route = Route(creator_username=_username, kmlURL=_url,
-                              city=_city, location=_location, hour=_hours,
+            _coordinates = json.loads(_coordinates_str)
+            if not (all(isinstance(coord, list) and len(coord) == 2 for coord in _coordinates)):
+                return {"message": "Invalid coordinates format"}, 400
+            new_route = Route(creator_username=_username, city=_city, location=_location, hour=_hours,
                               min=_minutes, difficulty=_difficulty, desc=_desc)
+            for lat, lng in _coordinates:
+                coord = Coordinate(latitude=lat, longitude=lng)
+                new_route.coordinates.append(coord)
             new_route.save()
             user.add_create_routes(new_route)
         except Exception as e:
