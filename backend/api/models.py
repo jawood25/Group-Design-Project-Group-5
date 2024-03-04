@@ -13,15 +13,9 @@ class Comment(db.Document):
     likes = db.IntField(default=0)  # pylint: disable=E1101
     body = db.StringField(required=True)
 
-
-class Coordinate(db.EmbeddedDocument):
-    latitude = db.IntField(required=True)
-    longitude = db.IntField(required=True)
-
-
 # Defines a Route document for storing information about specific routes
 class Route(db.Document):
-    coordinates = db.ListField(db.EmbeddedDocumentField(Coordinate))
+    coordinates = db.ListField(db.ListField(db.FloatField()))
     city = db.StringField()
     location = db.StringField()
     hour = db.IntField()
@@ -47,7 +41,7 @@ class Route(db.Document):
 
     def toDICT(self):
         cls_dict = {}
-        cls_dict['coordinates'] = [[coord.latitude,coord.longitude] for coord in self.coordinates]
+        cls_dict['coordinates'] = self.coordinates
         cls_dict['city'] = self.city
         cls_dict['location'] = self.location
         cls_dict['hours'] = self.hour
