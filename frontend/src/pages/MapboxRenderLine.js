@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from "react";
 import mapboxgl from "mapbox-gl";
 import "../style/map.css";
 
-mapboxgl.accessToken = "put the api key";
+mapboxgl.accessToken = "";
 
 const MapboxRenderLine = () => {
     const mapContainerRef = useRef(null);

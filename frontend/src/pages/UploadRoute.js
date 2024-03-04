@@ -23,7 +23,7 @@ const UploadRoute = () => {
 
     const getCoordinates = async (e) => {
         e.preventDefault();
-        let geoCodeAPIURL = 'https://maps.googleapis.com/maps/api/geocode/json?address=location+city&language=en&key=put the api key;'
+        let geoCodeAPIURL = 'https://maps.googleapis.com/maps/api/geocode/json?address=location+city&language=en&key='
         geoCodeAPIURL = geoCodeAPIURL.replace("location", location).replace("city", city)
         try {
             const response = await fetch(geoCodeAPIURL);
