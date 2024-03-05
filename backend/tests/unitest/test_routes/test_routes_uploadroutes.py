@@ -24,13 +24,13 @@ class TestUploadRoute:
 
         response = test_client.post('/api/upload/', json={
             "username": test_case["username"],
-            "kmlURL": test_case["kmlURL"],
+            "coordinates": test_case["coordinates"],
             "city": test_case["city"],
             "location": test_case["location"],
             "hours": test_case["hours"],
             "minutes": test_case["minutes"],
             "difficulty": test_case["difficulty"],
-            "desc": test_case["desc"]
+            "comment": test_case["comment"]
         }, content_type=test_case["content_type"])
 
         assert response.status_code == test_case["expected_status"], \

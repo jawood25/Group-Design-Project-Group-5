@@ -21,14 +21,14 @@ class Route(db.Document):
     hour = db.IntField()
     min = db.IntField()
     difficulty = db.StringField()
-    desc = db.StringField()
+    comment = db.StringField()
 
     dislike = db.IntField(default=0)
     like = db.IntField(default=0)
     saves = db.IntField(default=0)
     distance = db.FloatField(default=0.0)
     creator_username = db.StringField(required=True)
-    comment = db.ReferenceField(Comment, reverse_delete_rule='PULL')
+    # comment = db.ReferenceField(Comment, reverse_delete_rule='PULL')
 
     # Returns a string representation of the Route instance
     def __repr__(self):
@@ -47,7 +47,7 @@ class Route(db.Document):
         cls_dict['hours'] = self.hour
         cls_dict['minutes'] = self.min
         cls_dict['difficulty'] = self.difficulty
-        cls_dict['desc'] = self.desc
+        cls_dict['comment'] = self.comment
         cls_dict['dislike'] = self.dislike
         cls_dict['like'] = self.like
         cls_dict['saves'] = self.saves

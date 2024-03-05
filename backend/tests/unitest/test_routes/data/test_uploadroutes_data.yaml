@@ -1,55 +1,55 @@
 # upload_route_test_data.yaml
 - username: "testuser"
-  kmlURL: "https://example.com/path/to/kml/file.kml"
+  coordinates : "[[1.0,2.0],[3.0,4.0],[10.0,20.0]]"
   city: "Mountain View"
   location: "Rancho San Antonio"
   hours: 2
   minutes: 30
   difficulty: "Moderate"
-  desc: "This trail offers a good mix of uphill and downhill sections, with beautiful views of the valley."
+  comment: "This trail offers a good mix of uphill and downhill sections, with beautiful views of the valley."
   content_type: "application/json"
   expected_status: 200
 
 - username: "u"
-  kmlURL: "https://example.com/path/to/kml/file.kml"
+  coordinates: "[[1.0,2.0],[3.0,4.0],[10.0,20.0]]"
   city: "MV"
   location: "Rancho"
   hours: 1
   minutes: 15
   difficulty: "Easy"
-  desc: "Short trail with minimal elevation gain."
+  comment: "Short trail with minimal elevation gain."
   content_type: "application/json"
   expected_status: 400
 
 - username: "testuser1"
-  kmlURL: "https://example.com/path/to/kml/file.kml"
+  coordinates: "[[1.0,2.0],[3.0,4.0],[10.0,20.0]]"
   city: "Mountain View"
   location: "Rancho San Antonio"
   hours: 2
   minutes: 30
   difficulty: "Moderate"
-  desc: "This trail offers a good mix of uphill and downhill sections, with beautiful views of the valley."
+  comment: "This trail offers a good mix of uphill and downhill sections, with beautiful views of the valley."
   content_type: "application/json"
   expected_status: 401
 
 - username: "testuser"
-  kmlURL: "https://example.com/path/to/kml/file.kml"
+  coordinates: "[[1.0,2.0],[3.0,4.0],[10.0,20.0]]"
   city: "Mountain View"
   location: "Rancho San Antonio"
   hours: 2
   minutes: 30
   difficulty: "Moderate"
-  desc: "This trail offers a good mix of uphill and downhill sections, with beautiful views of the valley."
+  comment: "This trail offers a good mix of uphill and downhill sections, with beautiful views of the valley."
   content_type: "application/json"
   expected_status: 403
 
 - username: "u"
-  kmlURL: "https://example.com/path/to/kml/file.kml"
+  coordinates: "[[1.0,2.0],[3.0,4.0],[10.0,20.0]]"
   city: "MV"
   location: "Rancho"
   hours: 1
   minutes: 15
   difficulty: "Easy"
-  desc: "Short trail with minimal elevation gain."
+  comment: "Short trail with minimal elevation gain."
   content_type: "text/plain"
   expected_status: 415

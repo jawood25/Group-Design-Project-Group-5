@@ -4,16 +4,16 @@
   expected_routes:
   - city: "Mountain View"
     creator_username: "testuser"
-    desc: "A beautiful trail."
-    difficulty: "Moderate"
+    comment: "A beautiful trail."
     hours: 2
     minutes: 30
-    kmlURL: "https://example.com/path/to/kml/file.kml"
+    coordinates: [[1.0,2.0],[3.0,4.0],[10.0,20.0]]
     location: "Rancho San Antonio"
     dislike: 0
     distance: 0.0
     saves: 0
     like: 0
+    difficulty: "Moderate"
   expected_status: 200
 
 - username: null

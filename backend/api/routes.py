@@ -104,7 +104,7 @@ class UploadRoute(Resource):
         _hours = req_data.get("hours")
         _minutes = req_data.get("minutes")
         _difficulty = req_data.get("difficulty")
-        _desc = req_data.get("comment")
+        _comment = req_data.get("comment")
         # Create a new route with the provided details
         try:
             user = User.get_by_username(_username)  # Fetch route by username
@@ -114,7 +114,7 @@ class UploadRoute(Resource):
             if not (all(isinstance(coord, list) and len(coord) == 2 for coord in _coordinates)):
                 return {"message": "Invalid coordinates format"}, 400
             new_route = Route(creator_username=_username, coordinates=_coordinates,city=_city, location=_location, hour=_hours,
-                              min=_minutes, difficulty=_difficulty, desc=_desc)
+                              min=_minutes, difficulty=_difficulty,comment =_comment)
             new_route.save()
             user.add_create_routes(new_route)
         except Exception as e:
