@@ -10,6 +10,17 @@
   content_type: "application/json"
   expected_status: 200
 
+- username: "testuser"
+  coordinates : "[[1.0],[3.0,4.0],[10.0,20.0]]"
+  city: "Mountain View"
+  location: "Rancho San Antonio"
+  hours: 2
+  minutes: 30
+  difficulty: "Moderate"
+  comment: "This trail offers a good mix of uphill and downhill sections, with beautiful views of the valley."
+  content_type: "application/json"
+  expected_status: 400
+
 - username: "u"
   coordinates: "[[1.0,2.0],[3.0,4.0],[10.0,20.0]]"
   city: "MV"
