@@ -13,28 +13,22 @@ class Comment(db.Document):
     likes = db.IntField(default=0)  # pylint: disable=E1101
     body = db.StringField(required=True)
 
-
-class Coordinate(db.EmbeddedDocument):
-    latitude = db.IntField(required=True)
-    longitude = db.IntField(required=True)
-
-
 # Defines a Route document for storing information about specific routes
 class Route(db.Document):
-    coordinates = db.ListField(db.EmbeddedDocumentField(Coordinate))
+    coordinates = db.ListField(db.ListField(db.FloatField()))
     city = db.StringField()
     location = db.StringField()
     hour = db.IntField()
     min = db.IntField()
     difficulty = db.StringField()
-    desc = db.StringField()
+    comment = db.StringField()
 
     dislike = db.IntField(default=0)
     like = db.IntField(default=0)
     saves = db.IntField(default=0)
     distance = db.FloatField(default=0.0)
     creator_username = db.StringField(required=True)
-    comment = db.ReferenceField(Comment, reverse_delete_rule='PULL')
+    # comment = db.ReferenceField(Comment, reverse_delete_rule='PULL')
 
     # Returns a string representation of the Route instance
     def __repr__(self):
@@ -47,13 +41,13 @@ class Route(db.Document):
 
     def toDICT(self):
         cls_dict = {}
-        cls_dict['coordinates'] = [[coord.latitude,coord.longitude] for coord in self.coordinates]
+        cls_dict['coordinates'] = self.coordinates
         cls_dict['city'] = self.city
         cls_dict['location'] = self.location
         cls_dict['hours'] = self.hour
         cls_dict['minutes'] = self.min
         cls_dict['difficulty'] = self.difficulty
-        cls_dict['desc'] = self.desc
+        cls_dict['comment'] = self.comment
         cls_dict['dislike'] = self.dislike
         cls_dict['like'] = self.like
         cls_dict['saves'] = self.saves
