@@ -1,0 +1,47 @@
+name: Pytest
+
+on: [ push ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: [ 3.8, 3.9, 3.10 ]
+
+    steps:
+      - uses: actions/checkout@v2
+        # Checkout your repository content to the GitHub Actions runner
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pylint
+          pip install -r ./backend/requirements.txt
+
+      - name: Run Tests
+        run: |
+          cd ./backend
+          python run_pytest.py
+
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-report-${{ matrix.python-version }}
+          path: ./backend/backend_test/coverage/index.html
+          # This step uploads the coverage report as an artifact to the GitHub Actions run,
+          # including the Python version in the artifact name for clarity
+
+      - name: Upload Test Summary Report
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-summary-report-${{ matrix.python-version }}
+          path: ./backend/backend_test/report.html
+          # This step uploads the test summary report as an artifact as well,
+          # including the Python version in the artifact name for clarity
