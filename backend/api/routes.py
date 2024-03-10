@@ -1,6 +1,6 @@
 # /api/routes.py
 # import json
-from flask import current_app, request, json
+from flask import current_app, request
 from flask_restx import Resource, fields
 from .exts import api
 from .models import Route, User
@@ -9,7 +9,7 @@ from .models import Route, User
 upload_model = api.model('UploadModel', {
     # Model for route upload, includes various route details
     "username": fields.String(required=True, min_length=2, max_length=32),
-    "coordinates": fields.String(required=True),
+    "coordinates": fields.List(fields.List(fields.Float, min_items=2, max_items=2, required=True), required=True),
     "city": fields.String(required=True, min_length=2, max_length=32),
     "location": fields.String(required=True, min_length=2, max_length=32),
     "hours": fields.Integer(required=True),
@@ -98,7 +98,7 @@ class UploadRoute(Resource):
         # Extract JSON data from the request
         req_data = request.get_json()
         _username = req_data.get("username")
-        _coordinates_str = req_data.get("coordinates")
+        _coordinates = req_data.get("coordinates")
         _city = req_data.get("city")
         _location = req_data.get("location")
         _hours = req_data.get("hours")
@@ -110,11 +110,9 @@ class UploadRoute(Resource):
             user = User.get_by_username(_username)  # Fetch route by username
             if not user:
                 return {"success": False, "msg": "User not exist"}, 401
-            _coordinates = json.loads(_coordinates_str)
-            if not (all(isinstance(coord, list) and len(coord) == 2 for coord in _coordinates)):
-                return {"message": "Invalid coordinates format"}, 400
-            new_route = Route(creator_username=_username, coordinates=_coordinates,city=_city, location=_location, hour=_hours,
-                              min=_minutes, difficulty=_difficulty,comment =_comment)
+            new_route = Route(creator_username=_username, coordinates=_coordinates, city=_city, location=_location,
+                              hour=_hours,
+                              min=_minutes, difficulty=_difficulty, comment=_comment)
             new_route.save()
             user.add_create_routes(new_route)
         except Exception as e:
