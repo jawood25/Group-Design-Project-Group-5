@@ -19,6 +19,7 @@ const UploadRoute = () => {
 
     const username = useSelector((state) => state.userInfo.username)
     const coordinates = useSelector((state) => state.coordinates.coordinates)
+    const mapCenter = useSelector((state) => state.mapCenter.center)
     const navigate = useNavigate();
 
     const getCoordinates = async (e) => {
@@ -44,12 +45,13 @@ const UploadRoute = () => {
             const formData = {
                 username: username,
                 coordinates: coordinates,
+                mapCenter: mapCenter,
                 city: city,
                 location: location,
                 hours: parseInt(hours),
                 minutes: parseInt(minutes),
                 difficulty: difficulty,
-                desc: comment
+                comment: comment
             };
             console.log(formData)
     

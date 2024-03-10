@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import { useDispatch } from 'react-redux'
 import { saveCoordinates } from '../redux/coordinates'
+import { saveMapCenter } from '../redux/mapCenter'
 import mapboxgl from "mapbox-gl";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
@@ -14,7 +15,6 @@ const MapboxDrawLine = (geoData) => {
     const mapContainerRef = useRef(null);
     const dispatch = useDispatch();
 
-  // Initialize map when component mounts
     useEffect(() => {
         const map = new mapboxgl.Map({
             container: mapContainerRef.current,
@@ -42,7 +42,11 @@ const MapboxDrawLine = (geoData) => {
         const updateLine = () => {
             const data = draw.getAll();
             console.log(data)
-            dispatch(saveCoordinates(data.features[0].geometry.coordinates))
+            if(data.features.length > 0) {
+                dispatch(saveCoordinates(data.features[0].geometry.coordinates))
+                const mapCenter = map.getCenter()
+                dispatch(saveMapCenter({ lat: mapCenter.lat, lng: mapCenter.lng }))
+            }
         }
         return () => map.remove();
     }, []);
