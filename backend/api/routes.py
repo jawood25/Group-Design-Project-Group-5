@@ -10,6 +10,10 @@ upload_model = api.model('UploadModel', {
     # Model for route upload, includes various route details
     "username": fields.String(required=True, min_length=2, max_length=32),
     "coordinates": fields.List(fields.List(fields.Float, min_items=2, max_items=2, required=True), required=True),
+    "mapCenter": fields.Nested(api.model('MapCenterModel', {
+        "lat": fields.Float(required=True),
+        "lng": fields.Float(required=True)
+    }), required=True),
     "city": fields.String(required=True, min_length=2, max_length=32),
     "location": fields.String(required=True, min_length=2, max_length=32),
     "hours": fields.Integer(required=True),
@@ -99,6 +103,7 @@ class UploadRoute(Resource):
         req_data = request.get_json()
         _username = req_data.get("username")
         _coordinates = req_data.get("coordinates")
+        _map_center = req_data.get("mapCenter")
         _city = req_data.get("city")
         _location = req_data.get("location")
         _hours = req_data.get("hours")
@@ -110,8 +115,8 @@ class UploadRoute(Resource):
             user = User.get_by_username(_username)  # Fetch route by username
             if not user:
                 return {"success": False, "msg": "User not exist"}, 401
-            new_route = Route(creator_username=_username, coordinates=_coordinates, city=_city, location=_location,
-                              hour=_hours,
+            new_route = Route(creator_username=_username, coordinates=_coordinates, map_center=_map_center, city=_city,
+                              location=_location, hour=_hours,
                               min=_minutes, difficulty=_difficulty, comment=_comment)
             new_route.save()
             user.add_create_routes(new_route)

@@ -16,6 +16,7 @@ class Comment(db.Document):
 # Defines a Route document for storing information about specific routes
 class Route(db.Document):
     coordinates = db.ListField(db.ListField(db.FloatField()))
+    map_center = db.DictField(default={"lat": 0.0, "lng": 0.0})
     city = db.StringField()
     location = db.StringField()
     hour = db.IntField()
@@ -42,6 +43,7 @@ class Route(db.Document):
     def toDICT(self):
         cls_dict = {}
         cls_dict['coordinates'] = self.coordinates
+        cls_dict['map_center'] = self.map_center
         cls_dict['city'] = self.city
         cls_dict['location'] = self.location
         cls_dict['hours'] = self.hour
