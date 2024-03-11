@@ -1,9 +1,15 @@
 # /api/routes.py
 # import json
 from flask import current_app, request
-from flask_restx import Resource, fields
+from flask_restx import Resource, fields, reqparse
 from .exts import api
 from .models import Route, User
+
+# Define API model for user search
+user_search_model = api.model('UserSearchModel', {
+    "username": fields.String(min_length=2, max_length=32),
+    "email": fields.String(min_length=6, max_length=50)
+})
 
 # Define API models for validating and documenting incoming data
 upload_model = api.model('UploadModel', {
@@ -37,6 +43,18 @@ login_model = api.model('LoginModel', {
     # Model for user login, includes username and password
     "username": fields.String(required=True, min_length=2, max_length=32),
     "password": fields.String(required=True, min_length=4, max_length=16)
+})
+
+# Define API model for route search
+search_model = api.model('SearchModel', {
+    "city": fields.String(min_length=2, max_length=32),
+    "location": fields.String(min_length=2, max_length=32),
+    "difficulty": fields.String(min_length=2, max_length=32),
+    "comment": fields.String(min_length=2, max_length=200),
+    "creator_username": fields.String(min_length=2, max_length=50),
+    "distance": fields.Float(),
+    "hours": fields.Integer(),
+    "minutes": fields.Integer()
 })
 
 
@@ -149,3 +167,100 @@ class UserRoutes(Resource):
 
         return {"success": True, "routes": routes,
                 "msg": "Route is created"}, 200
+    
+# Define a Resource for route search
+@api.route('/api/searchroute/')
+class SearchRoute(Resource):
+    @api.expect(search_model, validate=True)
+    def post(self):
+        # Parse request data
+        parser = reqparse.RequestParser()
+        parser.add_argument('city', type=str, help='City name')
+        parser.add_argument('location', type=str, help='Location name')
+        parser.add_argument('difficulty', type=str, help='Difficulty level')
+        parser.add_argument('comment', type=str, help='Comments')
+        parser.add_argument('creator_username', type=str, help='Creator of the route username')
+        parser.add_argument('distance', type=float, help='Distance')
+        parser.add_argument('hours', type=int, help='Hours')
+        parser.add_argument('minutes', type=int, help='Minutes')
+        parser.add_argument('map_center_lat', type=float, help='Latitude of the map center')
+        parser.add_argument('map_center_lng', type=float, help='Longitude of the map center')
+        args = parser.parse_args()
+
+        # Convert hours and minutes to total minutes
+        total_minutes = 0
+        if args['hours']:
+            total_minutes += args['hours'] * 60
+        if args['minutes']:
+            total_minutes += args['minutes']
+
+        # Build the query based on the provided parameters
+        query_params = {}
+        if args['city']:
+            query_params['city__icontains'] = args['city']
+        if args['location']:
+            query_params['location__icontains'] = args['location']
+        if args['difficulty']:
+            query_params['difficulty__icontains'] = args['difficulty']
+        if args['comment']:
+            query_params['comment__icontains'] = args['comment']
+        if args['creator_username']:
+            query_params['creator_username'] = args['creator_username']
+        if args['distance']:
+            query_params['distance__gte'] = args['distance']
+        if total_minutes > 0:
+            query_params['hour__gte'] = total_minutes
+        if args['map_center_lat'] and args['map_center_lng']:
+            query_params['map_center__lat'] = args['map_center_lat']
+            query_params['map_center__lng'] = args['map_center_lng']
+
+
+        # Execute the query and sort by likes and saves
+        try:
+            routes = Route.objects(**query_params).order_by('-like', '-saves')
+        except Exception as e:
+            current_app.logger.error(e)
+            return {"success": False, "msg": str(e)}, 500
+
+        # Convert routes to dictionary format
+        result = []
+        for route in routes:
+            result.append(route.toDICT())
+
+        return {"success": True, "routes": result, "msg": "Routes retrieved successfully"}, 200
+
+# Define a Resource for searching users
+@api.route('/api/searchuser/')
+class SearchUser(Resource):
+    @api.expect(user_search_model, validate=True)
+    def post(self):
+        # Parse request data
+        parser = reqparse.RequestParser()
+        parser.add_argument('username', type=str, help='Username')
+        parser.add_argument('email', type=str, help='Email address')
+        args = parser.parse_args()
+
+        # Build the query based on the provided parameters
+        query_params = {}
+        if args['username']:
+            query_params['username__icontains'] = args['username']
+        if args['email']:
+            query_params['email__icontains'] = args['email']
+
+        # Execute the query
+        try:
+            users = User.objects(**query_params)
+        except Exception as e:
+            current_app.logger.error(e)
+            return {"success": False, "msg": str(e)}, 500
+
+        # Convert users to dictionary format
+        result = []
+        for user in users:
+            result.append({
+                "username": user.username,
+                "email": user.email,
+                # Add other user attributes as needed
+            })
+
+        return {"success": True, "users": result, "msg": "Users retrieved successfully"}, 200
