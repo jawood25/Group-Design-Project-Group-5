@@ -33,52 +33,48 @@ class Route(db.Document):
     creator_username = db.StringField(required=True)
 
     # comment = db.ReferenceField(Comment, reverse_delete_rule='PULL')
-
     def __init__(self, *args, **kwargs):
-        if 'mapCenter' in kwargs:
-            kwargs['map_center'] = kwargs.pop('mapCenter')
-        if 'hours' in kwargs:
-            kwargs['hour'] = kwargs.pop('hours')
-        if 'minutes' in kwargs:
-            kwargs['min'] = kwargs.pop('minutes')
-        if 'username' in kwargs:
-            kwargs['creator_username'] = kwargs.pop('username')
+        map_center = kwargs.pop('mapCenter', None)
+        if map_center:
+            kwargs['map_center'] = map_center
+        hours = kwargs.pop('hours', None)
+        if hours:
+            kwargs['hour'] = hours
+        minutes = kwargs.pop('minutes', None)
+        if minutes:
+            kwargs['min'] = minutes
+        username = kwargs.pop('username', None)
+        if username:
+            kwargs['creator_username'] = username
 
         super(Route, self).__init__(*args, **kwargs)
-        self.set_distance(self.coordinates)
+        self.update_distance_and_time()
 
-    # Returns a string representation of the Route instance
+    def update_distance_and_time(self):
+        self.cal_distance()
+        self.cal_time()
+
+    def cal_time(self):
+        speed_map = {"Bike": 20, "Run": 10, "Walk": 5}
+        speed = speed_map.get(self.mobility, 10)  # Default to running speed if mobility is not recognized
+        self.min = round((self.distance / speed) * 60)
+
     def __str__(self):
         return f"Route {self.id}"
 
-    def set_distance(self, coordinates):
+    def cal_distance(self):
         def haversine_distance(coord1, coord2):
-            # Coordinates are expected as (latitude, longitude) pairs in decimal degrees
-            lat1, lon1 = math.radians(coord1[1]), math.radians(coord1[0])
-            lat2, lon2 = math.radians(coord2[1]), math.radians(coord2[0])
-
-            # Haversine formula
-            dlat = lat2 - lat1
-            dlon = lon2 - lon1
-
+            lat1, lon1 = map(math.radians, coord1)
+            lat2, lon2 = map(math.radians, coord2)
+            dlat, dlon = lat2 - lat1, lon2 - lon1
             a = math.sin(dlat / 2) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2) ** 2
             c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+            R = 6371  # Earth radius in kilometers
+            return R * c
 
-            # Radius of the Earth in kilometers
-            R = 6371.0
-
-            # Calculate the distance
-            distance = R * c
-
-            return distance
-
-        total_distance = 0
-
-        # Iterate through the list of coordinates and calculate distance for each consecutive pair
-        for i in range(len(coordinates) - 1):
-            total_distance += haversine_distance(coordinates[i], coordinates[i + 1])
-
-        self.distance = round(total_distance, 3)
+        if len(self.coordinates) > 1:
+            self.distance = round(sum(haversine_distance(self.coordinates[i], self.coordinates[i + 1]) for i in
+                                      range(len(self.coordinates) - 1)), 3)
 
     # Class method to retrieve a route by its ID
     @classmethod
