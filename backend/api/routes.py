@@ -4,8 +4,6 @@ from flask import current_app, request
 from flask_restx import Resource, fields, reqparse
 from .exts import api
 from .models import Route, User
-import math
-
 
 # Define API model for user search
 user_search_model = api.model('UserSearchModel', {
@@ -68,15 +66,13 @@ class UserSignUp(Resource):
         # Extract JSON data from the request
         req_data = request.get_json()  # Extract JSON data from the request
         _username = req_data.get("username")
-        _password = req_data.get("password")
 
         # Create a new user with the provided details
         try:
             user = User.get_by_username(_username)  # Check if user already exists
             if user:
                 return {"success": False, "msg": "User exist"}, 405
-            new_user = User(username=_username)  # Create new user if not exist
-            new_user.password = _password
+            new_user = User(**req_data)  # Create a new user
             new_user.save()  # Save the new user to the database
         except Exception as e:
             current_app.logger.error(e)
@@ -96,6 +92,7 @@ class UserLogin(Resource):
         req_data = request.get_json()
         _username = req_data.get("username")
         _password = req_data.get("password")
+
         # Check if user exists and password matches
         try:
             user = User.get_by_username(_username)  # Fetch user by username
@@ -122,56 +119,12 @@ class UploadRoute(Resource):
     def post(self):
         # Extract JSON data from the request
         req_data = request.get_json()
-        _username = req_data.get("username")
-        _coordinates = req_data.get("coordinates")
-        _map_center = req_data.get("mapCenter")
-        _city = req_data.get("city")
-        _location = req_data.get("location")
-        _hours = req_data.get("hours")
-        _minutes = req_data.get("minutes")
-        _difficulty = req_data.get("difficulty")
-        _comment = req_data.get("comment")
-        # Create a new route with the provided details
-
-        def calculate_total_distance(coordinates):
-                def haversine_distance(coord1, coord2):
-                    # Coordinates are expected as (latitude, longitude) pairs in decimal degrees
-                    lat1, lon1 = math.radians(coord1[1]), math.radians(coord1[0])
-                    lat2, lon2 = math.radians(coord2[1]), math.radians(coord2[0])
-
-                    # Haversine formula
-                    dlat = lat2 - lat1
-                    dlon = lon2 - lon1
-
-                    a = math.sin(dlat / 2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2)**2
-                    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-
-                    # Radius of the Earth in kilometers
-                    R = 6371.0
-
-                    # Calculate the distance
-                    distance = R * c
-
-                    return distance
-
-                total_distance = 0
-
-                # Iterate through the list of coordinates and calculate distance for each consecutive pair
-                for i in range(len(coordinates) - 1):
-                    total_distance += haversine_distance(coordinates[i], coordinates[i + 1])
-
-                return total_distance
-        
-        # Calculate total distance
-        total_distance_km = round(calculate_total_distance(_coordinates), 3)
 
         try:
-            user = User.get_by_username(_username)  # Fetch route by username
+            user = User.get_by_username(req_data.get("username"))  # Fetch route by username
             if not user:
                 return {"success": False, "msg": "User not exist"}, 401
-            new_route = Route(creator_username=_username, coordinates=_coordinates, map_center=_map_center, city=_city,
-                              location=_location, hour=_hours,
-                              min=_minutes, difficulty=_difficulty, comment=_comment, distance=total_distance_km)
+            new_route = Route(**req_data) # Create a new route
             new_route.save()
             user.add_create_routes(new_route)
         except Exception as e:
@@ -190,6 +143,7 @@ class UserRoutes(Resource):
         # Extract JSON data from the request
         req_data = request.get_json()
         _username = req_data.get("username")
+
         # Fetch routes created by the user
         try:
             user = User.get_by_username(_username)  # Fetch route by username
@@ -203,7 +157,8 @@ class UserRoutes(Resource):
 
         return {"success": True, "routes": routes,
                 "msg": "Route is created"}, 200
-    
+
+
 # Define a Resource for route search
 @api.route('/api/searchroute/')
 class SearchRoute(Resource):
@@ -250,7 +205,6 @@ class SearchRoute(Resource):
             query_params['map_center__lat'] = args['map_center_lat']
             query_params['map_center__lng'] = args['map_center_lng']
 
-
         # Execute the query and sort by likes and saves
         try:
             routes = Route.objects(**query_params).order_by('-like', '-saves')
@@ -264,6 +218,7 @@ class SearchRoute(Resource):
             result.append(route.toDICT())
 
         return {"success": True, "routes": result, "msg": "Routes retrieved successfully"}, 200
+
 
 # Define a Resource for searching users
 @api.route('/api/searchuser/')

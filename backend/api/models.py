@@ -1,5 +1,6 @@
 # /api/models.py
 import datetime
+import math
 from werkzeug.security import generate_password_hash, check_password_hash
 from .exts import db  # Importing the database instance from an external module
 
@@ -13,14 +14,18 @@ class Comment(db.Document):
     likes = db.IntField(default=0)  # pylint: disable=E1101
     body = db.StringField(required=True)
 
+
 # Defines a Route document for storing information about specific routes
 class Route(db.Document):
     coordinates = db.ListField(db.ListField(db.FloatField()))
     map_center = db.DictField(default={"lat": 0.0, "lng": 0.0})
+    # mapCenter = db.DictField(default={"lat": 0.0, "lng": 0.0})
     city = db.StringField()
     location = db.StringField()
     hour = db.IntField()
+    # hours = db.IntField()
     min = db.IntField()
+    # minutes = db.IntField()
     difficulty = db.StringField()
     comment = db.StringField()
 
@@ -29,11 +34,56 @@ class Route(db.Document):
     saves = db.IntField(default=0)
     distance = db.FloatField(default=0.0)
     creator_username = db.StringField(required=True)
+
+    # username = db.StringField(required=True)
+
     # comment = db.ReferenceField(Comment, reverse_delete_rule='PULL')
 
+    def __init__(self, *args, **kwargs):
+        if 'mapCenter' in kwargs:
+            kwargs['map_center'] = kwargs.pop('mapCenter')
+        if 'hours' in kwargs:
+            kwargs['hour'] = kwargs.pop('hours')
+        if 'minutes' in kwargs:
+            kwargs['min'] = kwargs.pop('minutes')
+        if 'username' in kwargs:
+            kwargs['creator_username'] = kwargs.pop('username')
+
+        super(Route, self).__init__(*args, **kwargs)
+        self.set_distance(self.coordinates)
+
     # Returns a string representation of the Route instance
-    def __repr__(self):
+    def __str__(self):
         return f"Route {self.id}"
+
+    def set_distance(self, coordinates):
+        def haversine_distance(coord1, coord2):
+            # Coordinates are expected as (latitude, longitude) pairs in decimal degrees
+            lat1, lon1 = math.radians(coord1[1]), math.radians(coord1[0])
+            lat2, lon2 = math.radians(coord2[1]), math.radians(coord2[0])
+
+            # Haversine formula
+            dlat = lat2 - lat1
+            dlon = lon2 - lon1
+
+            a = math.sin(dlat / 2) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2) ** 2
+            c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+
+            # Radius of the Earth in kilometers
+            R = 6371.0
+
+            # Calculate the distance
+            distance = R * c
+
+            return distance
+
+        total_distance = 0
+
+        # Iterate through the list of coordinates and calculate distance for each consecutive pair
+        for i in range(len(coordinates) - 1):
+            total_distance += haversine_distance(coordinates[i], coordinates[i + 1])
+
+        self.distance = round(total_distance, 3)
 
     # Class method to retrieve a route by its ID
     @classmethod
@@ -41,22 +91,21 @@ class Route(db.Document):
         return cls.objects(id=rid).first()
 
     def toDICT(self):
-        cls_dict = {}
-        cls_dict['coordinates'] = self.coordinates
-        cls_dict['map_center'] = self.map_center
-        cls_dict['city'] = self.city
-        cls_dict['location'] = self.location
-        cls_dict['hours'] = self.hour
-        cls_dict['minutes'] = self.min
-        cls_dict['difficulty'] = self.difficulty
-        cls_dict['comment'] = self.comment
-        cls_dict['dislike'] = self.dislike
-        cls_dict['like'] = self.like
-        cls_dict['saves'] = self.saves
-        cls_dict['distance'] = self.distance
-        cls_dict['creator_username'] = self.creator_username
-
-        return cls_dict
+        return {
+            'coordinates': self.coordinates,
+            'map_center': self.map_center,
+            'city': self.city,
+            'location': self.location,
+            'hours': self.hour,
+            'minutes': self.min,
+            'difficulty': self.difficulty,
+            'comment': self.comment,
+            'dislike': self.dislike,
+            'like': self.like,
+            'saves': self.saves,
+            'distance': self.distance,
+            'creator_username': self.creator_username
+        }
 
 
 # Defines a User document with various fields to store user information
@@ -71,8 +120,17 @@ class User(db.Document):
     saved_routes = db.ListField(db.ReferenceField(Route, reverse_delete_rule='PULL'))
     friends = db.ListField(db.ReferenceField('self', reverse_delete_rule='PULL'))
 
+    def __init__(self, *args, **kwargs):
+        password = None
+        if 'password' in kwargs:
+            password = kwargs.pop('password')
+        super(User, self).__init__(*args, **kwargs)
+        if password:
+            self.password = password
+
+
     # Returns a string representation of the User instance
-    def __repr__(self):
+    def __str__(self):
         return f"User {self.username}"
 
     # set password as a write-only attribute
