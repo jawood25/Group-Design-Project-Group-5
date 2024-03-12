@@ -4,6 +4,8 @@ from flask import current_app, request
 from flask_restx import Resource, fields, reqparse
 from .exts import api
 from .models import Route, User
+import math
+
 
 # Define API model for user search
 user_search_model = api.model('UserSearchModel', {
@@ -115,6 +117,7 @@ class UserLogin(Resource):
 # Define a Resource to upload a route
 @api.route('/api/upload/')
 class UploadRoute(Resource):
+
     @api.expect(upload_model, validate=True)  # Expecting data matching the route_model
     def post(self):
         # Extract JSON data from the request
@@ -129,13 +132,46 @@ class UploadRoute(Resource):
         _difficulty = req_data.get("difficulty")
         _comment = req_data.get("comment")
         # Create a new route with the provided details
+
+        def calculate_total_distance(coordinates):
+                def haversine_distance(coord1, coord2):
+                    # Coordinates are expected as (latitude, longitude) pairs in decimal degrees
+                    lat1, lon1 = math.radians(coord1[1]), math.radians(coord1[0])
+                    lat2, lon2 = math.radians(coord2[1]), math.radians(coord2[0])
+
+                    # Haversine formula
+                    dlat = lat2 - lat1
+                    dlon = lon2 - lon1
+
+                    a = math.sin(dlat / 2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2)**2
+                    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+
+                    # Radius of the Earth in kilometers
+                    R = 6371.0
+
+                    # Calculate the distance
+                    distance = R * c
+
+                    return distance
+
+                total_distance = 0
+
+                # Iterate through the list of coordinates and calculate distance for each consecutive pair
+                for i in range(len(coordinates) - 1):
+                    total_distance += haversine_distance(coordinates[i], coordinates[i + 1])
+
+                return total_distance
+        
+        # Calculate total distance
+        total_distance_km = round(calculate_total_distance(_coordinates), 3)
+
         try:
             user = User.get_by_username(_username)  # Fetch route by username
             if not user:
                 return {"success": False, "msg": "User not exist"}, 401
             new_route = Route(creator_username=_username, coordinates=_coordinates, map_center=_map_center, city=_city,
                               location=_location, hour=_hours,
-                              min=_minutes, difficulty=_difficulty, comment=_comment)
+                              min=_minutes, difficulty=_difficulty, comment=_comment, distance=total_distance_km)
             new_route.save()
             user.add_create_routes(new_route)
         except Exception as e:
