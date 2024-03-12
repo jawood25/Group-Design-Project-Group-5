@@ -44,7 +44,7 @@ const MyAccount = () => {
                     <div className="col">
                         <div>City: {route.city}</div>
                         <div>Location: {route.location}</div>
-                        <div>Time: {route.hours}:{route.minutes}</div>
+                        <div>Time: {route.minutes}</div>
                         <div>Difficulty: {route.difficulty}</div>
                     </div>
                 </div>

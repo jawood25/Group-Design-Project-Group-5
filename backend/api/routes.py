@@ -24,9 +24,8 @@ upload_model = api.model('UploadModel', {
     }), required=True),
     "city": fields.String(required=True, min_length=2, max_length=32),
     "location": fields.String(required=True, min_length=2, max_length=32),
-    "hours": fields.Integer(required=True),
-    "minutes": fields.Integer(required=True),
     "difficulty": fields.String(required=True, min_length=2, max_length=32),
+    "mobility": fields.String(required=True, min_length=2, max_length=6),
     "comment": fields.String(required=True, max_length=200)
 })
 
@@ -52,10 +51,10 @@ search_model = api.model('SearchModel', {
     "city": fields.String(min_length=2, max_length=32),
     "location": fields.String(min_length=2, max_length=32),
     "difficulty": fields.String(min_length=2, max_length=32),
+    "mobility": fields.String(min_length=2, max_length=6),
     "comment": fields.String(min_length=2, max_length=200),
     "creator_username": fields.String(min_length=2, max_length=50),
     "distance": fields.Float(),
-    "hours": fields.Integer(),
     "minutes": fields.Integer()
 })
 
@@ -127,9 +126,8 @@ class UploadRoute(Resource):
         _map_center = req_data.get("mapCenter")
         _city = req_data.get("city")
         _location = req_data.get("location")
-        _hours = req_data.get("hours")
-        _minutes = req_data.get("minutes")
         _difficulty = req_data.get("difficulty")
+        _mobility = req_data.get("mobility")
         _comment = req_data.get("comment")
         # Create a new route with the provided details
 
@@ -164,14 +162,22 @@ class UploadRoute(Resource):
         
         # Calculate total distance
         total_distance_km = round(calculate_total_distance(_coordinates), 3)
+        vBike = 20
+        vRun = 10
+        vWalk = 5
+        min = round((total_distance_km/vRun)*60,0)
+        if(_mobility == "Bike"):
+            min = round((total_distance_km/vBike)*60,0)
+        if(_mobility == "Walk"):
+            min = round((total_distance_km/vWalk)*60,0)
 
         try:
             user = User.get_by_username(_username)  # Fetch route by username
             if not user:
                 return {"success": False, "msg": "User not exist"}, 401
             new_route = Route(creator_username=_username, coordinates=_coordinates, map_center=_map_center, city=_city,
-                              location=_location, hour=_hours,
-                              min=_minutes, difficulty=_difficulty, comment=_comment, distance=total_distance_km)
+                            location=_location, min=min, difficulty=_difficulty, mobility=_mobility, comment=_comment,
+                            distance=total_distance_km)
             new_route.save()
             user.add_create_routes(new_route)
         except Exception as e:
@@ -214,19 +220,16 @@ class SearchRoute(Resource):
         parser.add_argument('city', type=str, help='City name')
         parser.add_argument('location', type=str, help='Location name')
         parser.add_argument('difficulty', type=str, help='Difficulty level')
+        parser.add_argument('mobility', type=str, help='User mobility')
         parser.add_argument('comment', type=str, help='Comments')
         parser.add_argument('creator_username', type=str, help='Creator of the route username')
         parser.add_argument('distance', type=float, help='Distance')
-        parser.add_argument('hours', type=int, help='Hours')
         parser.add_argument('minutes', type=int, help='Minutes')
         parser.add_argument('map_center_lat', type=float, help='Latitude of the map center')
         parser.add_argument('map_center_lng', type=float, help='Longitude of the map center')
         args = parser.parse_args()
 
-        # Convert hours and minutes to total minutes
         total_minutes = 0
-        if args['hours']:
-            total_minutes += args['hours'] * 60
         if args['minutes']:
             total_minutes += args['minutes']
 
@@ -238,6 +241,8 @@ class SearchRoute(Resource):
             query_params['location__icontains'] = args['location']
         if args['difficulty']:
             query_params['difficulty__icontains'] = args['difficulty']
+        if args['mobility']:
+            query_params['mobility__icontains'] = args['mobility']
         if args['comment']:
             query_params['comment__icontains'] = args['comment']
         if args['creator_username']:
@@ -245,7 +250,7 @@ class SearchRoute(Resource):
         if args['distance']:
             query_params['distance__gte'] = args['distance']
         if total_minutes > 0:
-            query_params['hour__gte'] = total_minutes
+            query_params['min__gte'] = total_minutes
         if args['map_center_lat'] and args['map_center_lng']:
             query_params['map_center__lat'] = args['map_center_lat']
             query_params['map_center__lng'] = args['map_center_lng']

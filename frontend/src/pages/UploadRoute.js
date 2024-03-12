@@ -12,9 +12,8 @@ const UploadRoute = () => {
     const [location, setLocation] = useState('');
     const [geoData, setGeoData] = useState(null);
     const [mapFlag, setMapFlag] = useState(false)
-    const [hours, setHours] = useState('');
-    const [minutes, setMinutes] = useState('');
     const [difficulty, setDifficulty] = useState('')
+    const [mobility, setMobility] = useState('')
     const [comment, setComment] = useState('')
 
     const username = useSelector((state) => state.userInfo.username)
@@ -48,9 +47,8 @@ const UploadRoute = () => {
                 mapCenter: mapCenter,
                 city: city,
                 location: location,
-                hours: parseInt(hours),
-                minutes: parseInt(minutes),
                 difficulty: difficulty,
+                mobility: mobility,
                 comment: comment
             };
             console.log(formData)
@@ -149,15 +147,6 @@ const UploadRoute = () => {
                                                 <div className="form-group">
                                                     <div className="col">
                                                         <div className="row d-flex justify-content-center">
-                                                            <label className="col-sm-1 control-label d-flex align-items-center">Time:</label>
-                                                            <div className="col-sm-2">
-                                                                <input type="number" className="form-control" value={hours} onChange={(e) => setHours(e.target.value)} id="hours" />
-                                                            </div>
-                                                            <label className="col-sm-1 control-label d-flex align-items-center" htmlFor="hours">hours</label>
-                                                            <div className="col-sm-2">
-                                                                <input type="number" className="form-control" value={minutes} onChange={(e) => setMinutes(e.target.value)} id="minutes" />
-                                                            </div>
-                                                            <label className="col-sm-1 control-label d-flex align-items-center" htmlFor="minutes">minutes</label>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -175,6 +164,27 @@ const UploadRoute = () => {
                                                         <div className="form-check form-check-inline">
                                                             <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="Hard" onChange={(e) => setDifficulty(e.target.value)} />
                                                             <label className="form-check-label" htmlFor="inlineRadio3">Hard</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="form-group">
+                                                    <label className="control-label col-sm-2">Mobility:</label>
+                                                    <div className="col">
+                                                        <div className="form-check form-check-inline">
+                                                            <input className="form-check-input" type="radio" name="inlineRadioOptions2" id="inlineRadio21" value="Walk" onChange={(e) => setMobility(e.target.value)} />
+                                                            <label className="form-check-label" htmlFor="inlineRadio1">Walk</label>
+                                                        </div>
+                                                        <div className="form-check form-check-inline">
+                                                            <input className="form-check-input" type="radio" name="inlineRadioOptions2" id="inlineRadio22" value="Run" onChange={(e) => setMobility(e.target.value)} />
+                                                            <label className="form-check-label" htmlFor="inlineRadio2">Run</label>
+                                                        </div>
+                                                        <div className="form-check form-check-inline">
+                                                            <input className="form-check-input" type="radio" name="inlineRadioOptions2" id="inlineRadio23" value="Bike" onChange={(e) => setMobility(e.target.value)} />
+                                                            <label className="form-check-label" htmlFor="inlineRadio3">Bike</label>
+                                                        </div>
+                                                        <div className="form-check form-check-inline">
+                                                            <input className="form-check-input" type="radio" name="inlineRadioOptions2" id="inlineRadio24" value="All" onChange={(e) => setMobility(e.target.value)} />
+                                                            <label className="form-check-label" htmlFor="inlineRadio4">All</label>
                                                         </div>
                                                     </div>
                                                 </div>
