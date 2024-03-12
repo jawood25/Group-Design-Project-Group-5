@@ -2,6 +2,7 @@ import Header from '../components/Header';
 import { useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import MapboxRenderLine from './MapboxRenderLine';
+import '../style/myaccount.css'
 
 const MyAccount = () => {
     const username = useSelector((state) => state.userInfo.username)
@@ -32,24 +33,24 @@ const MyAccount = () => {
     }, []);
 
     return (
-        <div className='MyAccount'>
-            <Header />
-            <h2>My Account Page</h2>
-            <h3>Username: {username}</h3>
-            {routeData && routeData.map((route, index) => (
-                <div className="row">
-                    <div className="col">
-                        <MapboxRenderLine route={route} />
-                    </div>
-                    <div className="col">
-                        <div>City: {route.city}</div>
-                        <div>Location: {route.location}</div>
-                        <div>Time: {route.hours}:{route.minutes}</div>
-                        <div>Difficulty: {route.difficulty}</div>
-                    </div>
+<div className='MyAccount'>
+    <Header />
+    <h3>Username: {username}</h3>
+    <h2>My Account Page</h2>
+    <div className="grid-container">
+        {routeData && routeData.map((route, index) => (
+            <div className="grid-item">
+                <MapboxRenderLine route={route} />
+                <div className="info">
+                    <div>City: {route.city}</div>
+                    <div>Location: {route.location}</div>
+                    <div>Time: {route.hours}:{route.minutes}</div>
+                    <div>Difficulty: {route.difficulty}</div>
                 </div>
-            ))}
-        </div>
+            </div>
+        ))}
+    </div>
+</div>
     );
 };
 
