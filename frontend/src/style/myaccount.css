@@ -1,0 +1,55 @@
+.MyAccount {
+
+    margin: 0 auto;
+    text-align: center;
+}
+
+.MyAccount > h2 {
+    font-family: Arial, sans-serif;
+    color: #2c77c3;
+    background-color: #ecf0f1;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    margin-top: 20px;
+    display: inline-block;
+}
+
+.MyAccount > h3 {
+    font-family: Arial, sans-serif;
+    position: absolute;
+    font-size: 22px;
+    text-align: center;
+    margin-top: 5px;
+    right: 25px;
+    padding-top: 5px;
+    color: rgb(100, 100, 100);
+}
+
+
+.grid-container {
+    display: flex;
+    grid-template-columns: repeat(auto-fill, minmax(700px, 1fr));
+    grid-gap: 20px; 
+    margin-left: 2%;
+    margin-right: 2%;
+    justify-content: center;
+}
+
+.grid-item {
+    text-align: center;
+    border: 2px solid black;
+    padding: 5px;
+}
+
+.info {
+    margin-top: 10px;
+    font-family: fantasy; 
+    margin-top: 10px;
+    background-color: #f2f2f2; 
+    border: 1px solid #ccc;
+    padding: 15px; 
+    color: #000; 
+    border-radius: 5px; 
+}
