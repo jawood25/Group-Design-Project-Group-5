@@ -19,23 +19,18 @@ class Comment(db.Document):
 class Route(db.Document):
     coordinates = db.ListField(db.ListField(db.FloatField()))
     map_center = db.DictField(default={"lat": 0.0, "lng": 0.0})
-    # mapCenter = db.DictField(default={"lat": 0.0, "lng": 0.0})
     city = db.StringField()
     location = db.StringField()
     hour = db.IntField()
-    # hours = db.IntField()
     min = db.IntField()
-    # minutes = db.IntField()
     difficulty = db.StringField()
     comment = db.StringField()
-
+    mobility = db.StringField()
     dislike = db.IntField(default=0)
     like = db.IntField(default=0)
     saves = db.IntField(default=0)
     distance = db.FloatField(default=0.0)
     creator_username = db.StringField(required=True)
-
-    # username = db.StringField(required=True)
 
     # comment = db.ReferenceField(Comment, reverse_delete_rule='PULL')
 
@@ -96,7 +91,7 @@ class Route(db.Document):
             'map_center': self.map_center,
             'city': self.city,
             'location': self.location,
-            'hours': self.hour,
+            'hour': self.hour,
             'minutes': self.min,
             'difficulty': self.difficulty,
             'comment': self.comment,
@@ -104,6 +99,7 @@ class Route(db.Document):
             'like': self.like,
             'saves': self.saves,
             'distance': self.distance,
+            'mobility': self.mobility,
             'creator_username': self.creator_username
         }
 
@@ -127,7 +123,6 @@ class User(db.Document):
         super(User, self).__init__(*args, **kwargs)
         if password:
             self.password = password
-
 
     # Returns a string representation of the User instance
     def __str__(self):
