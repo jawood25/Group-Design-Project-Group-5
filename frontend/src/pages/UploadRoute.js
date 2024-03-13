@@ -113,7 +113,7 @@ const UploadRoute = () => {
                                                 <div className="form-group">
                                                     <div className="row">
                                                         <div className="col">
-                                                            <button type="submit" className="btn btn-color btn-default">Get Map</button>
+                                                            <button type="submit" className="btn btn-color btn-default" id="getmapbtn">Get Map</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -129,7 +129,7 @@ const UploadRoute = () => {
                                     </button>
                                 </h2>
                                 <div id="panelsStayOpen-collapseTwo" className="accordion-collapse collapse show">
-                                    <div className="accordion-body">
+                                    <div className="accordion-body" id="mapaccordion">
                                         {mapFlag && <MapboxDrawLine geoData={geoData} />}
                                     </div>
                                 </div>
@@ -196,7 +196,7 @@ const UploadRoute = () => {
                                                 </div>
                                                 <div className="row">
                                                     <div className="col">
-                                                        <button type="submit" className="btn btn-color btn-default">Share</button>
+                                                        <button type="submit" className="btn btn-color btn-default" id="sharebtn">Share</button>
                                                     </div>
                                                 </div>
                                             </form>

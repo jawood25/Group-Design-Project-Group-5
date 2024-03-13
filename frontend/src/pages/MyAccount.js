@@ -33,25 +33,24 @@ const MyAccount = () => {
     }, []);
 
     return (
-<div className='MyAccount'>
-    <Header />
-    <h3>Username: {username}</h3>
-    <h2>My Account Page</h2>
-    <div className="grid-container">
-        {routeData && routeData.map((route, index) => (
-            <div className="grid-item">
-                <MapboxRenderLine route={route} />
-                <div className="info">
-                    <div>City: {route.city}</div>
-                    <div>Location: {route.location}</div>
-                    <div>Distance: {route.distance}km</div>
-                    <div>Time: {route.hours}:{route.minutes}</div>
-                    <div>Difficulty: {route.difficulty}</div>
-                </div>
+        <div className='MyAccount'>
+            <Header />
+            <h3>Username: {username}</h3>
+            <h2>My Account Page</h2>
+            <div className="grid-container">
+                {routeData && routeData.map((route, index) => (
+                    <div className="grid-item">
+                        <MapboxRenderLine route={route} />
+                        <div className="info">
+                            <div><b>City:</b>  {route.city}</div>
+                            <div><b>Location:</b>  {route.location}</div>
+                            <div><b>Time:</b>  {route.hours}:{route.minutes}</div>
+                            <div><b>Difficulty:</b>  {route.difficulty}</div>
+                        </div>
+                    </div>
+                ))}
             </div>
-        ))}
-    </div>
-</div>
+        </div>
     );
 };
 
