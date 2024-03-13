@@ -1,6 +1,7 @@
 # upload_route_test_data.yaml
 - username: "testuser"
-  coordinates : [[1.0,2.0],[3.0,4.0],[10.0,20.0]]
+  coordinates: [ [ 1.0,2.0 ],[ 3.0,4.0 ],[ 10.0,20.0 ] ]
+  map_center: { "lat": 53.3584139565632, "lng": -6.340429770960355 }
   city: "Mountain View"
   location: "Rancho San Antonio"
   hours: 2
@@ -11,7 +12,8 @@
   expected_status: 200
 
 - username: "testuser"
-  coordinates : [[1.0],[3.0,4.0],[10.0,20.0]]
+  coordinates: [ [ 1.0 ],[ 3.0,4.0 ],[ 10.0,20.0 ] ]
+  map_center: { "lat": 53.3584139565632, "lng": -6.340429770960355 }
   city: "Mountain View"
   location: "Rancho San Antonio"
   hours: 2
@@ -22,7 +24,8 @@
   expected_status: 400
 
 - username: "u"
-  coordinates: [[1.0,2.0],[3.0,4.0],[10.0,20.0]]
+  coordinates: [ [ 1.0,2.0 ],[ 3.0,4.0 ],[ 10.0,20.0 ] ]
+  map_center: { "lat": 53.3584139565632, "lng": -6.340429770960355 }
   city: "MV"
   location: "Rancho"
   hours: 1
@@ -33,7 +36,8 @@
   expected_status: 400
 
 - username: "testuser1"
-  coordinates: [[1.0,2.0],[3.0,4.0],[10.0,20.0]]
+  coordinates: [ [ 1.0,2.0 ],[ 3.0,4.0 ],[ 10.0,20.0 ] ]
+  map_center: { "lat": 53.3584139565632, "lng": -6.340429770960355 }
   city: "Mountain View"
   location: "Rancho San Antonio"
   hours: 2
@@ -44,7 +48,8 @@
   expected_status: 401
 
 - username: "testuser"
-  coordinates: [[1.0,2.0],[3.0,4.0],[10.0,20.0]]
+  coordinates: [ [ 1.0,2.0 ],[ 3.0,4.0 ],[ 10.0,20.0 ] ]
+  map_center: { "lat": 53.3584139565632, "lng": -6.340429770960355 }
   city: "Mountain View"
   location: "Rancho San Antonio"
   hours: 2
@@ -55,7 +60,8 @@
   expected_status: 403
 
 - username: "u"
-  coordinates: [[1.0,2.0],[3.0,4.0],[10.0,20.0]]
+  coordinates: [ [ 1.0,2.0 ],[ 3.0,4.0 ],[ 10.0,20.0 ] ]
+  map_center: { "lat": 53.3584139565632, "lng": -6.340429770960355 }
   city: "MV"
   location: "Rancho"
   hours: 1

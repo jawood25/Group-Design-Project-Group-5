@@ -21,6 +21,7 @@ class TestUserRoutes:
     def add_route(self, test_case):
         for routeinfo in test_case['expected_routes']:
             route = Route(
+                map_center=routeinfo['map_center'],
                 creator_username=test_case['username'],
                 coordinates=routeinfo['coordinates'],
                 city=routeinfo['city'],

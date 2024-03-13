@@ -25,6 +25,7 @@ class TestUploadRoute:
         response = test_client.post('/api/upload/', json={
             "username": test_case["username"],
             "coordinates": test_case["coordinates"],
+            "mapCenter": test_case["map_center"],
             "city": test_case["city"],
             "location": test_case["location"],
             "hours": test_case["hours"],
