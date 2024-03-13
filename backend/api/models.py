@@ -83,6 +83,7 @@ class Route(db.Document):
 
     def toDICT(self):
         return {
+            'id': str(self.id),
             'coordinates': self.coordinates,
             'map_center': self.map_center,
             'city': self.city,
@@ -140,19 +141,19 @@ class User(db.Document):
 
     # Method to get routes created by the user
     def get_create_routes(self):
-        routes = [route.toDICT() for route in self.create_routes]
-        return routes
+        return [route.toDICT() for route in self.create_routes]
 
     # Method to get routes' id created by the user
     def get_create_routes_id(self):
-        routes = [str(route.id) for route in self.create_routes]
-        return routes
+        return [str(route.id) for route in self.create_routes]
 
     # Method to get routes saved by the user
     # in development
-    # def get_saved_routes(self):
-    #     routes = [route.to_json() for route in self.saved_routes]
-    #     return routes
+    def get_saved_routes(self):
+        return [route.toDICT() for route in self.saved_routes]
+
+    def get_friends(self):
+        return [friend.toDICT() for friend in self.friends]
 
     # Method to add a route to the user's created routes
     def add_create_routes(self, new_route):
@@ -161,14 +162,27 @@ class User(db.Document):
 
     # Method to add a route to the user's saveed routes
     # in development
-    # def add_saved_routes(self, new_route):
-    #     self.saved_routes.append(new_route)
-    #     self.save()
+    def add_saved_routes(self, new_route):
+        self.saved_routes.append(new_route)
+        self.save()
 
     # Class method to retrieve a user by their username
     @classmethod
     def get_by_username(cls, username):
         return cls.objects(username=username).first()
+
+    def toDICT(self):
+        return {
+            "username": self.username,
+            "email": self.email,
+            "name": self.name,
+            "age": self.age,
+            "phone": self.phone,
+            "create_routes": self.get_create_routes(),  # Convert routes to list of IDs
+            "saved_routes": self.get_saved_routes(),  # Convert routes to list of IDs
+            "friends": self.get_friends(),  # Convert friends to list of IDs
+            # Add other fields as needed
+        }
 
 
 """code for further use"""

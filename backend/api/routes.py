@@ -160,7 +160,28 @@ class UserRoutes(Resource):
 
         return {"success": True, "routes": routes,
                 "msg": "Route is created"}, 200
-    
+
+@api.route('/api/allUR/')
+class UserRoutes(Resource):
+    def post(self):
+        # Fetch routes created by the user
+        try:
+            users = User.objects()  # Retrieve all users from the database
+            all_user_routes = {}
+            for user in users:
+                user_routes = []
+                for route in user.create_routes:  # Iterate over user's create_routes
+                    user_routes.append(route.toDICT())  # Convert route document to JSON and add to list
+                all_user_routes[user.username] = user_routes  # Map username to list of route JSONs
+
+        except Exception as e:
+            # catch all other exceptions
+            current_app.logger.error(e)
+            return {"success": False, "msg": str(e)}, 403
+
+        return {"success": True, "user_routes": all_user_routes}, 200
+
+
 # Define a Resource for route search
 @api.route('/api/searchroute/')
 class SearchRoute(Resource):
