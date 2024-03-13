@@ -44,6 +44,7 @@ const MyAccount = () => {
                         <div className="info">
                             <div><b>City:</b>  {route.city}</div>
                             <div><b>Location:</b>  {route.location}</div>
+                            <div><b>Distance:</b>  {route.distance}km</div>
                             <div><b>Time:</b>  {route.hours}:{route.minutes}</div>
                             <div><b>Difficulty:</b>  {route.difficulty}</div>
                         </div>
