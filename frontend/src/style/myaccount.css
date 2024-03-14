@@ -28,14 +28,17 @@
 
 
 .grid-container {
-    display: flex;
-    grid-template-columns: repeat(auto-fill, minmax(700px, 1fr));
-    grid-gap: 100px; 
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-row-gap: 50px; 
     margin-left: 2%;
     margin-right: 2%;
+    margin-bottom: 25px;
     justify-content: center;
     border: 2px solid lightgray;
-    padding: 20px;
+    padding-left: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
     border-radius: 25px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
@@ -45,6 +48,9 @@
     border: 2px solid black;
     padding: 5px;
     border-radius: 15px;
+    margin-left: 2%;
+    margin-right: 2%;
+    max-width: 720px;
 }
 
 .info {
