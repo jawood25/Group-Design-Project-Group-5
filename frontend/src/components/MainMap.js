@@ -1,19 +1,31 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect,useState } from "react";
 import mapboxgl from "mapbox-gl";
 
-mapboxgl.accessToken = "";
+mapboxgl.accessToken = "pk.eyJ1Ijoic29ub2RhbSIsImEiOiJjbHQ4bnNhM2cwNm4yMmttc2ljc2tuenA1In0.fBw9Dz2FIxgEMMFakE_VmQ";
 
 const MainMap = ({allUR}) => {
+    const [lat, setLat] = useState('53.343575');
+    const [lng, setLng] = useState('-6.255069');
     const mapContainerRef = useRef(null);
     const colorList = ["#F44336", "#E91E63", "#9C27B0", "#3F51B5", "#2196F3", "#00BCD4", "#009688", "#FFC107", "#FF9800"]
 
   // Initialize map when component mounts
     useEffect(() => {
         if (allUR) {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    setLat(position.coords.latitude);
+                    setLng(position.coords.longitude);
+                }, function(error) {
+                    console.error("Error getting geolocation:", error);
+                });
+            } else {
+                console.error("Geolocation is not supported by this browser.");
+            }
             const map = new mapboxgl.Map({
                 container: mapContainerRef.current,
                 style: 'mapbox://styles/mapbox/streets-v12',
-                center: [-6.255069, 53.343575],
+                center: [lng,lat],
                 zoom: 13,
             });
     
@@ -88,7 +100,7 @@ const MainMap = ({allUR}) => {
                 map.remove();
             };
         }
-    }, [allUR]);
+    }, [lat, lng,allUR]);
 
     return <div className="map-container" ref={mapContainerRef} style={{ width: "100%", height: "100vh" }}/>;
 };
