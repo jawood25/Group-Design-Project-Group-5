@@ -2,10 +2,9 @@
 - username: "testuser"
   coordinates: [ [ 1.0,2.0 ],[ 3.0,4.0 ],[ 10.0,20.0 ] ]
   map_center: { "lat": 53.3584139565632, "lng": -6.340429770960355 }
+  mobility : "Bike"
   city: "Mountain View"
   location: "Rancho San Antonio"
-  hours: 2
-  minutes: 30
   difficulty: "Moderate"
   comment: "This trail offers a good mix of uphill and downhill sections, with beautiful views of the valley."
   content_type: "application/json"
@@ -14,10 +13,9 @@
 - username: "testuser"
   coordinates: [ [ 1.0 ],[ 3.0,4.0 ],[ 10.0,20.0 ] ]
   map_center: { "lat": 53.3584139565632, "lng": -6.340429770960355 }
+  mobility : "Bike"
   city: "Mountain View"
   location: "Rancho San Antonio"
-  hours: 2
-  minutes: 30
   difficulty: "Moderate"
   comment: "This trail offers a good mix of uphill and downhill sections, with beautiful views of the valley."
   content_type: "application/json"
@@ -26,10 +24,9 @@
 - username: "u"
   coordinates: [ [ 1.0,2.0 ],[ 3.0,4.0 ],[ 10.0,20.0 ] ]
   map_center: { "lat": 53.3584139565632, "lng": -6.340429770960355 }
+  mobility : "Bike"
   city: "MV"
   location: "Rancho"
-  hours: 1
-  minutes: 15
   difficulty: "Easy"
   comment: "Short trail with minimal elevation gain."
   content_type: "application/json"
@@ -38,10 +35,9 @@
 - username: "testuser1"
   coordinates: [ [ 1.0,2.0 ],[ 3.0,4.0 ],[ 10.0,20.0 ] ]
   map_center: { "lat": 53.3584139565632, "lng": -6.340429770960355 }
+  mobility : "Bike"
   city: "Mountain View"
   location: "Rancho San Antonio"
-  hours: 2
-  minutes: 30
   difficulty: "Moderate"
   comment: "This trail offers a good mix of uphill and downhill sections, with beautiful views of the valley."
   content_type: "application/json"
@@ -50,10 +46,9 @@
 - username: "testuser"
   coordinates: [ [ 1.0,2.0 ],[ 3.0,4.0 ],[ 10.0,20.0 ] ]
   map_center: { "lat": 53.3584139565632, "lng": -6.340429770960355 }
+  mobility : "Bike"
   city: "Mountain View"
   location: "Rancho San Antonio"
-  hours: 2
-  minutes: 30
   difficulty: "Moderate"
   comment: "This trail offers a good mix of uphill and downhill sections, with beautiful views of the valley."
   content_type: "application/json"
@@ -62,10 +57,9 @@
 - username: "u"
   coordinates: [ [ 1.0,2.0 ],[ 3.0,4.0 ],[ 10.0,20.0 ] ]
   map_center: { "lat": 53.3584139565632, "lng": -6.340429770960355 }
+  mobility : "Bike"
   city: "MV"
   location: "Rancho"
-  hours: 1
-  minutes: 15
   difficulty: "Easy"
   comment: "Short trail with minimal elevation gain."
   content_type: "text/plain"

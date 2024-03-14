@@ -31,7 +31,6 @@ class TestUserRoutes:
                 difficulty=routeinfo['difficulty'],
                 comment=routeinfo['comment']
             )
-            route.save()
             user = User.get_by_username(username="testuser")
             user.add_create_routes(route)
             added_route = Route.get_by_rid(rid=route.id)

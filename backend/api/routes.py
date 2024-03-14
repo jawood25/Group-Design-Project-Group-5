@@ -6,7 +6,6 @@ from .exts import api
 from .models import Route, User
 import math
 
-
 # Define API model for user search
 user_search_model = api.model('UserSearchModel', {
     "username": fields.String(min_length=2, max_length=32),
@@ -74,7 +73,6 @@ class UserSignUp(Resource):
             if user:
                 return {"success": False, "msg": "User exist"}, 405
             new_user = User(**req_data)  # Create a new user
-            new_user.save()  # Save the new user to the database
         except Exception as e:
             current_app.logger.error(e)
             # catch all other exceptions
@@ -128,7 +126,6 @@ class UploadRoute(Resource):
             if not user:
                 return {"success": False, "msg": "User not exist"}, 401
             new_route = Route(**req_data)  # Create a new route
-            new_route.save()
             user.add_create_routes(new_route)
         except Exception as e:
             # catch all other exceptions
@@ -160,6 +157,7 @@ class UserRoutes(Resource):
 
         return {"success": True, "routes": routes,
                 "msg": "Route is created"}, 200
+
 
 @api.route('/api/allUR/')
 class UserRoutes(Resource):
@@ -227,7 +225,6 @@ class SearchRoute(Resource):
             query_params['map_center__lat'] = args['map_center_lat']
             query_params['map_center__lng'] = args['map_center_lng']
 
-
         # Execute the query and sort by likes and saves
         try:
             routes = Route.objects(**query_params).order_by('-like', '-saves')
@@ -241,6 +238,7 @@ class SearchRoute(Resource):
             result.append(route.toDICT())
 
         return {"success": True, "routes": result, "msg": "Routes retrieved successfully"}, 200
+
 
 # Define a Resource for searching users
 @api.route('/api/searchuser/')

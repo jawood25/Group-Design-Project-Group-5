@@ -49,6 +49,7 @@ class Route(db.Document):
 
         super(Route, self).__init__(*args, **kwargs)
         self.update_distance_and_time()
+        self.save()
 
     def update_distance_and_time(self):
         self.cal_distance()
@@ -59,7 +60,7 @@ class Route(db.Document):
         speed = speed_map.get(self.mobility, 10)  # Default to running speed if mobility is not recognized
         self.min = round((self.distance / speed) * 60)
 
-    def __str__(self):
+    def __repr__(self):
         return f"Route {self.id}"
 
     def cal_distance(self):
@@ -120,9 +121,10 @@ class User(db.Document):
         super(User, self).__init__(*args, **kwargs)
         if password:
             self.password = password
+        self.save()  # Save the new user to the database
 
     # Returns a string representation of the User instance
-    def __str__(self):
+    def __repr__(self):
         return f"User {self.username}"
 
     # set password as a write-only attribute

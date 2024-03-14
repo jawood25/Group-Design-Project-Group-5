@@ -16,7 +16,6 @@ class TestUserRoutes:
     @pytest.fixture(scope='function')
     def new_route(self, test_client, test_case):
         new_route = Route(creator_username=test_case['username'])
-        new_route.save()
         return new_route
 
     # Test to verify adding a new route

@@ -18,7 +18,6 @@ class TestUserCreation:
         try:
             user = User(username=test_case['username'])
             user.password = test_case['password']
-            user.save()
             assert User.objects(username=test_case['username']).first() is not None
             assert user.__repr__() == f"User {test_case['username']}"
             assert test_case['expected_success'], "Expected user creation to succeed."

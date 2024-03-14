@@ -27,9 +27,8 @@ class TestUploadRoute:
             "coordinates": test_case["coordinates"],
             "mapCenter": test_case["map_center"],
             "city": test_case["city"],
+            "mobility": test_case["mobility"],
             "location": test_case["location"],
-            "hours": test_case["hours"],
-            "minutes": test_case["minutes"],
             "difficulty": test_case["difficulty"],
             "comment": test_case["comment"]
         }, content_type=test_case["content_type"])

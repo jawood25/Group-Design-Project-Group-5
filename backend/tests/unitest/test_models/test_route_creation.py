@@ -16,7 +16,6 @@ class TestRouteCreation:
     def test_create_route(self, test_client, test_case):
         try:
             route = Route(creator_username=test_case['username'])
-            route.save()
             assert Route.objects(creator_username=test_case['username']).first() is not None
             assert route.__repr__() == f"Route {route.id}"
             assert test_case['expected_success'], "Expected user creation to succeed."

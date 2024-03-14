@@ -15,9 +15,7 @@ class TestRouteGetID:
     # test by providing new route info
     def test_get_by_rid(self, test_client, test_case):
         new_route1 = Route(creator_username=test_case['username'])
-        new_route1.save()
         new_route2 = Route(creator_username=test_case['username'])
-        new_route2.save()
         if test_case['expected_success']:
             route = Route.get_by_rid(new_route1.id)
             assert route is not None, "Route should exist in the database."
