@@ -6,6 +6,7 @@ import Error from './pages/Error';
 import SignUp from './pages/SignUp';
 import Login from './pages/Login';
 import MyAccount from './pages/MyAccount';
+import Community from './pages/Community';
 import MapboxRenderLine from './pages/MapboxRenderLine'
 import UploadRoute from './pages/UploadRoute'
 import './style/style.css';
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
   {
     path: "/upload-route",
     element: <UploadRoute />
+  },
+  {
+    path: "/community",
+    element: <Community />
   }
 ]);
 
