@@ -59,9 +59,9 @@ const MyAccount = () => {
     return (
         <div className='MyAccount'>
             <Header />
-            <RouteSearch onSearch={handleSearch} />
             <h3>Username: {username}</h3>
             <h2>My Account Page</h2>
+            <RouteSearch onSearch={handleSearch} />
             <div className="grid-container">
                 {routeData && routeData.map((route, index) => (
                     <div className="grid-item" key={index}>

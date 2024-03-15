@@ -9,9 +9,16 @@ const RouteSearch = ({ onSearch }) => {
     const [mobility, setMobility] = useState('');
     const [comment, setComment] = useState('');
     const [distance, setDistance] = useState(0);
+    const [distanceMargin, setDistanceMargin] = useState(0);
     const [creatorUsername, setCreatorUsername] = useState('');
     const [minutes, setMinutes] = useState(0);
+    const [timeMargin, setTimeMargin] = useState(0);
     const [reload, setReload] = useState(false);
+    const [expanded, setExpanded] = useState(false);
+
+    const toggleForm = () => {
+        setExpanded(!expanded);
+    };
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -21,9 +28,11 @@ const RouteSearch = ({ onSearch }) => {
             difficulty: difficulty.trim() !== '' ? difficulty : undefined,
             mobility: mobility.trim() !== '' ? mobility : undefined,
             comment: comment.trim() !== '' ? comment : undefined,
-            distance: distance !== '' ? distance : undefined,
+            distance: parseInt(distance) !== 0 ? parseFloat(distance) : undefined,
+            distanceMargin: parseInt(distanceMargin) !== 0 ? parseFloat(distanceMargin) : undefined, 
             creator_username: creatorUsername.trim() !== '' ? creatorUsername : undefined,
-            minutes: minutes !== '' ? minutes : undefined
+            minutes: parseInt(minutes) !== 0 ? parseInt(minutes) : undefined,
+            timeMargin: parseInt(timeMargin) !== 0 ? parseInt(timeMargin) : undefined,
         };
         onSearch(searchParams);
     };
@@ -35,8 +44,10 @@ const RouteSearch = ({ onSearch }) => {
         setMobility('');
         setComment('');
         setDistance(0);
+        setDistanceMargin(0);
         setCreatorUsername('');
         setMinutes(0);
+        setTimeMargin(0);
         setReload(!reload);
     };
 
@@ -46,7 +57,8 @@ const RouteSearch = ({ onSearch }) => {
 
     return (
         <div className="route-search">
-            <h3>Route Search</h3>
+            <h3 onClick={toggleForm}>Route Search 🔎</h3>
+            {expanded && (
             <form onSubmit={handleSearch}>
                 <div className="form-group">
                     <div className="col">
@@ -73,9 +85,21 @@ const RouteSearch = ({ onSearch }) => {
                     </div>
                 </div>
                 <div className="form-group">
+                    <label className="control-label col-sm-2" htmlFor="distanceMargin">Marge:</label>
+                    <div className="col">
+                        <input type="number" className="form-control" id="distanceMargin" value={distanceMargin} onChange={(e) => setDistanceMargin(e.target.value)} />
+                    </div>
+                </div>
+                <div className="form-group">
                     <label className="control-label col-sm-2" htmlFor="time">Time:</label>
                     <div className="col">
                         <input type="number" className="form-control" id="time" value={minutes} onChange={(e) => setMinutes(e.target.value)} />
+                    </div>
+                </div>
+                <div className="form-group">
+                    <label className="control-label col-sm-2" htmlFor="timeMargin">Marge:</label>
+                    <div className="col">
+                        <input type="number" className="form-control" id="timeMargin" value={timeMargin} onChange={(e) => setTimeMargin(e.target.value)} />
                     </div>
                 </div>
                 <div className="form-group">
@@ -137,6 +161,7 @@ const RouteSearch = ({ onSearch }) => {
                     </div>
                 </div>
             </form>
+             )}
         </div>
     );
 };

@@ -55,7 +55,9 @@ search_model = api.model('SearchModel', {
     "comment": fields.String(min_length=2, max_length=200),
     "creator_username": fields.String(min_length=2, max_length=50),
     "distance": fields.Float(),
-    "minutes": fields.Integer()
+    "distanceMargin": fields.Float(),
+    "min": fields.Integer(),
+    "timeMargin": fields.Float()
 })
 
 
@@ -196,7 +198,9 @@ class SearchRoute(Resource):
         parser.add_argument('comment', type=str, help='Comments')
         parser.add_argument('creator_username', type=str, help='Creator of the route username')
         parser.add_argument('distance', type=float, help='Distance')
+        parser.add_argument('distanceMargin', type=float, help='Distance margin')
         parser.add_argument('minutes', type=int, help='Minutes')
+        parser.add_argument('timeMargin', type=float, help='Time margin')
         parser.add_argument('map_center_lat', type=float, help='Latitude of the map center')
         parser.add_argument('map_center_lng', type=float, help='Longitude of the map center')
         args = parser.parse_args()
@@ -204,6 +208,14 @@ class SearchRoute(Resource):
         total_minutes = 0
         if args['minutes']:
             total_minutes += args['minutes']
+
+        distanceMargin = 0
+        if args['distanceMargin']:
+            distanceMargin = args['distanceMargin']
+
+        timeMargin = 0
+        if args['timeMargin']:
+            timeMargin = args['timeMargin']
 
         # Build the query based on the provided parameters
         query_params = {}
@@ -220,9 +232,11 @@ class SearchRoute(Resource):
         if args['creator_username']:
             query_params['creator_username'] = args['creator_username']
         if args['distance']:
-            query_params['distance__gte'] = args['distance']
+            query_params['distance__gte'] = args['distance'] - distanceMargin
+            query_params['distance__lte'] = args['distance'] + distanceMargin
         if total_minutes > 0:
-            query_params['min__gte'] = total_minutes
+            query_params['min__gte'] = total_minutes - timeMargin
+            query_params['min__lte'] = total_minutes + timeMargin
         if args['map_center_lat'] and args['map_center_lng']:
             query_params['map_center__lat'] = args['map_center_lat']
             query_params['map_center__lng'] = args['map_center_lng']
