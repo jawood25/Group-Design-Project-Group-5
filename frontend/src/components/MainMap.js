@@ -30,15 +30,12 @@ const MainMap = ({allUR}) => {
             });
     
             map.on("load", function () {
-    
-                Object.keys(allUR).forEach(key => {
-                    if((allUR[key]).length > 0) {
-                        console.log(key)
-                        allUR[key].forEach((route) => {
+                console.log(allUR)
+                allUR.forEach(route => {
                             console.log(route)
-
                             const sourceId = `route-${route.id}`;
                             const layerId = `route-${route.id}-layer`;
+                            console.log(sourceId)
 
 
                             map.addSource(sourceId, {
@@ -91,8 +88,6 @@ const MainMap = ({allUR}) => {
                             map.on("mouseleave", layerId, function () {
                                 map.getCanvas().style.cursor = "";
                             });
-                        })
-                    }
                 });
             });
     
