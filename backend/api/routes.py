@@ -148,7 +148,6 @@ class UserRoutes(Resource):
         # Extract JSON data from the request
         req_data = request.get_json()
         _username = req_data.get("username")
-
         # Fetch routes created by the user
         try:
             user = User.get_by_username(_username)  # Fetch route by username

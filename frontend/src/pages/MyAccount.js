@@ -10,6 +10,26 @@ const MyAccount = () => {
     const username = useSelector((state) => state.userInfo.username)
     const [routeData, setRouteData] = useState(null);
 
+    const fetchUserRoutes = async () => {
+        try {
+            const response = await fetch('/api/userroutes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username }),
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            console.log(data)
+            setRouteData(data.routes)
+        } catch (error) {
+            console.error('There was a problem with your fetch operation:', error);
+        }
+    };
+
     const handleSearch = async (searchParams) => {
         try {
             const response = await fetch('/api/searchroute', {
@@ -26,6 +46,9 @@ const MyAccount = () => {
             console.log(data)
             data.routes = data.routes.filter(route => route.creator_username === username)
             setRouteData(data.routes);
+            if (data.routes.length === 0) {
+                fetchUserRoutes();
+            }
         } catch (error) {
             console.error('There was a problem with your fetch operation:', error);
         }
@@ -33,26 +56,6 @@ const MyAccount = () => {
 
     
     useEffect(() => {
-        const fetchUserRoutes = async () => {
-            try {
-                const response = await fetch('/api/userroutes', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ username }),
-                });
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const data = await response.json();
-                console.log(data)
-                setRouteData(data.routes)
-            } catch (error) {
-                console.error('There was a problem with your fetch operation:', error);
-            }
-        };
-
         fetchUserRoutes();
     }, []);
 
