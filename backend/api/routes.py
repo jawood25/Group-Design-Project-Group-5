@@ -45,6 +45,17 @@ login_model = api.model('LoginModel', {
     "password": fields.String(required=True, min_length=4, max_length=16)
 })
 
+savingroutes_model = api.model('SaveRoutesModel', {
+    # Model for saving routes
+    "username": fields.String(required=True, min_length=2, max_length=32),
+    "route_id": fields.String(required=True, min_length=2, max_length=32)
+})
+
+savedrouts_model = api.model('SavedRoutesModel', {
+    # Model for fetching saved routes
+    "username": fields.String(required=True, min_length=2, max_length=32),
+})
+
 # Define API model for route search
 search_model = api.model('SearchModel', {
     "city": fields.String(min_length=2, max_length=32),
@@ -159,6 +170,50 @@ class UserRoutes(Resource):
         return {"success": True, "routes": routes,
                 "msg": "Route is created"}, 200
 
+
+@api.route('/api/savingroutes/')
+class UploadRoute(Resource):
+    @api.expect(savingroutes_model, validate=True)  # Expecting data matching the route_model
+    def post(self):
+        # Extract JSON data from the request
+        req_data = request.get_json()
+        _username = req_data.get("username")
+        _route_id = req_data.get("route_id")
+
+        # Create a new route with the provided details
+        try:
+            user = User.get_by_username(_username)  # Fetch route by username
+            if not user:
+                return {"success": False, "msg": "User not exist"}, 401
+            route = Route.get_by_id(_route_id)
+            user.add_saved_routes(route)
+        except Exception as e:
+            # catch all other exceptions
+            current_app.logger.error(e)
+            return {"success": False, "msg": str(e)}, 403
+
+        return {"success": True, "msg": "Route is created"}, 200
+
+@api.route('/api/savedroutes/')
+class UserRoutes(Resource):
+    @api.expect(savedrouts_model, validate=True)  # Expecting data matching the route_model
+    def post(self):
+        # Extract JSON data from the request
+        req_data = request.get_json()
+        _username = req_data.get("username")
+        # Fetch routes created by the user
+        try:
+            user = User.get_by_username(_username)  # Fetch route by username
+            if not user:
+                return {"success": False, "msg": "User not exist"}, 401
+            routes = user.get_saved_routes()
+        except Exception as e:
+            # catch all other exceptions
+            current_app.logger.error(e)
+            return {"success": False, "msg": str(e)}, 403
+
+        return {"success": True, "routes": routes,
+                "msg": "Route is created"}, 200
 
 @api.route('/api/allUR/')
 class UserRoutes(Resource):
