@@ -50,7 +50,7 @@ const MapboxRenderLine = (route) => {
 
     }, []);
 
-    return <div className="map-container" ref={mapContainerRef} />;
+    return <div className="map-container" ref={mapContainerRef} style={{ width: "700px", height: "400px" }}/>;
 };
 
 export default MapboxRenderLine;

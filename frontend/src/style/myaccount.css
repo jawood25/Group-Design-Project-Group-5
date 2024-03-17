@@ -1,12 +1,11 @@
 .MyAccount {
-
     margin: 0 auto;
     text-align: center;
 }
 
 .MyAccount > h2 {
     font-family: Arial, sans-serif;
-    color: #2c77c3;
+    color: black;
     background-color: #ecf0f1;
     padding: 10px;
     border-radius: 5px;
@@ -29,27 +28,40 @@
 
 
 .grid-container {
-    display: flex;
-    grid-template-columns: repeat(auto-fill, minmax(700px, 1fr));
-    grid-gap: 20px; 
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-row-gap: 50px; 
     margin-left: 2%;
     margin-right: 2%;
+    margin-bottom: 25px;
     justify-content: center;
+    border: 2px solid lightgray;
+    padding-left: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-radius: 25px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .grid-item {
     text-align: center;
     border: 2px solid black;
     padding: 5px;
+    border-radius: 15px;
+    margin-left: 2%;
+    margin-right: 2%;
+    max-width: 720px;
 }
 
 .info {
     margin-top: 10px;
-    font-family: fantasy; 
+    font-family: Arial, Helvetica, sans-serif; 
     margin-top: 10px;
     background-color: #f2f2f2; 
     border: 1px solid #ccc;
     padding: 15px; 
     color: #000; 
     border-radius: 5px; 
+    text-align: left;
+    white-space: pre-wrap;
 }
