@@ -77,6 +77,38 @@ class Route(db.Document):
             self.distance = round(sum(haversine_distance(self.coordinates[i], self.coordinates[i + 1]) for i in
                                       range(len(self.coordinates) - 1)), 3)
 
+    @classmethod
+    def search_routes(cls, args):
+
+        # Simplify addition with default values from args
+        total_minutes = args.get('minutes', 0)
+        distance_margin = args.get('distanceMargin', 0)
+        time_margin = args.get('timeMargin', 0)
+
+        # Build the query based on the provided parameters
+        query_fields = ['city', 'location', 'difficulty', 'mobility', 'comment', 'creator_username']
+        query_params = {f"{field}__icontains": args[field] for field in query_fields if field in args}
+
+        if 'distance' in args:
+            query_params['distance__gte'] = args['distance'] - distance_margin
+            query_params['distance__lte'] = args['distance'] + distance_margin
+        if total_minutes > 0:
+            query_params['min__gte'] = total_minutes - time_margin
+            query_params['min__lte'] = total_minutes + time_margin
+
+        if all(k in args for k in ['map_center_lat', 'map_center_lng']):
+            query_params['map_center__lat'] = args['map_center_lat']
+            query_params['map_center__lng'] = args['map_center_lng']
+
+        targets = Route.objects(**query_params).order_by('-like', '-saves')
+
+        return [target.toDICT() for target in targets]
+
+    @classmethod
+    def all_routes(cls):
+        # Fetch all routes
+        return [route.toDICT() for route in cls.objects()]
+
     # Class method to retrieve a route by its ID
     @classmethod
     def get_by_rid(cls, rid):
@@ -167,6 +199,19 @@ class User(db.Document):
     def add_saved_routes(self, new_route):
         self.saved_routes.append(new_route)
         self.save()
+
+    @classmethod
+    def search_user(cls, args):
+        # Initialize query_params only with keys that are present in args and have a non-None value
+        valid_fields = ['username', 'email']  # Extend this list based on the fields you want to allow searching on
+        query_params = {f"{field}__icontains": args[field] for field in valid_fields if args.get(field) is not None}
+
+        # Assuming your ORM supports lazy loading, this query won't hit the database until iterated
+        users_query = User.objects(**query_params)
+
+        # Use list comprehension for more concise and Pythonic syntax
+
+        return [{"username": user.username, "email": user.email} for user in users_query]
 
     # Class method to retrieve a user by their username
     @classmethod

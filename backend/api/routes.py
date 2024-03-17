@@ -165,88 +165,30 @@ class UserRoutes(Resource):
     def post(self):
         # Fetch all routes from the database
         try:
-            routes = Route.objects()
-            
+            routes = Route.all_routes()
         except Exception as e:
             current_app.logger.error(e)
             return {"success": False, "msg": str(e)}, 500
-        
-        result = []
-        for route in routes:
-            result.append(route.toDICT())
 
-        return {"success": True, "routes": result, "msg": "Routes retrieved successfully"}, 200
-        
+        return {"success": True, "routes": routes, "msg": "Routes retrieved successfully"}, 200
+
+
 # Define a Resource for route search
 @api.route('/api/searchroute/')
 class SearchRoute(Resource):
     @api.expect(search_model, validate=True)
     def post(self):
         # Parse request data
-        parser = reqparse.RequestParser()
-        parser.add_argument('city', type=str, help='City name')
-        parser.add_argument('location', type=str, help='Location name')
-        parser.add_argument('difficulty', type=str, help='Difficulty level')
-        parser.add_argument('mobility', type=str, help='User mobility')
-        parser.add_argument('comment', type=str, help='Comments')
-        parser.add_argument('creator_username', type=str, help='Creator of the route username')
-        parser.add_argument('distance', type=float, help='Distance')
-        parser.add_argument('distanceMargin', type=float, help='Distance margin')
-        parser.add_argument('minutes', type=int, help='Minutes')
-        parser.add_argument('timeMargin', type=float, help='Time margin')
-        parser.add_argument('map_center_lat', type=float, help='Latitude of the map center')
-        parser.add_argument('map_center_lng', type=float, help='Longitude of the map center')
-        args = parser.parse_args()
-
-        total_minutes = 0
-        if args['minutes']:
-            total_minutes += args['minutes']
-
-        distanceMargin = 0
-        if args['distanceMargin']:
-            distanceMargin = args['distanceMargin']
-
-        timeMargin = 0
-        if args['timeMargin']:
-            timeMargin = args['timeMargin']
-
-        # Build the query based on the provided parameters
-        query_params = {}
-        if args['city']:
-            query_params['city__icontains'] = args['city']
-        if args['location']:
-            query_params['location__icontains'] = args['location']
-        if args['difficulty']:
-            query_params['difficulty__icontains'] = args['difficulty']
-        if args['mobility']:
-            query_params['mobility__icontains'] = args['mobility']
-        if args['comment']:
-            query_params['comment__icontains'] = args['comment']
-        if args['creator_username']:
-            query_params['creator_username'] = args['creator_username']
-        if args['distance']:
-            query_params['distance__gte'] = args['distance'] - distanceMargin
-            query_params['distance__lte'] = args['distance'] + distanceMargin
-        if total_minutes > 0:
-            query_params['min__gte'] = total_minutes - timeMargin
-            query_params['min__lte'] = total_minutes + timeMargin
-        if args['map_center_lat'] and args['map_center_lng']:
-            query_params['map_center__lat'] = args['map_center_lat']
-            query_params['map_center__lng'] = args['map_center_lng']
+        args = api.payload
 
         # Execute the query and sort by likes and saves
         try:
-            routes = Route.objects(**query_params).order_by('-like', '-saves')
+            routes = Route.search_routes(args)
         except Exception as e:
             current_app.logger.error(e)
             return {"success": False, "msg": str(e)}, 500
 
-        # Convert routes to dictionary format
-        result = []
-        for route in routes:
-            result.append(route.toDICT())
-
-        return {"success": True, "routes": result, "msg": "Routes retrieved successfully"}, 200
+        return {"success": True, "routes": routes, "msg": "Routes retrieved successfully"}, 200
 
 
 # Define a Resource for searching users
@@ -255,32 +197,13 @@ class SearchUser(Resource):
     @api.expect(user_search_model, validate=True)
     def post(self):
         # Parse request data
-        parser = reqparse.RequestParser()
-        parser.add_argument('username', type=str, help='Username')
-        parser.add_argument('email', type=str, help='Email address')
-        args = parser.parse_args()
-
-        # Build the query based on the provided parameters
-        query_params = {}
-        if args['username']:
-            query_params['username__icontains'] = args['username']
-        if args['email']:
-            query_params['email__icontains'] = args['email']
+        args = api.payload
 
         # Execute the query
         try:
-            users = User.objects(**query_params)
+            users = User.search_user(args)
         except Exception as e:
             current_app.logger.error(e)
             return {"success": False, "msg": str(e)}, 500
 
-        # Convert users to dictionary format
-        result = []
-        for user in users:
-            result.append({
-                "username": user.username,
-                "email": user.email,
-                # Add other user attributes as needed
-            })
-
-        return {"success": True, "users": result, "msg": "Users retrieved successfully"}, 200
+        return {"success": True, "users": users, "msg": "Users retrieved successfully"}, 200
