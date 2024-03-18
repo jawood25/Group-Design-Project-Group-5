@@ -3,7 +3,7 @@
 from flask import current_app, request
 from flask_restx import Resource, fields, reqparse
 from .exts import api
-from .models import Route, User
+from .models import Route, User, Comment
 import math
 
 # Define API model for user search
@@ -25,7 +25,6 @@ upload_model = api.model('UploadModel', {
     "location": fields.String(required=True, min_length=2, max_length=32),
     "difficulty": fields.String(required=True, min_length=2, max_length=32),
     "mobility": fields.String(required=True, min_length=2, max_length=6),
-    "comment": fields.String(required=True, max_length=200)
 })
 
 userroutes_model = api.model('UserRoutesModel', {
@@ -51,9 +50,21 @@ savingroutes_model = api.model('SaveRoutesModel', {
     "route_id": fields.String(required=True, min_length=2, max_length=32)
 })
 
-savedrouts_model = api.model('SavedRoutesModel', {
+savedroutes_model = api.model('SavedRoutesModel', {
     # Model for fetching saved routes
     "username": fields.String(required=True, min_length=2, max_length=32),
+})
+
+addingcomment_model = api.model('AddingCommentModel', {
+    # Model for adding comments
+    "route_id": fields.String(required=True, min_length=2, max_length=32),
+    "body": fields.String(required=True, min_length=2, max_length=200),
+    "author": fields.String(required=True, min_length=2, max_length=32)
+})
+
+routescomment_model = api.model('RoutesCommentModel', {
+    # Model for fetching comments
+    "route_id": fields.String(required=True, min_length=2, max_length=32),
 })
 
 # Define API model for route search
@@ -168,7 +179,7 @@ class UserRoutes(Resource):
             return {"success": False, "msg": str(e)}, 403
 
         return {"success": True, "routes": routes,
-                "msg": "Route is created"}, 200
+                "msg": "Routes retrieved successfully"}, 200
 
 
 @api.route('/api/savingroutes/')
@@ -185,18 +196,19 @@ class UploadRoute(Resource):
             user = User.get_by_username(_username)  # Fetch route by username
             if not user:
                 return {"success": False, "msg": "User not exist"}, 401
-            route = Route.get_by_id(_route_id)
+            route = Route.get_by_rid(_route_id)
             user.add_saved_routes(route)
         except Exception as e:
             # catch all other exceptions
             current_app.logger.error(e)
             return {"success": False, "msg": str(e)}, 403
 
-        return {"success": True, "msg": "Route is created"}, 200
+        return {"success": True, "route": str(route.id), "msg": "Route is saved"}, 200
+
 
 @api.route('/api/savedroutes/')
 class UserRoutes(Resource):
-    @api.expect(savedrouts_model, validate=True)  # Expecting data matching the route_model
+    @api.expect(savedroutes_model, validate=True)  # Expecting data matching the route_model
     def post(self):
         # Extract JSON data from the request
         req_data = request.get_json()
@@ -212,8 +224,10 @@ class UserRoutes(Resource):
             current_app.logger.error(e)
             return {"success": False, "msg": str(e)}, 403
 
+        print(111)
         return {"success": True, "routes": routes,
-                "msg": "Route is created"}, 200
+                "msg": "Routes retrieved successfully"}, 200
+
 
 @api.route('/api/allUR/')
 class UserRoutes(Resource):
@@ -226,6 +240,49 @@ class UserRoutes(Resource):
             return {"success": False, "msg": str(e)}, 500
 
         return {"success": True, "routes": routes, "msg": "Routes retrieved successfully"}, 200
+
+
+@api.route('/api/addingcomment/')
+class UploadRoute(Resource):
+    @api.expect(addingcomment_model, validate=True)  # Expecting data matching the route_model
+    def post(self):
+        # Extract JSON data from the request
+        req_data = request.get_json()
+        _route_id = req_data.get("route_id")
+
+        # Create a new route with the provided details
+        try:
+            route = Route.get_by_rid(_route_id)  # Fetch route by username
+            if not route:
+                return {"success": False, "msg": "User not exist"}, 401
+            new_comment = Comment(**req_data)  # Create a new route
+            route.add_comment(new_comment)
+        except Exception as e:
+            # catch all other exceptions
+            current_app.logger.error(e)
+            return {"success": False, "msg": str(e)}, 403
+        return {"success": True, "comment": str(new_comment.id), "msg": "Comment is created"}, 200
+
+
+@api.route('/api/routescomment/')
+class UploadRoute(Resource):
+    @api.expect(routescomment_model, validate=True)  # Expecting data matching the route_model
+    def post(self):
+        # Extract JSON data from the request
+        req_data = request.get_json()
+        _route_id = req_data.get("route_id")
+
+        # Create a new route with the provided details
+        try:
+            route = Route.get_by_rid(_route_id)  # Fetch route by username
+            if not route:
+                return {"success": False, "msg": "User not exist"}, 401
+            comments = route.get_comments()
+        except Exception as e:
+            # catch all other exceptions
+            current_app.logger.error(e)
+            return {"success": False, "msg": str(e)}, 403
+        return {"success": True, "comment": comments, "msg": "Comments retrieved successfully"}, 200
 
 
 # Define a Resource for route search

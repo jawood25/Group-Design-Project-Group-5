@@ -8,11 +8,28 @@ from .exts import db  # Importing the database instance from an external module
 # pylint: disable=no-member
 # Defines a Comment document associated with users and their interactions
 class Comment(db.Document):
-    author_username = db.StringField(required=True)  # pylint: disable=E1101
+    author = db.StringField(required=True)  # pylint: disable=E1101
     date_posted = db.DateTimeField(default=datetime.datetime.utcnow())  # pylint: disable=E1101
     dislikes = db.IntField(default=0)  # pylint: disable=E1101
     likes = db.IntField(default=0)  # pylint: disable=E1101
     body = db.StringField(required=True)
+
+    def __init__(self, *args, **kwargs):
+        kwargs.pop('route_id', None)
+        super(Comment, self).__init__(*args, **kwargs)
+        self.save()
+
+    def __repr__(self):
+        return f"{self.author}'s comment"
+
+    def toDICT(self):
+        return {
+            'author': self.author,
+            'date_posted': self.date_posted.strftime('%Y-%m-%dT%H:%M:%S'),
+            'dislikes': self.dislikes,
+            'likes': self.likes,
+            'body': self.body
+        }
 
 
 # Defines a Route document for storing information about specific routes
@@ -24,15 +41,14 @@ class Route(db.Document):
     hour = db.IntField()
     min = db.IntField()
     difficulty = db.StringField()
-    comment = db.StringField()
     mobility = db.StringField()
     dislike = db.IntField(default=0)
     like = db.IntField(default=0)
     saves = db.IntField(default=0)
     distance = db.FloatField(default=0.0)
     creator_username = db.StringField(required=True)
+    comment = db.ListField(db.ReferenceField(Comment, reverse_delete_rule='PULL'))
 
-    # comment = db.ReferenceField(Comment, reverse_delete_rule='PULL')
     def __init__(self, *args, **kwargs):
         map_center = kwargs.pop('mapCenter', None)
         if map_center:
@@ -46,10 +62,12 @@ class Route(db.Document):
         username = kwargs.pop('username', None)
         if username:
             kwargs['creator_username'] = username
-
         super(Route, self).__init__(*args, **kwargs)
         self.update_distance_and_time()
         self.save()
+
+    def __repr__(self):
+        return f"Route {self.id}"
 
     def update_distance_and_time(self):
         self.cal_distance()
@@ -59,9 +77,6 @@ class Route(db.Document):
         speed_map = {"Bike": 20, "Run": 10, "Walk": 5}
         speed = speed_map.get(self.mobility, 10)  # Default to running speed if mobility is not recognized
         self.min = round((self.distance / speed) * 60)
-
-    def __repr__(self):
-        return f"Route {self.id}"
 
     def cal_distance(self):
         def haversine_distance(coord1, coord2):
@@ -76,6 +91,13 @@ class Route(db.Document):
         if len(self.coordinates) > 1:
             self.distance = round(sum(haversine_distance(self.coordinates[i], self.coordinates[i + 1]) for i in
                                       range(len(self.coordinates) - 1)), 3)
+
+    def add_comment(self, comment):
+        self.comment.append(comment)
+        self.save()
+
+    def get_comments(self):
+        return [comment.toDICT() for comment in self.comment]
 
     @classmethod
     def search_routes(cls, args):
@@ -124,7 +146,7 @@ class Route(db.Document):
             'hour': self.hour,
             'minutes': self.min,
             'difficulty': self.difficulty,
-            'comment': self.comment,
+            'comment': self.get_comments(),
             'dislike': self.dislike,
             'like': self.like,
             'saves': self.saves,
