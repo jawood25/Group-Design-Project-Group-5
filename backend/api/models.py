@@ -208,9 +208,6 @@ class User(db.Document):
     def get_saved_routes(self):
         return [route.toDICT() for route in self.saved_routes]
 
-    def get_friends(self):
-        return [friend.toDICT() for friend in self.friends]
-
     # Method to add a route to the user's created routes
     def add_create_routes(self, new_route):
         self.create_routes.append(new_route)
@@ -221,6 +218,13 @@ class User(db.Document):
     def add_saved_routes(self, new_route):
         self.saved_routes.append(new_route)
         self.save()
+
+    def add_friend(self, user):
+        self.friends.append(user)
+        self.save()
+
+    def get_friends(self):
+        return [friend.toDICT() for friend in self.friends]
 
     @classmethod
     def search_user(cls, args):
@@ -249,15 +253,16 @@ class User(db.Document):
             "phone": self.phone,
             "create_routes": self.get_create_routes(),  # Convert routes to list of IDs
             "saved_routes": self.get_saved_routes(),  # Convert routes to list of IDs
-            "friends": self.get_friends(),  # Convert friends to list of IDs
+            "friends": [friend for friend in self.friends],  # Convert friends to list of IDs
             # Add other fields as needed
         }
 
 
-"""code for further use"""
+class Event(db.Document):
+    name = db.StringField(required=True)
+    venue = db.StringField(required=True)
+    host = db.StringField(required=True)
+    interested = db.IntField(default=0)
+    date = db.DateTimeField(required=True)
+    route = db.ReferenceField(Route, reverse_delete_rule='PULL')
 
-# class EventList(Document):
-#     number_of_events = db.IntField(default=0)
-#     events = db.ListField(db.ReferenceField('Event'))
-
-# pylint: enable=no-member

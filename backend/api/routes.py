@@ -67,6 +67,17 @@ routescomment_model = api.model('RoutesCommentModel', {
     "route_id": fields.String(required=True, min_length=2, max_length=32),
 })
 
+addingfriend_model = api.model('AddingFriendModel', {
+    # Model for adding comments
+    "username": fields.String(required=True, min_length=2, max_length=32),
+    "friend_username": fields.String(required=True, min_length=2, max_length=32)
+})
+
+usersfriend_model = api.model('UsersFriendModel', {
+    # Model for fetching comments
+    "username": fields.String(required=True, min_length=2, max_length=32),
+})
+
 # Define API model for route search
 search_model = api.model('SearchModel', {
     "city": fields.String(min_length=2, max_length=32),
@@ -183,7 +194,7 @@ class UserRoutes(Resource):
 
 
 @api.route('/api/savingroutes/')
-class UploadRoute(Resource):
+class SavingRoute(Resource):
     @api.expect(savingroutes_model, validate=True)  # Expecting data matching the route_model
     def post(self):
         # Extract JSON data from the request
@@ -207,7 +218,7 @@ class UploadRoute(Resource):
 
 
 @api.route('/api/savedroutes/')
-class UserRoutes(Resource):
+class SavedRoutes(Resource):
     @api.expect(savedroutes_model, validate=True)  # Expecting data matching the route_model
     def post(self):
         # Extract JSON data from the request
@@ -230,7 +241,7 @@ class UserRoutes(Resource):
 
 
 @api.route('/api/allUR/')
-class UserRoutes(Resource):
+class AllRoutes(Resource):
     def post(self):
         # Fetch all routes from the database
         try:
@@ -243,7 +254,7 @@ class UserRoutes(Resource):
 
 
 @api.route('/api/addingcomment/')
-class UploadRoute(Resource):
+class AddComment(Resource):
     @api.expect(addingcomment_model, validate=True)  # Expecting data matching the route_model
     def post(self):
         # Extract JSON data from the request
@@ -254,7 +265,7 @@ class UploadRoute(Resource):
         try:
             route = Route.get_by_rid(_route_id)  # Fetch route by username
             if not route:
-                return {"success": False, "msg": "User not exist"}, 401
+                return {"success": False, "msg": "Route not exist"}, 401
             new_comment = Comment(**req_data)  # Create a new route
             route.add_comment(new_comment)
         except Exception as e:
@@ -265,7 +276,7 @@ class UploadRoute(Resource):
 
 
 @api.route('/api/routescomment/')
-class UploadRoute(Resource):
+class RoutesComment(Resource):
     @api.expect(routescomment_model, validate=True)  # Expecting data matching the route_model
     def post(self):
         # Extract JSON data from the request
@@ -276,13 +287,56 @@ class UploadRoute(Resource):
         try:
             route = Route.get_by_rid(_route_id)  # Fetch route by username
             if not route:
-                return {"success": False, "msg": "User not exist"}, 401
+                return {"success": False, "msg": "Route not exist"}, 401
             comments = route.get_comments()
         except Exception as e:
             # catch all other exceptions
             current_app.logger.error(e)
             return {"success": False, "msg": str(e)}, 403
         return {"success": True, "comment": comments, "msg": "Comments retrieved successfully"}, 200
+
+
+@api.route('/api/addingfriend/')
+class AddingFriend(Resource):
+    @api.expect(addingfriend_model, validate=True)  # Expecting data matching the route_model
+    def post(self):
+        # Extract JSON data from the request
+        req_data = request.get_json()
+
+        # Create a new route with the provided details
+        try:
+            user = User.get_by_username(req_data.get("username"))  # Fetch route by username
+            friend = User.get_by_username(req_data.get("friend_username"))  # Fetch route by username
+            if not user:
+                return {"success": False, "msg": "User not exist"}, 401
+            if not friend:
+                return {"success": False, "msg": "Friend not exist"}, 401
+            user.add_friend(friend)
+        except Exception as e:
+            # catch all other exceptions
+            current_app.logger.error(e)
+            return {"success": False, "msg": str(e)}, 403
+        return {"success": True, "user": user.username, "msg": "Friend is added"}, 200
+
+@api.route('/api/usersfriends/')
+class UsersFriends(Resource):
+    @api.expect(usersfriend_model, validate=True)  # Expecting data matching the route_model
+    def post(self):
+        # Extract JSON data from the request
+        req_data = request.get_json()
+
+        # Create a new route with the provided details
+        try:
+            user = User.get_by_username(req_data.get("username"))  # Fetch route by username
+            if not user:
+                return {"success": False, "msg": "User not exist"}, 401
+            friends = user.get_friends()
+        except Exception as e:
+            # catch all other exceptions
+            current_app.logger.error(e)
+            return {"success": False, "msg": str(e)}, 403
+        return {"success": True, "friends": friends, "msg": "Friends retrieved successfully"}, 200
+
 
 
 # Define a Resource for route search
