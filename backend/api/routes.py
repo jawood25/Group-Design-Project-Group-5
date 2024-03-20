@@ -25,6 +25,7 @@ upload_model = api.model('UploadModel', {
     "location": fields.String(required=True, min_length=2, max_length=32),
     "difficulty": fields.String(required=True, min_length=2, max_length=32),
     "mobility": fields.String(required=True, min_length=2, max_length=6),
+    "comment": fields.String(max_length=200)
 })
 
 userroutes_model = api.model('UserRoutesModel', {
@@ -161,6 +162,7 @@ class UploadRoute(Resource):
             if not user:
                 return {"success": False, "msg": "User not exist"}, 401
             new_route = Route(**req_data)  # Create a new route
+            new_route.add_comment(Comment(body=req_data.get["comment"],author=req_data.get["author"]))
             user.add_create_routes(new_route)
         except Exception as e:
             # catch all other exceptions
@@ -311,7 +313,8 @@ class AddingFriend(Resource):
                 return {"success": False, "msg": "User not exist"}, 401
             if not friend:
                 return {"success": False, "msg": "Friend not exist"}, 401
-            user.add_friend(friend)
+            if not user.add_friend(friend):
+                return {"success": False, "msg": "Friend is already added"}, 402
         except Exception as e:
             # catch all other exceptions
             current_app.logger.error(e)

@@ -219,9 +219,12 @@ class User(db.Document):
         self.saved_routes.append(new_route)
         self.save()
 
-    def add_friend(self, user):
-        self.friends.append(user)
-        self.save()
+    def add_friend(self, friend):
+        if friend.id not in [f.id for f in self.friends]:
+            self.friends.append(friend)
+            self.save()
+            return True
+        return False
 
     def get_friends(self):
         return [friend.toDICT() for friend in self.friends]
