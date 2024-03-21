@@ -54,6 +54,26 @@ const MyAccount = () => {
         }
     };
 
+    const deleteRoute = async (routeId) => {
+        try {
+            const response = await fetch('/api/delete-route', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username,  routeId}),
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            console.log(data)
+            await fetchUserRoutes()
+        }
+        catch (error) {
+            console.error('There was a problem with your fetch operation:', error);
+        }
+    }
     
     useEffect(() => {
         fetchUserRoutes();
@@ -78,6 +98,7 @@ const MyAccount = () => {
                             <div><b>Mobility:</b>  {route.mobility}</div>
                             <div><b>Comment:</b>  {route.comment}</div>
                         </div>
+                        <button onClick={() => deleteRoute(route.id)}>Delete</button>
                     </div>
                 ))}
             </div>
