@@ -161,8 +161,9 @@ class UploadRoute(Resource):
             user = User.get_by_username(_username)  # Fetch route by username
             if not user:
                 return {"success": False, "msg": "User not exist"}, 401
+            new_comment = Comment(body=req_data.get("comment"), author=req_data.get("username"))
             new_route = Route(**req_data)  # Create a new route
-            new_route.add_comment(Comment(body=req_data.get["comment"],author=req_data.get["author"]))
+            new_route.add_comment(new_comment)
             user.add_create_routes(new_route)
         except Exception as e:
             # catch all other exceptions

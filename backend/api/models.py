@@ -62,6 +62,7 @@ class Route(db.Document):
         username = kwargs.pop('username', None)
         if username:
             kwargs['creator_username'] = username
+        comment = kwargs.pop('comment', None)
         super(Route, self).__init__(*args, **kwargs)
         self.update_distance_and_time()
         self.save()
