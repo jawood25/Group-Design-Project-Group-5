@@ -3,7 +3,7 @@
 from flask import current_app, request
 from flask_restx import Resource, fields, reqparse
 from .exts import api
-from .models import Route, User, Comment
+from .models import Route, User, Comment, Event
 import math
 
 # Define API model for user search
@@ -13,7 +13,7 @@ user_search_model = api.model('UserSearchModel', {
 })
 
 # Define API models for validating and documenting incoming data
-upload_model = api.model('UploadModel', {
+uploadroute_model = api.model('UploadRouteModel', {
     # Model for route upload, includes various route details
     "username": fields.String(required=True, min_length=2, max_length=32),
     "coordinates": fields.List(fields.List(fields.Float, min_items=2, max_items=2, required=True), required=True),
@@ -26,6 +26,21 @@ upload_model = api.model('UploadModel', {
     "difficulty": fields.String(required=True, min_length=2, max_length=32),
     "mobility": fields.String(required=True, min_length=2, max_length=6),
     "comment": fields.String(max_length=200)
+})
+
+editroute_model = api.model('EditRouteModel', {
+    # Model for route upload, includes various route details
+    "route_id": fields.String(required=True, min_length=2, max_length=32),
+    "username": fields.String(min_length=2, max_length=32),
+    "coordinates": fields.List(fields.List(fields.Float, min_items=2, max_items=2, required=True)),
+    "mapCenter": fields.Nested(api.model('MapCenterModel', {
+        "lat": fields.Float(required=True),
+        "lng": fields.Float(required=True)
+    })),
+    "city": fields.String(min_length=2, max_length=32),
+    "location": fields.String(min_length=2, max_length=32),
+    "difficulty": fields.String(min_length=2, max_length=32),
+    "mobility": fields.String(min_length=2, max_length=6),
 })
 
 userroutes_model = api.model('UserRoutesModel', {
@@ -79,6 +94,16 @@ usersfriend_model = api.model('UsersFriendModel', {
     "username": fields.String(required=True, min_length=2, max_length=32),
 })
 
+uploadevent_model = api.model('UploadEventModel', {
+    # Model for route upload, includes various route details
+    "hostname": fields.String(required=True, min_length=2, max_length=32),
+    "name": fields.String(required=True, min_length=2, max_length=32),
+    "interested": fields.Integer(default=0),
+    "venue": fields.String(required=True, min_length=2, max_length=32),
+    "date": fields.String(required=True, min_length=2, max_length=32),
+    "route_id": fields.String(required=True, min_length=2, max_length=32)
+})
+
 # Define API model for route search
 search_model = api.model('SearchModel', {
     "city": fields.String(min_length=2, max_length=32),
@@ -95,7 +120,7 @@ search_model = api.model('SearchModel', {
 
 
 # Define a Resource for user sign-up
-@api.route('/api/sign-up/', methods=['POST'])
+@api.route('/api/sign-up/')
 class UserSignUp(Resource):
     @api.expect(signup_model, validate=True)  # Expecting data matching the signup_model
     def post(self):
@@ -119,7 +144,7 @@ class UserSignUp(Resource):
 
 
 # Define a Resource for user login
-@api.route('/api/login/', methods=['POST'])
+@api.route('/api/login/')
 class UserLogin(Resource):
     @api.expect(login_model, validate=True)  # Expecting data matching the login_model
     def post(self):
@@ -149,8 +174,7 @@ class UserLogin(Resource):
 # Define a Resource to upload a route
 @api.route('/api/upload/')
 class UploadRoute(Resource):
-
-    @api.expect(upload_model, validate=True)  # Expecting data matching the route_model
+    @api.expect(uploadroute_model, validate=True)  # Expecting data matching the route_model
     def post(self):
         # Extract JSON data from the request
         req_data = request.get_json()
@@ -161,8 +185,9 @@ class UploadRoute(Resource):
             user = User.get_by_username(_username)  # Fetch route by username
             if not user:
                 return {"success": False, "msg": "User not exist"}, 401
+            new_comment = Comment(body=req_data.get("comment"), author=req_data.get("username"))
             new_route = Route(**req_data)  # Create a new route
-            new_route.add_comment(Comment(body=req_data.get["comment"],author=req_data.get["author"]))
+            new_route.add_comment(new_comment)
             user.add_create_routes(new_route)
         except Exception as e:
             # catch all other exceptions
@@ -171,6 +196,43 @@ class UploadRoute(Resource):
 
         return {"success": True, "route_id": str(new_route.id),
                 "msg": "Route is created"}, 200
+
+
+@api.route('/api/editroute/')
+class EditRoute(Resource):
+    @api.expect(editroute_model, validate=True)  # Expecting data matching the route_model
+    def post(self):
+        # Extract JSON data from the request
+        req_data = request.get_json()
+        _rid = req_data.get("route_id")
+
+        try:
+            if Route.update_route(_rid, req_data):
+                return {"success": True, "msg": "Route is updated"}, 200
+            else:
+                return {"success": False, "msg": "Route not exist"}, 401
+        except Exception as e:
+            # catch all other exceptions
+            current_app.logger.error(e)
+            return {"success": False, "msg": str(e)}, 403
+
+    @api.expect(editroute_model, validate=True)  # Expecting data matching the route_model
+    def delete(self):
+        # Extract JSON data from the request
+        req_data = request.get_json()
+        _rid = req_data.get("route_id")
+
+        try:
+            route = Route.get_by_rid(_rid)
+            if route:
+                route.delete()
+                return {"success": True, "msg": "Route has been deleted"}, 200
+            else:
+                return {"success": False, "msg": "Route does not exist"}, 401
+        except Exception as e:
+            # catch all other exceptions
+            current_app.logger.error(e)
+            return {"success": False, "msg": str(e)}, 403
 
 
 @api.route('/api/userroutes/')
@@ -321,6 +383,7 @@ class AddingFriend(Resource):
             return {"success": False, "msg": str(e)}, 403
         return {"success": True, "user": user.username, "msg": "Friend is added"}, 200
 
+
 @api.route('/api/usersfriends/')
 class UsersFriends(Resource):
     @api.expect(usersfriend_model, validate=True)  # Expecting data matching the route_model
@@ -340,6 +403,32 @@ class UsersFriends(Resource):
             return {"success": False, "msg": str(e)}, 403
         return {"success": True, "friends": friends, "msg": "Friends retrieved successfully"}, 200
 
+
+@api.route('/api/uploadevent/')
+class UploadEvent(Resource):
+    @api.expect(uploadevent_model, validate=True)  # Expecting data matching the route_model
+    def post(self):
+        # Extract JSON data from the request
+        req_data = request.get_json()
+        _username = req_data.get("hostname")
+        _rid = req_data.get("route_id")
+
+        # Create a new route with the provided details
+        try:
+            user = User.get_by_username(_username)  # Fetch route by username
+            route = Route.get_by_rid(_rid)
+            if not user:
+                return {"success": False, "msg": "User not exist"}, 401
+            if not route:
+                return {"success": False, "msg": "Route not exist"}, 401
+            new_event = Event(**req_data)  # Create a new route
+        except Exception as e:
+            # catch all other exceptions
+            current_app.logger.error(e)
+            return {"success": False, "msg": str(e)}, 403
+
+        return {"success": True, "event": new_event.toDICT(),
+                "msg": "Route is created"}, 200
 
 
 # Define a Resource for route search
