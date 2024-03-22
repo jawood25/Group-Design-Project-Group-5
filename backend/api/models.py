@@ -62,7 +62,7 @@ class Route(db.Document):
         username = kwargs.pop('username', None)
         if username:
             kwargs['creator_username'] = username
-        comment = kwargs.pop('comment', None)
+        kwargs.pop('comment', None)
         super(Route, self).__init__(*args, **kwargs)
         self.update_distance_and_time()
         self.save()
@@ -126,6 +126,26 @@ class Route(db.Document):
         targets = Route.objects(**query_params).order_by('-like', '-saves')
 
         return [target.toDICT() for target in targets]
+
+    @classmethod
+    def update_route(cls, route_id, update_data):
+        """
+        Class method to update route details.
+
+        :param route_id: The ID of the route to be updated.
+        :param update_data: A dictionary containing fields to update and their new values.
+        :return: The result of the update.
+        """
+        route = cls.objects(id=route_id).first()
+        if not route:
+            return False, "Route does not exist"
+
+        for field, value in update_data.items():
+            if hasattr(route, field):
+                setattr(route, field, value)
+
+        route.save()
+        return True, "Route updated successfully"
 
     @classmethod
     def all_routes(cls):
@@ -265,8 +285,32 @@ class User(db.Document):
 class Event(db.Document):
     name = db.StringField(required=True)
     venue = db.StringField(required=True)
-    host = db.StringField(required=True)
     interested = db.IntField(default=0)
     date = db.DateTimeField(required=True)
+    host = db.ReferenceField(User, reverse_delete_rule='PULL')
     route = db.ReferenceField(Route, reverse_delete_rule='PULL')
 
+    def __init__(self, *args, **kwargs):
+        host = kwargs.pop('hostname', None)
+        if host:
+            kwargs['host'] = User.get_by_username(host)
+        rid = kwargs.pop('route_id', None)
+        if rid:
+            kwargs['route'] = Route.get_by_rid(rid)
+        if 'date' in kwargs:
+            kwargs['date'] = datetime.datetime.strptime(kwargs['date'], '%Y-%m-%dT%H:%M:%S')
+        super(Event, self).__init__(*args, **kwargs)
+        self.save()
+
+    def __repr__(self):
+        return f"Event {self.name}"
+
+    def toDICT(self):
+        return {
+            'name': self.name,
+            'venue': self.venue,
+            'interested': self.interested,
+            'date': self.date.strftime('%Y-%m-%dT%H:%M:%S'),
+            'host': self.host.username,
+            'route': self.route.toDICT()
+        }

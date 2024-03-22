@@ -31,29 +31,102 @@ backend/
 
 ## API Endpoints
 
-### `/api/sign-up/`
-- **Purpose**: User registration
+### User Endpoints
+
+#### `/api/sign-up/`
+- **Purpose**: Registers new users.
 - **Method**: POST
 - **Data Model**: `SignUpModel`
-- **Description**: Registers new users with a unique username and password.
+- **Description**: This endpoint registers a new user with a unique username and password.
 
-### `/api/login/`
-- **Purpose**: User login
+#### `/api/login/`
+- **Purpose**: Authenticates users.
 - **Method**: POST
 - **Data Model**: `LoginModel`
-- **Description**: Authenticates users by username and password.
+- **Description**: This endpoint authenticates a user by their username and password, allowing them to log in.
 
-### `/api/upload/`
-- **Purpose**: Route upload
+#### `/api/addingfriend/`
+- **Purpose**: Adds a friend to a user's friend list.
 - **Method**: POST
-- **Data Model**: `UploadModel`
-- **Description**: Allows users to upload new routes with detailed information.
+- **Data Model**: `AddingFriendModel`
+- **Description**: This endpoint allows a user to add another user as a friend.
 
-### `/api/userroutes/`
-- **Purpose**: Fetch user-created routes
+#### `/api/usersfriends/`
+- **Purpose**: Fetches a user's friends list.
+- **Method**: POST
+- **Data Model**: `UsersFriendModel`
+- **Description**: This endpoint retrieves the friends list of a specific user.
+
+#### `/api/searchuser/`
+- **Purpose**: Searches for users.
+- **Method**: POST
+- **Data Model**: `UserSearchModel`
+- **Description**: This endpoint allows users to search for other users based on username or email.
+
+
+### Route Endpoints
+
+#### `/api/upload/`
+- **Purpose**: Uploads a new route.
+- **Method**: POST
+- **Data Model**: `UploadRouteModel`
+- **Description**: This endpoint allows users to upload a new route with details such as coordinates, map center, city, and comments.
+
+#### `/api/editroute/`
+- **Purpose**: Edits an existing route.
+- **Method**: POST
+- **Data Model**: `EditRouteModel`
+- **Description**: This endpoint allows users to edit an existing route's details. It supports updating various fields such as coordinates and city.
+
+- **Method**: DELETE
+- **Data Model**: `EditRouteModel`
+- **Description**: This endpoint allows users to delete an existing route by providing its route ID.
+
+#### `/api/userroutes/`
+- **Purpose**: Fetches routes created by a user.
 - **Method**: POST
 - **Data Model**: `UserRoutesModel`
-- **Description**: Retrieves routes created by a specified user.
+- **Description**: This endpoint retrieves all routes created by a specific user.
+
+#### `/api/savingroutes/`
+- **Purpose**: Saves a route to a user's profile.
+- **Method**: POST
+- **Data Model**: `SaveRoutesModel`
+- **Description**: This endpoint allows users to save a route to their profile for later viewing.
+
+#### `/api/savedroutes/`
+- **Purpose**: Fetches routes saved by a user.
+- **Method**: POST
+- **Data Model**: `SavedRoutesModel`
+- **Description**: This endpoint retrieves all routes saved by a specific user.
+
+#### `/api/searchroute/`
+- **Purpose**: Searches for routes based on criteria.
+- **Method**: POST
+- **Data Model**: `SearchModel`
+- **Description**: This endpoint allows users to search for routes based on various criteria such as city, location, and difficulty.
+
+### Comment Endpoints
+
+#### `/api/addingcomment/`
+- **Purpose**: Adds a comment to a route.
+- **Method**: POST
+- **Data Model**: `AddingCommentModel`
+- **Description**: This endpoint allows users to add a comment to a specific route.
+
+#### `/api/routescomment/`
+- **Purpose**: Fetches comments for a route.
+- **Method**: POST
+- **Data Model**: `RoutesCommentModel`
+- **Description**: This endpoint retrieves all comments associated with a specific route.
+
+### Event Endpoints
+
+#### `/api/uploadevent/`
+- **Purpose**: Uploads a new event associated with a route.
+- **Method**: POST
+- **Data Model**: `UploadEventModel`
+- **Description**: This endpoint allows users to create a new event linked to a route.
 
 ## Setting Up the Database
 1. Create an account on MongoDB Atlas.
