@@ -16,7 +16,7 @@ class Comment(db.Document):
 
     def __init__(self, *args, **kwargs):
         kwargs.pop('route_id', None)
-        super(Comment, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def __repr__(self):
         return f"{self.author}'s comment"
@@ -61,7 +61,7 @@ class Route(db.Document):
         username = kwargs.pop('username', None)
         if username:
             kwargs['creator_username'] = username
-        super(Route, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.update_distance_and_time()
 
     def __repr__(self):
@@ -73,7 +73,7 @@ class Route(db.Document):
 
     def cal_time(self):
         speed_map = {"Bike": 20, "Run": 10, "Walk": 5}
-        speed = speed_map.get(self.mobility, 10)  # Default to running speed if mobility is not recognized
+        speed = speed_map.get(self.mobility, 10)  # Default speed is 10 km/h
         self.min = round((self.distance / speed) * 60)
 
     def cal_distance(self):
@@ -83,12 +83,12 @@ class Route(db.Document):
             dlat, dlon = lat2 - lat1, lon2 - lon1
             a = math.sin(dlat / 2) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2) ** 2
             c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-            R = 6371  # Earth radius in kilometers
-            return R * c
+            radius = 6371  # Earth radius in kilometers
+            return radius * c
 
         if len(self.coordinates) > 1:
-            self.distance = round(sum(haversine_distance(self.coordinates[i], self.coordinates[i + 1]) for i in
-                                      range(len(self.coordinates) - 1)), 3)
+            self.distance = round(sum(haversine_distance(self.coordinates[i], self.coordinates[i + 1])
+                                      for i in range(len(self.coordinates) - 1)), 3)
 
     def add_comment(self, comment):
         self.comment.append(comment)
@@ -106,8 +106,12 @@ class Route(db.Document):
         time_margin = args.get('timeMargin', 0)
 
         # Build the query based on the provided parameters
-        query_fields = ['city', 'location', 'difficulty', 'mobility', 'comment', 'creator_username']
-        query_params = {f"{field}__icontains": args[field] for field in query_fields if field in args}
+        query_fields = ['city', 'location', 'difficulty',
+                        'mobility', 'comment', 'creator_username'
+                        ]
+        query_params = {f"{field}__icontains": args[field]
+                        for field in query_fields if field in args
+                        }
 
         if 'distance' in args:
             query_params['distance__gte'] = args['distance'] - distance_margin
@@ -190,7 +194,7 @@ class User(db.Document):
         password = None
         if 'password' in kwargs:
             password = kwargs.pop('password')
-        super(User, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         if password:
             self.password = password
 
@@ -248,9 +252,11 @@ class User(db.Document):
 
     @classmethod
     def search_user(cls, args):
-        # Initialize query_params only with keys that are present in args and have a non-None value
-        valid_fields = ['username', 'email']  # Extend this list based on the fields you want to allow searching on
-        query_params = {f"{field}__icontains": args[field] for field in valid_fields if args.get(field) is not None}
+        # Define the fields that can be searched on
+        valid_fields = ['username', 'email']  # Add more fields as needed
+        query_params = {f"{field}__icontains": args[field]
+                        for field in valid_fields if args.get(field) is not None
+                        }
 
         # Assuming your ORM supports lazy loading, this query won't hit the database until iterated
         users_query = User.objects(**query_params)
@@ -273,7 +279,7 @@ class User(db.Document):
             "phone": self.phone,
             "create_routes": self.get_create_routes(),  # Convert routes to list of IDs
             "saved_routes": self.get_saved_routes(),  # Convert routes to list of IDs
-            "friends": [friend for friend in self.friends],  # Convert friends to list of IDs
+            "friends": [repr(friend) for friend in self.friends],  # Convert friends to list of IDs
             # Add other fields as needed
         }
 
@@ -295,8 +301,7 @@ class Event(db.Document):
             kwargs['route'] = Route.get_by_rid(rid)
         if 'date' in kwargs:
             kwargs['date'] = datetime.datetime.strptime(kwargs['date'], '%Y-%m-%dT%H:%M:%S')
-        super(Event, self).__init__(*args, **kwargs)
-        self.save()
+        super().__init__(*args, **kwargs)
 
     def __repr__(self):
         return f"Event {self.name}"

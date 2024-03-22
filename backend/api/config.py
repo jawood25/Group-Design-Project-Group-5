@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
+# pylint: disable=too-few-public-methods
 class BaseConfig():
     # Base configuration
     HOST = 'localhost'  # Default host
@@ -23,21 +24,24 @@ class BaseConfig():
         'host': DBHOST,  # Database host URL
         'username': DBUSERNAME,  # Database username
         'password': DBPASSWORD,  # Database password
-        'retryWrites': True,  # Enable retryable writes for reliability
-        'w': 'majority'  # Ensure write operations are acknowledged by the majority of replica set members
+        'retryWrites': True,  # Retry writes in case of failure
+        'w': 'majority'  # Write acknowledgment level
     }
 
 
+# pylint: disable=too-few-public-methods
 class DevelopmentConfig(BaseConfig):
     # Configuration for the development environment
     DEBUG = True  # Enable debug mode
 
 
+# pylint: disable=too-few-public-methods
 class ProductionConfig(BaseConfig):
     # Configuration for the production environment
     pass  # No specific changes from BaseConfig
 
 
+# pylint: disable=too-few-public-methods
 class TestingConfig(BaseConfig):
     # Configuration for the testing environment
     DEBUG = True  # Enable debug mode for testing
