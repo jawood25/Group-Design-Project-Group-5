@@ -118,6 +118,7 @@ create_event_model = api.model('CreateEventModel', {
 })
 
 
+# pylint: disable=catching-too-general-exception
 # Define a Resource for user sign-up
 @api.route('/api/sign-up/')
 class UserSignUp(Resource):
@@ -143,6 +144,7 @@ class UserSignUp(Resource):
                 "msg": "User was successfully registered"}, 200
 
 
+# pylint: disable=catching-too-general-exception
 # Define a Resource for user login
 @api.route('/api/login/')
 class UserLogin(Resource):
@@ -171,6 +173,8 @@ class UserLogin(Resource):
                 "msg": "User was successfully logined"}, 200
 
 
+# pylint: disable=catching-too-general-exception
+# Define a Resource for adding friends
 @api.route('/api/addingfriend/')
 class AddFriend(Resource):
     @api.expect(add_friend_model, validate=True)  # Expecting data matching the route_model
@@ -196,6 +200,8 @@ class AddFriend(Resource):
         return {"success": True, "user": user.username, "msg": "Friend is added"}, 200
 
 
+# pylint: disable=catching-too-general-exception
+# Define a Resource for fetching friends
 @api.route('/api/usersfriends/')
 class UsersFriends(Resource):
     @api.expect(users_friend_model, validate=True)  # Expecting data matching the route_model
@@ -216,6 +222,7 @@ class UsersFriends(Resource):
         return {"success": True, "friends": friends, "msg": "Friends retrieved successfully"}, 200
 
 
+# pylint: disable=catching-too-general-exception
 # Define a Resource for searching users
 @api.route('/api/searchuser/')
 class SearchUser(Resource):
@@ -234,6 +241,7 @@ class SearchUser(Resource):
         return {"success": True, "users": users, "msg": "Users retrieved successfully"}, 200
 
 
+# pylint: disable=catching-too-general-exception
 # Define a Resource to upload a route
 @api.route('/api/upload/')
 class CreateRoute(Resource):
@@ -260,10 +268,13 @@ class CreateRoute(Resource):
             current_app.logger.error(e)
             return {"success": False, "msg": str(e)}, 403
 
+        # pylint: disable=maybe-no-member
         return {"success": True, "route_id": str(new_route.id),
                 "msg": "Route is created"}, 200
 
 
+# pylint: disable=catching-too-general-exception
+# Define a Resource for fetching routes created by a user
 @api.route('/api/userroutes/')
 class CreatedRoute(Resource):
     @api.expect(created_route_model, validate=True)  # Expecting data matching the route_model
@@ -286,6 +297,8 @@ class CreatedRoute(Resource):
                 "msg": "Routes retrieved successfully"}, 200
 
 
+# pylint: disable=catching-too-general-exception
+# Define a Resource for editing and deleting routes
 @api.route('/api/editroute/')
 class EditRoute(Resource):
     @api.expect(edit_route_model, validate=True)  # Expecting data matching the route_model
@@ -295,10 +308,9 @@ class EditRoute(Resource):
         _rid = req_data.get("route_id")
 
         try:
-            if Route.update_route(_rid, req_data):
-                return {"success": True, "msg": "Route is updated"}, 200
-            else:
+            if not Route.update_route(_rid, req_data):
                 return {"success": False, "msg": "Route not exist"}, 401
+            return {"success": True, "msg": "Route is updated"}, 200
         except Exception as e:
             # catch all other exceptions
             current_app.logger.error(e)
@@ -323,6 +335,8 @@ class EditRoute(Resource):
             return {"success": False, "msg": str(e)}, 403
 
 
+# pylint: disable=catching-too-general-exception
+# Define a Resource for saving routes
 @api.route('/api/savingroutes/')
 class SaveRoute(Resource):
     @api.expect(save_routes_model, validate=True)  # Expecting data matching the route_model
@@ -343,10 +357,12 @@ class SaveRoute(Resource):
             # catch all other exceptions
             current_app.logger.error(e)
             return {"success": False, "msg": str(e)}, 403
-
+        # pylint: disable=maybe-no-member
         return {"success": True, "route": str(route.id), "msg": "Route is saved"}, 200
 
 
+# pylint: disable=catching-too-general-exception
+# Define a Resource for fetching saved routes
 @api.route('/api/savedroutes/')
 class SavedRoutes(Resource):
     @api.expect(saved_routes_model, validate=True)  # Expecting data matching the route_model
@@ -370,6 +386,8 @@ class SavedRoutes(Resource):
                 "msg": "Routes retrieved successfully"}, 200
 
 
+# pylint: disable=catching-too-general-exception
+# Define a Resource for fetching all routes
 @api.route('/api/allUR/')
 class AllRoutes(Resource):
     def post(self):
@@ -383,6 +401,7 @@ class AllRoutes(Resource):
         return {"success": True, "routes": routes, "msg": "Routes retrieved successfully"}, 200
 
 
+# pylint: disable=catching-too-general-exception
 # Define a Resource for route search
 @api.route('/api/searchroute/')
 class SearchRoute(Resource):
@@ -401,6 +420,8 @@ class SearchRoute(Resource):
         return {"success": True, "routes": routes, "msg": "Routes retrieved successfully"}, 200
 
 
+# pylint: disable=catching-too-general-exception
+# Define a Resource for adding comments
 @api.route('/api/addingcomment/')
 class CreateComment(Resource):
     @api.expect(create_comment_model, validate=True)  # Expecting data matching the route_model
@@ -421,9 +442,13 @@ class CreateComment(Resource):
             # catch all other exceptions
             current_app.logger.error(e)
             return {"success": False, "msg": str(e)}, 403
+
+        # pylint: disable=maybe-no-member
         return {"success": True, "comment": str(new_comment.id), "msg": "Comment is created"}, 200
 
 
+# pylint: disable=catching-too-general-exception
+# Define a Resource for fetching comments
 @api.route('/api/routescomment/')
 class CreatedComment(Resource):
     @api.expect(created_comment_model, validate=True)  # Expecting data matching the route_model
@@ -445,6 +470,8 @@ class CreatedComment(Resource):
         return {"success": True, "comment": comments, "msg": "Comments retrieved successfully"}, 200
 
 
+# pylint: disable=catching-too-general-exception
+# Define a Resource for creating events
 @api.route('/api/uploadevent/')
 class CreateEvent(Resource):
     @api.expect(create_event_model, validate=True)  # Expecting data matching the route_model
