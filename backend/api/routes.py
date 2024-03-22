@@ -134,6 +134,7 @@ class UserSignUp(Resource):
             if user:
                 return {"success": False, "msg": "User exist"}, 405
             new_user = User(**req_data)  # Create a new user
+            new_user.save()  # Save the new user to the database
         except Exception as e:
             current_app.logger.error(e)
             # catch all other exceptions
@@ -186,8 +187,11 @@ class UploadRoute(Resource):
             if not user:
                 return {"success": False, "msg": "User not exist"}, 401
             new_comment = Comment(body=req_data.get("comment"), author=req_data.get("username"))
+            new_comment.save()
+            req_data.pop('comment')
             new_route = Route(**req_data)  # Create a new route
             new_route.add_comment(new_comment)
+            new_route.save()  # Save the new route to the database
             user.add_create_routes(new_route)
         except Exception as e:
             # catch all other exceptions
@@ -331,6 +335,7 @@ class AddComment(Resource):
             if not route:
                 return {"success": False, "msg": "Route not exist"}, 401
             new_comment = Comment(**req_data)  # Create a new route
+            new_comment.save()
             route.add_comment(new_comment)
         except Exception as e:
             # catch all other exceptions

@@ -17,7 +17,6 @@ class Comment(db.Document):
     def __init__(self, *args, **kwargs):
         kwargs.pop('route_id', None)
         super(Comment, self).__init__(*args, **kwargs)
-        self.save()
 
     def __repr__(self):
         return f"{self.author}'s comment"
@@ -62,10 +61,8 @@ class Route(db.Document):
         username = kwargs.pop('username', None)
         if username:
             kwargs['creator_username'] = username
-        kwargs.pop('comment', None)
         super(Route, self).__init__(*args, **kwargs)
         self.update_distance_and_time()
-        self.save()
 
     def __repr__(self):
         return f"Route {self.id}"
@@ -196,7 +193,6 @@ class User(db.Document):
         super(User, self).__init__(*args, **kwargs)
         if password:
             self.password = password
-        self.save()  # Save the new user to the database
 
     # Returns a string representation of the User instance
     def __repr__(self):
