@@ -1,4 +1,5 @@
 # /api/routes.py
+# pylint: disable=broad-exception-caught
 from flask import current_app, request
 from flask_restx import Resource, fields
 from .exts import api
@@ -118,7 +119,6 @@ create_event_model = api.model('CreateEventModel', {
 })
 
 
-# pylint: disable=catching-too-general-exception
 # Define a Resource for user sign-up
 @api.route('/api/sign-up/')
 class UserSignUp(Resource):
@@ -144,7 +144,6 @@ class UserSignUp(Resource):
                 "msg": "User was successfully registered"}, 200
 
 
-# pylint: disable=catching-too-general-exception
 # Define a Resource for user login
 @api.route('/api/login/')
 class UserLogin(Resource):
@@ -173,7 +172,6 @@ class UserLogin(Resource):
                 "msg": "User was successfully logined"}, 200
 
 
-# pylint: disable=catching-too-general-exception
 # Define a Resource for adding friends
 @api.route('/api/addingfriend/')
 class AddFriend(Resource):
@@ -200,7 +198,6 @@ class AddFriend(Resource):
         return {"success": True, "user": user.username, "msg": "Friend is added"}, 200
 
 
-# pylint: disable=catching-too-general-exception
 # Define a Resource for fetching friends
 @api.route('/api/usersfriends/')
 class UsersFriends(Resource):
@@ -222,7 +219,6 @@ class UsersFriends(Resource):
         return {"success": True, "friends": friends, "msg": "Friends retrieved successfully"}, 200
 
 
-# pylint: disable=catching-too-general-exception
 # Define a Resource for searching users
 @api.route('/api/searchuser/')
 class SearchUser(Resource):
@@ -241,7 +237,6 @@ class SearchUser(Resource):
         return {"success": True, "users": users, "msg": "Users retrieved successfully"}, 200
 
 
-# pylint: disable=catching-too-general-exception
 # Define a Resource to upload a route
 @api.route('/api/upload/')
 class CreateRoute(Resource):
@@ -273,7 +268,6 @@ class CreateRoute(Resource):
                 "msg": "Route is created"}, 200
 
 
-# pylint: disable=catching-too-general-exception
 # Define a Resource for fetching routes created by a user
 @api.route('/api/userroutes/')
 class CreatedRoute(Resource):
@@ -297,7 +291,6 @@ class CreatedRoute(Resource):
                 "msg": "Routes retrieved successfully"}, 200
 
 
-# pylint: disable=catching-too-general-exception
 # Define a Resource for editing and deleting routes
 @api.route('/api/editroute/')
 class EditRoute(Resource):
@@ -327,15 +320,13 @@ class EditRoute(Resource):
             if route:
                 route.delete()
                 return {"success": True, "msg": "Route has been deleted"}, 200
-            else:
-                return {"success": False, "msg": "Route does not exist"}, 401
+            return {"success": False, "msg": "Route does not exist"}, 401
         except Exception as e:
             # catch all other exceptions
             current_app.logger.error(e)
             return {"success": False, "msg": str(e)}, 403
 
 
-# pylint: disable=catching-too-general-exception
 # Define a Resource for saving routes
 @api.route('/api/savingroutes/')
 class SaveRoute(Resource):
@@ -361,7 +352,6 @@ class SaveRoute(Resource):
         return {"success": True, "route": str(route.id), "msg": "Route is saved"}, 200
 
 
-# pylint: disable=catching-too-general-exception
 # Define a Resource for fetching saved routes
 @api.route('/api/savedroutes/')
 class SavedRoutes(Resource):
@@ -386,7 +376,6 @@ class SavedRoutes(Resource):
                 "msg": "Routes retrieved successfully"}, 200
 
 
-# pylint: disable=catching-too-general-exception
 # Define a Resource for fetching all routes
 @api.route('/api/allUR/')
 class AllRoutes(Resource):
@@ -401,7 +390,6 @@ class AllRoutes(Resource):
         return {"success": True, "routes": routes, "msg": "Routes retrieved successfully"}, 200
 
 
-# pylint: disable=catching-too-general-exception
 # Define a Resource for route search
 @api.route('/api/searchroute/')
 class SearchRoute(Resource):
@@ -420,7 +408,6 @@ class SearchRoute(Resource):
         return {"success": True, "routes": routes, "msg": "Routes retrieved successfully"}, 200
 
 
-# pylint: disable=catching-too-general-exception
 # Define a Resource for adding comments
 @api.route('/api/addingcomment/')
 class CreateComment(Resource):
@@ -447,7 +434,6 @@ class CreateComment(Resource):
         return {"success": True, "comment": str(new_comment.id), "msg": "Comment is created"}, 200
 
 
-# pylint: disable=catching-too-general-exception
 # Define a Resource for fetching comments
 @api.route('/api/routescomment/')
 class CreatedComment(Resource):
@@ -470,7 +456,6 @@ class CreatedComment(Resource):
         return {"success": True, "comment": comments, "msg": "Comments retrieved successfully"}, 200
 
 
-# pylint: disable=catching-too-general-exception
 # Define a Resource for creating events
 @api.route('/api/uploadevent/')
 class CreateEvent(Resource):
