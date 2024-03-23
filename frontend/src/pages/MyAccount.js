@@ -13,7 +13,12 @@ const MyAccount = () => {
     const [routeData, setRouteData] = useState(null);
     const [likedRouteData, setLikedRouteData] = useState(null);
     const [friends, setFriends] = useState(null);
+    const [selectedFriend, setSelectedFriend] = useState(null);
 
+
+    const shareRouteWithFriend = async (routeId) => {
+       console.log(username, routeId, selectedFriend)
+    }
 
     const fetchUserRoutes = async () => {
         try {
@@ -169,6 +174,13 @@ const MyAccount = () => {
                             <div><b>Comment:</b>  {route.comment}</div>
                         </div>
                         <button onClick={() => deleteRoute(route.id)}>Delete</button>
+                        <select onChange={(e) => setSelectedFriend(e.target.value)}>
+                            <option value="">Select Friend</option>
+                            {friends && friends.map((friend, index) => (
+                                <option key={index} value={friend.username}>{friend.username}</option>
+                            ))}
+                        </select>
+                        <button onClick={() => shareRouteWithFriend(route.id)}>Share</button>
                     </div>
                 ))}
             </div>
@@ -187,6 +199,13 @@ const MyAccount = () => {
                             <div><b>Comment:</b>  {route.comment}</div>
                         </div>
                         <button onClick={() => deleteLikedRoute(route.id)}>Delete</button>
+                        <select onChange={(e) => setSelectedFriend(e.target.value)}>
+                            <option value="">Select Friend</option>
+                            {friends && friends.map((friend, index) => (
+                                <option key={index} value={friend.username}>{friend.username}</option>
+                            ))}
+                        </select>
+                        <button onClick={() => shareRouteWithFriend(route.id)}>Share</button>
                     </div>
                 ))}
             </div>
