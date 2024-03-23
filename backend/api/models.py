@@ -224,6 +224,9 @@ class User(db.Document):
     def get_create_routes_id(self):
         return [str(route.id) for route in self.create_routes]
 
+    def get_saved_routes_id(self):
+        return [str(route.id) for route in self.saved_routes]
+
     # Method to get routes saved by the user
     # in development
     def get_saved_routes(self):
@@ -240,15 +243,26 @@ class User(db.Document):
         self.saved_routes.append(new_route)
         self.save()
 
+    def remove_saved_route(self, route):
+        self.saved_routes.remove(route)
+        self.save()
+        return True
+
     def add_friend(self, friend):
-        if friend.id not in [f.id for f in self.friends]:
-            self.friends.append(friend)
-            self.save()
-            return True
-        return False
+        self.friends.append(friend)
+        self.save()
+        return True
+
+    def delete_friend(self, friend):
+        self.friends.remove(friend)
+        self.save()
+        return True
 
     def get_friends(self):
-        return [friend.toDICT() for friend in self.friends]
+        return [friend.toDICTFriend() for friend in self.friends]
+
+    def get_friends_id(self):
+        return [str(friend.id) for friend in self.friends]
 
     @classmethod
     def search_user(cls, args):
@@ -279,8 +293,19 @@ class User(db.Document):
             "phone": self.phone,
             "create_routes": self.get_create_routes(),  # Convert routes to list of IDs
             "saved_routes": self.get_saved_routes(),  # Convert routes to list of IDs
-            "friends": [repr(friend) for friend in self.friends],  # Convert friends to list of IDs
-            # Add other fields as needed
+            "friends": self.get_friends(),  # Convert friends to list of IDs
+        }
+
+    def toDICTFriend(self):
+        return {
+            "username": self.username,
+            "email": self.email,
+            "name": self.name,
+            "age": self.age,
+            "phone": self.phone,
+            "create_routes": self.get_create_routes_id(),  # Convert routes to list of IDs
+            "saved_routes": self.get_saved_routes_id(),  # Convert routes to list of IDs
+            "friends": self.get_friends_id(),  # Convert friends to list of IDs
         }
 
 
