@@ -18,7 +18,7 @@ class TestUserGetRoutes:
         user = User.objects(username=test_case['username']).first()
 
         # Retrieve the routes created by the user
-        routes = user.get_create_routes()
+        routes = user.get_created_routes()
 
         if test_case['expected_success']:
             # Verify that the newly added routes are included in the user's list of created routes
@@ -38,7 +38,7 @@ class TestUserGetRoutes:
         user = User.objects(username=test_case['username']).first()
 
         # Retrieve the IDs of the routes created by the user
-        routes_id = user.get_create_routes_id()
+        routes_id = user.get_created_routes_id()
 
         if test_case['expected_success']:
             # Check that the IDs of the newly added routes are correctly included in the user's list of route IDs

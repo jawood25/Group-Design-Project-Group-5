@@ -217,20 +217,21 @@ class User(db.Document):
         return check_password_hash(self.password_hash, password)
 
     # Method to get routes created by the user
-    def get_create_routes(self):
+    def get_created_routes(self):
         return [route.toDICT() for route in self.create_routes]
 
     # Method to get routes' id created by the user
-    def get_create_routes_id(self):
+    def get_created_routes_id(self):
         return [str(route.id) for route in self.create_routes]
-
-    def get_saved_routes_id(self):
-        return [str(route.id) for route in self.saved_routes]
 
     # Method to get routes saved by the user
     # in development
+
     def get_saved_routes(self):
         return [route.toDICT() for route in self.saved_routes]
+
+    def get_saved_routes_id(self):
+        return [str(route.id) for route in self.saved_routes]
 
     # Method to add a route to the user's created routes
     def add_create_routes(self, new_route):
@@ -239,11 +240,15 @@ class User(db.Document):
 
     # Method to add a route to the user's saveed routes
     # in development
-    def add_saved_routes(self, new_route):
-        self.saved_routes.append(new_route)
+    def add_saved_routes(self, route):
+        route.saves += 1
+        route.save()
+        self.saved_routes.append(route)
         self.save()
 
     def remove_saved_route(self, route):
+        route.save -= 1
+        route.save()
         self.saved_routes.remove(route)
         self.save()
         return True
@@ -259,7 +264,14 @@ class User(db.Document):
         return True
 
     def get_friends(self):
-        return [friend.toDICTFriend() for friend in self.friends]
+        friendinfo = [{
+            **friend.toDICT(),  # Unpack the dictionary returned by toDICT.
+            'create_routes': friend.get_created_routes_id(),
+            'saved_routes': friend.get_saved_routes_id(),
+            'friends': friend.get_friends_id()
+        } for friend in self.friends]
+
+        return friendinfo
 
     def get_friends_id(self):
         return [str(friend.id) for friend in self.friends]
@@ -291,22 +303,21 @@ class User(db.Document):
             "name": self.name,
             "age": self.age,
             "phone": self.phone,
-            "create_routes": self.get_create_routes(),  # Convert routes to list of IDs
+            "create_routes": self.get_created_routes(),  # Convert routes to list of IDs
             "saved_routes": self.get_saved_routes(),  # Convert routes to list of IDs
             "friends": self.get_friends(),  # Convert friends to list of IDs
         }
 
-    def toDICTFriend(self):
-        return {
-            "username": self.username,
-            "email": self.email,
-            "name": self.name,
-            "age": self.age,
-            "phone": self.phone,
-            "create_routes": self.get_create_routes_id(),  # Convert routes to list of IDs
-            "saved_routes": self.get_saved_routes_id(),  # Convert routes to list of IDs
-            "friends": self.get_friends_id(),  # Convert friends to list of IDs
-        }
+    # def toDICTFriend(self):
+    #     return
+    #
+    # "username": self.username,
+    # "email": self.email,
+    # "name": self.name,
+    # "age": self.age,
+    # "phone": self.phone,
+    #
+    # })
 
 
 class Event(db.Document):
