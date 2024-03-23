@@ -178,6 +178,11 @@ class Route(db.Document):
         }
 
 
+class SharedRoute(db.EmbeddedDocument):
+    route = db.StringField(required=True)  # ID of the route shared
+    shared_by = db.StringField(required=True)  # Username of the user who shared the route
+
+
 # Defines a User document with various fields to store user information
 class User(db.Document):
     username = db.StringField(required=True, unique=True)
@@ -188,6 +193,7 @@ class User(db.Document):
     phone = db.IntField(default=0)
     create_routes = db.ListField(db.ReferenceField(Route, reverse_delete_rule='PULL'))
     saved_routes = db.ListField(db.ReferenceField(Route, reverse_delete_rule='PULL'))
+    shared_routes = db.ListField(db.EmbeddedDocumentField(SharedRoute))  # Updated to use SharedRoute
     friends = db.ListField(db.ReferenceField('self', reverse_delete_rule='PULL'))
 
     def __init__(self, *args, **kwargs):
@@ -216,6 +222,10 @@ class User(db.Document):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    def add_create_routes(self, new_route):
+        self.create_routes.append(new_route)
+        self.save()
+
     # Method to get routes created by the user
     def get_created_routes(self):
         return [route.toDICT() for route in self.create_routes]
@@ -224,22 +234,7 @@ class User(db.Document):
     def get_created_routes_id(self):
         return [str(route.id) for route in self.create_routes]
 
-    # Method to get routes saved by the user
-    # in development
-
-    def get_saved_routes(self):
-        return [route.toDICT() for route in self.saved_routes]
-
-    def get_saved_routes_id(self):
-        return [str(route.id) for route in self.saved_routes]
-
-    # Method to add a route to the user's created routes
-    def add_create_routes(self, new_route):
-        self.create_routes.append(new_route)
-        self.save()
-
     # Method to add a route to the user's saveed routes
-    # in development
     def add_saved_routes(self, route):
         route.saves += 1
         route.save()
@@ -253,6 +248,23 @@ class User(db.Document):
         self.save()
         return True
 
+    def get_saved_routes(self):
+        return [route.toDICT() for route in self.saved_routes]
+
+    # Method to get routes saved by the user
+    def get_saved_routes_id(self):
+        return [str(route.id) for route in self.saved_routes]
+
+    def add_shared_route(self, route, shared_by):
+        self.shared_routes.append(SharedRoute(route=route, shared_by=shared_by))
+        self.save()
+
+    def get_shared_routes(self):
+        return [{
+            'route': shared_route.route,
+            'shared_by': shared_route.shared_by
+        } for shared_route in self.shared_routes]
+
     def add_friend(self, friend):
         self.friends.append(friend)
         self.save()
@@ -263,6 +275,9 @@ class User(db.Document):
         self.save()
         return True
 
+    def get_friends_id(self):
+        return [str(friend.id) for friend in self.friends]
+
     def get_friends(self):
         friendinfo = [{
             **friend.toDICT(),  # Unpack the dictionary returned by toDICT.
@@ -272,9 +287,6 @@ class User(db.Document):
         } for friend in self.friends]
 
         return friendinfo
-
-    def get_friends_id(self):
-        return [str(friend.id) for friend in self.friends]
 
     @classmethod
     def search_user(cls, args):
@@ -306,18 +318,8 @@ class User(db.Document):
             "create_routes": self.get_created_routes(),  # Convert routes to list of IDs
             "saved_routes": self.get_saved_routes(),  # Convert routes to list of IDs
             "friends": self.get_friends(),  # Convert friends to list of IDs
+            "shared_routes": self.get_shared_routes()
         }
-
-    # def toDICTFriend(self):
-    #     return
-    #
-    # "username": self.username,
-    # "email": self.email,
-    # "name": self.name,
-    # "age": self.age,
-    # "phone": self.phone,
-    #
-    # })
 
 
 class Event(db.Document):

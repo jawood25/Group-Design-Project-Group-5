@@ -94,6 +94,13 @@ saved_routes_model = api.model('SavedRoutesModel', {
     "username": fields.String(required=True, min_length=2, max_length=32),
 })
 
+share_routes_model = api.model('ShareRoutesModel', {
+    # Model for fetching shared routes
+    "username": fields.String(required=True, min_length=2, max_length=32),
+    "route_id": fields.String(required=True, min_length=2, max_length=32),
+    "friend_username": fields.String(required=True, min_length=2, max_length=32)
+})
+
 create_comment_model = api.model('CreateCommentModel', {
     # Model for adding comments
     "route_id": fields.String(required=True, min_length=2, max_length=32),
@@ -437,6 +444,35 @@ class SavedRoutes(Resource):
 
         print(111)
         return {"success": True, "routes": routes,
+                "msg": "Routes retrieved successfully"}, 200
+
+
+@api.route('/api/shareroute/')
+class ShareRoutes(Resource):
+    @api.expect(share_routes_model, validate=True)  # Expecting data matching the route_model
+    def post(self):
+        # Extract JSON data from the request
+        req_data = request.get_json()
+        _username = req_data.get("username")
+        _rid = req_data.get("route_id")
+        _friend = req_data.get("friend_username")
+        # Fetch routes created by the user
+        try:
+            friend = User.get_by_username(_friend)
+            if not friend:
+                return {"success": False, "msg": "Friend not exist"}, 401
+
+            if not User.get_by_username(_username):
+                return {"success": False, "msg": "User not exist"}, 401
+            if not Route.get_by_rid(_rid):
+                return {"success": False, "msg": "Route not exist"}, 401
+            friend.add_shared_route(_rid, _username)
+        except Exception as e:
+            # catch all other exceptions
+            current_app.logger.error(e)
+            return {"success": False, "msg": str(e)}, 403
+
+        return {"success": True, "routes": friend.toDICT(),
                 "msg": "Routes retrieved successfully"}, 200
 
 
