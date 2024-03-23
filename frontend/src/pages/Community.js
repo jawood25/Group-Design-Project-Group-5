@@ -1,15 +1,38 @@
 // Community.js
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Friend from '../components/Friend';
 import Header from '../components/Header';
+import { useSelector } from 'react-redux';
 
 const Community = () => {
+    const username = useSelector((state) => state.userInfo.username)
+    const [friends, setFriends] = useState(null);
     const [searchParams, setSearchParams] = useState({
         username: '',
         email: ''
     });
     const [searchResults, setSearchResults] = useState([]);
+
+    const fetchUserFriends = async () => {
+        try {
+            const response = await fetch('/api/usersfriends', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username }),
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            console.log(data)
+            setFriends(data.friends);
+        } catch (error) {
+            console.error('There was a problem with your fetch operation:', error);
+        }
+    };
 
     const handleChange = (e) => {
         setSearchParams({
@@ -31,7 +54,8 @@ const Community = () => {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
-            setSearchResults(data); // Mettez à jour les résultats de la recherche
+            data.users = data.users.filter(user => user.username !== username);
+            setSearchResults(data);
         } catch (error) {
             console.error('There was a problem with your fetch operation:', error);
         }
@@ -47,11 +71,11 @@ const Community = () => {
         });
         handleUserSearch(filteredParams);
     };
-
-    const handleFollow = (username) => {
-        console.log(`Following user: ${username}`);
-    };
-
+    
+    useEffect(() => {
+        fetchUserFriends();
+    }, []);
+    
     return (
         <div>
             <Header />
@@ -62,13 +86,19 @@ const Community = () => {
                 <button type="submit">Search</button>
             </form>
             <div>
-                {searchResults.success && searchResults.users.length > 0 ? (
-                    searchResults.users.map((user, index) => (
-                        <Friend key={index} username={user.username} onFollow={handleFollow} />
-                    ))
-                ) : (
-                    <p>No users found</p>
-                )}
+            {searchResults.success && searchResults.users.length > 0 ? (
+                searchResults.users.map((user, index) => {
+                    return (
+                        friends && friends.includes(user.username) ? (
+                            <Friend key={index} username={user.username} email={user.email} isFriend={true} />
+                        ) : (
+                            <Friend key={index} username={user.username} email={user.email} isFriend={false} />
+                        )
+                    );
+                })
+            ) : (
+                <p>No users found</p>
+            )}
             </div>
         </div>
     );

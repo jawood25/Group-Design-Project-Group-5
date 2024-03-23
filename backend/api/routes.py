@@ -66,6 +66,12 @@ savingroutes_model = api.model('SaveRoutesModel', {
     "route_id": fields.String(required=True, min_length=2, max_length=32)
 })
 
+unsavingroutes_model = api.model('UnsaveRoutesModel', {
+    # Model for saving routes
+    "username": fields.String(required=True, min_length=2, max_length=32),
+    "route_id": fields.String(required=True, min_length=2, max_length=32)
+})
+
 savedroutes_model = api.model('SavedRoutesModel', {
     # Model for fetching saved routes
     "username": fields.String(required=True, min_length=2, max_length=32),
@@ -84,6 +90,12 @@ routescomment_model = api.model('RoutesCommentModel', {
 })
 
 addingfriend_model = api.model('AddingFriendModel', {
+    # Model for adding comments
+    "username": fields.String(required=True, min_length=2, max_length=32),
+    "friend_username": fields.String(required=True, min_length=2, max_length=32)
+})
+
+deletingfriend_model = api.model('DeletingFriendModel', {
     # Model for adding comments
     "username": fields.String(required=True, min_length=2, max_length=32),
     "friend_username": fields.String(required=True, min_length=2, max_length=32)
@@ -272,13 +284,52 @@ class SavingRoute(Resource):
             if not user:
                 return {"success": False, "msg": "User not exist"}, 401
             route = Route.get_by_rid(_route_id)
+            if not route:
+                return {"success": False, "msg": "Route not exist"}, 404
             user.add_saved_routes(route)
+            
+            # Increment the saves parameter of the route
+            route.saves += 1
+            route.save()
+
         except Exception as e:
             # catch all other exceptions
             current_app.logger.error(e)
             return {"success": False, "msg": str(e)}, 403
 
         return {"success": True, "route": str(route.id), "msg": "Route is saved"}, 200
+
+@api.route('/api/unsavingroutes/')
+class UnsavingRoute(Resource):
+    @api.expect(unsavingroutes_model, validate=True)  # Expecting data matching the unsavingroutes_model
+    def post(self):
+        # Extract JSON data from the request
+        req_data = request.get_json()
+        _username = req_data.get("username")
+        _route_id = req_data.get("route_id")
+
+        # Remove the saved route with the provided details
+        try:
+            user = User.get_by_username(_username)  # Fetch user by username
+            if not user:
+                return {"success": False, "msg": "User not exist"}, 401
+            route = Route.get_by_rid(_route_id)
+            if not route:
+                return {"success": False, "msg": "Route not exist"}, 404
+            user.remove_saved_route(route)
+            
+            # Decrement the saves parameter of the route
+            route.saves -= 1
+            route.save()
+
+        except Exception as e:
+            # Catch all other exceptions
+            current_app.logger.error(e)
+            return {"success": False, "msg": str(e)}, 403
+
+        return {"success": True, "route": str(route.id), "msg": "Route is unsaved"}, 200
+
+
 
 
 @api.route('/api/savedroutes/')
@@ -382,6 +433,29 @@ class AddingFriend(Resource):
             current_app.logger.error(e)
             return {"success": False, "msg": str(e)}, 403
         return {"success": True, "user": user.username, "msg": "Friend is added"}, 200
+
+@api.route('/api/deletingfriend/')
+class DeletingFriend(Resource):
+    @api.expect(deletingfriend_model, validate=True)  # Expecting data matching the route_model
+    def post(self):
+        # Extract JSON data from the request
+        req_data = request.get_json()
+
+        # Create a new route with the provided details
+        try:
+            user = User.get_by_username(req_data.get("username"))  # Fetch route by username
+            friend = User.get_by_username(req_data.get("friend_username"))  # Fetch route by username
+            if not user:
+                return {"success": False, "msg": "User not exist"}, 401
+            if not friend:
+                return {"success": False, "msg": "Friend not exist"}, 401
+            if not user.delete_friend(friend):
+                return {"success": False, "msg": "error"}, 402
+        except Exception as e:
+            # catch all other exceptions
+            current_app.logger.error(e)
+            return {"success": False, "msg": str(e)}, 403
+        return {"success": True, "user": user.username, "msg": "Friend is deleted"}, 200
 
 
 @api.route('/api/usersfriends/')
