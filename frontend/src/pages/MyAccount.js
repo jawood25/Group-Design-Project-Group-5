@@ -121,14 +121,24 @@ const MyAccount = () => {
         }
     };
 
-    const deleteRoute = async (routeId) => {
+    const deleteRoute = async (route) => {
+        const routeData = {
+            route_id: route.id,
+            username: username,
+            coordinates: route.coordinates,
+            mapCenter: route.mapCenter,
+            city: route.city,
+            location: route.location,
+            difficulty: route.difficulty,
+            mobility: route.mobility,
+        };
         try {
-            const response = await fetch('/api/delete-route', {
-                method: 'POST',
+            const response = await fetch('/api/editroute', {
+                method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username,  routeId}),
+                body: JSON.stringify(routeData),
             });
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -189,7 +199,7 @@ const MyAccount = () => {
                             <div><b>Mobility:</b>  {route.mobility}</div>
                             <div><b>Comment:</b>  {route.comment}</div>
                         </div>
-                        <button onClick={() => deleteRoute(route.id)}>Delete</button>
+                        <button onClick={() => deleteRoute(route)}>Delete</button>
                         <select onChange={(e) => setSelectedFriend(e.target.value)}>
                             <option value="">Select Friend</option>
                             {friends && friends.map((friend, index) => (
