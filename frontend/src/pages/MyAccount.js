@@ -17,7 +17,7 @@ const MyAccount = () => {
 
 
     const shareRouteWithFriend = async (route_id) => {
-       console.log(username, route_id, friend_username)
+        console.log(username, route_id, friend_username)
         try {
             const response = await fetch('/api/shareroute', {
                 method: 'POST',
@@ -152,6 +152,37 @@ const MyAccount = () => {
         }
     }
 
+    // const editRoute = async (route) => {
+    //     const routeData = {
+    //         route_id: route.id,
+    //         username: username,
+    //         coordinates: route.coordinates,
+    //         mapCenter: route.mapCenter,
+    //         city: route.city,
+    //         location: route.location,
+    //         difficulty: route.difficulty,
+    //         mobility: route.mobility,
+    //     };
+    //     try {
+    //         const response = await fetch('/api/editroute', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify(routeData),
+    //         });
+    //         if (!response.ok) {
+    //             throw new Error('Network response was not ok');
+    //         }
+    //         const data = await response.json();
+    //         console.log(data)
+    //         await fetchUserRoutes()
+    //     }
+    //     catch (error) {
+    //         console.error('There was a problem with your fetch operation:', error);
+    //     }
+    // }
+
     const deleteLikedRoute = async (route_id) => {
         try {
             const response = await fetch('/api/unsavingroutes', {
@@ -159,7 +190,7 @@ const MyAccount = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username,  route_id}),
+                body: JSON.stringify({ username, route_id }),
             });
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -172,7 +203,7 @@ const MyAccount = () => {
             console.error('There was a problem with your fetch operation:', error);
         }
     }
-    
+
     useEffect(() => {
         fetchUserRoutes();
         fetchUserLikedRoutes();
@@ -199,7 +230,29 @@ const MyAccount = () => {
                             <div><b>Mobility:</b>  {route.mobility}</div>
                             <div><b>Comment:</b>  {route.comment}</div>
                         </div>
-                        <button onClick={() => deleteRoute(route)}>Delete</button>
+
+                        {/* <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            Edit Route
+                        </button>
+
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Edit your route</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        test
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> */}
+
+                        <button className="btn btn-primary" onClick={() => deleteRoute(route)}>Delete Route</button>
                         <select onChange={(e) => setSelectedFriend(e.target.value)}>
                             <option value="">Select Friend</option>
                             {friends && friends.map((friend, index) => (
@@ -237,7 +290,7 @@ const MyAccount = () => {
             </div>
             <div>
                 {friends && friends.map((friend, index) => (
-                    <Friend key={index} username={friend.username} isFriend={true}/>
+                    <Friend key={index} username={friend.username} isFriend={true} />
                 ))}
             </div>
         </div>
