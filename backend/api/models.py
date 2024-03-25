@@ -148,6 +148,14 @@ class Route(db.Document):
         route.save()
         return True, "Route updated successfully"
 
+    def delete_route(self):
+        for user in User.objects(saved_routes=self):
+            user.update(pull__saved_routes=self)
+        for comment in self.comment:
+            comment.delete()
+        User.get_by_username(self.creator_username).remove_created_route(self)
+        self.delete()
+
     @classmethod
     def all_routes(cls):
         # Fetch all routes
@@ -224,6 +232,10 @@ class User(db.Document):
 
     def add_create_routes(self, new_route):
         self.create_routes.append(new_route)
+        self.save()
+
+    def remove_created_route(self, route):
+        self.create_routes.remove(route)
         self.save()
 
     # Method to get routes created by the user

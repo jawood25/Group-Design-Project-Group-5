@@ -361,7 +361,7 @@ class EditRoute(Resource):
         try:
             route = Route.get_by_rid(_rid)
             if route:
-                route.delete()
+                route.delete_route()
                 return {"success": True, "msg": "Route has been deleted"}, 200
             return {"success": False, "msg": "Route does not exist"}, 401
         except Exception as e:
