@@ -100,7 +100,7 @@ class Route(db.Document):
         skipping any comments that cause exceptions during this process.
         """
         safe_comments = []
-        for comment in self.comments:
+        for comment in self.comment:
             try:
                 safe_comments.append(comment.toDICT())
             except Exception:
