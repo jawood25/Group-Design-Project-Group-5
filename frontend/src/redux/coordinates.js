@@ -8,10 +8,13 @@ export const coordinates = createSlice({
     reducers: {
         saveCoordinates: (state, action) => {
             state.coordinates = action.payload;
+        },
+        resetCoordinates: state => {
+            state.coordinates = [];
         }
     }
 });
 
-export const { saveCoordinates } = coordinates.actions
+export const { saveCoordinates, resetCoordinates } = coordinates.actions
 
 export default coordinates.reducer

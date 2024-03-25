@@ -3,9 +3,13 @@ import Header from '../components/Header';
 import { useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import MapboxRenderLine from './MapboxRenderLine';
+import EditRoute from '../components/EditRoute';
 import '../style/myaccount.css'
 import RouteSearch from '../components/RouteSearch';
 import Friend from '../components/Friend';
+import { resetCoordinates } from '../redux/coordinates';
+import { resetMapCenter } from '../redux/mapCenter';
+import { useDispatch } from 'react-redux';
 
 
 const MyAccount = () => {
@@ -15,6 +19,9 @@ const MyAccount = () => {
     const [friends, setFriends] = useState(null);
     const [friend_username, setSelectedFriend] = useState(null);
 
+    const dispatch = useDispatch();
+    const coordinates = useSelector((state) => state.coordinates.coordinates)
+    const mapCenter = useSelector((state) => state.mapCenter.center)
 
     const shareRouteWithFriend = async (route_id) => {
         console.log(username, route_id, friend_username)
@@ -153,33 +160,40 @@ const MyAccount = () => {
     }
 
     // const editRoute = async (route) => {
-    //     const routeData = {
-    //         route_id: route.id,
-    //         username: username,
-    //         coordinates: route.coordinates,
-    //         mapCenter: route.mapCenter,
-    //         city: route.city,
-    //         location: route.location,
-    //         difficulty: route.difficulty,
-    //         mobility: route.mobility,
-    //     };
-    //     try {
-    //         const response = await fetch('/api/editroute', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             body: JSON.stringify(routeData),
-    //         });
-    //         if (!response.ok) {
-    //             throw new Error('Network response was not ok');
+    //     if(coordinates.length > 1) {
+
+    //         const routeData = {
+    //             route_id: route.id,
+    //             username: username,
+    //             coordinates: route.coordinates,
+    //             mapCenter: route.mapCenter,
+    //             city: route.city,
+    //             location: route.location,
+    //             difficulty: route.difficulty,
+    //             mobility: route.mobility,
+    //         };
+    //         try {
+    //             const response = await fetch('/api/editroute', {
+    //                 method: 'POST',
+    //                 headers: {
+    //                     'Content-Type': 'application/json',
+    //                 },
+    //                 body: JSON.stringify(routeData),
+    //             });
+    //             if (!response.ok) {
+    //                 throw new Error('Network response was not ok');
+    //             }
+    //             else {
+    //                 const data = await response.json();
+    //                 console.log(data)
+    //                 dispatch(resetCoordinates());
+    //                 dispatch(resetMapCenter());
+    //                 await fetchUserRoutes()
+    //             }
     //         }
-    //         const data = await response.json();
-    //         console.log(data)
-    //         await fetchUserRoutes()
-    //     }
-    //     catch (error) {
-    //         console.error('There was a problem with your fetch operation:', error);
+    //         catch (error) {
+    //             console.error('There was a problem with your fetch operation:', error);
+    //         }
     //     }
     // }
 
@@ -243,7 +257,7 @@ const MyAccount = () => {
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        test
+                                        <EditRoute route={route} />
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-primary">Save changes</button>
