@@ -13,11 +13,27 @@ const MyAccount = () => {
     const [routeData, setRouteData] = useState(null);
     const [likedRouteData, setLikedRouteData] = useState(null);
     const [friends, setFriends] = useState(null);
-    const [selectedFriend, setSelectedFriend] = useState(null);
+    const [friend_username, setSelectedFriend] = useState(null);
 
 
-    const shareRouteWithFriend = async (routeId) => {
-       console.log(username, routeId, selectedFriend)
+    const shareRouteWithFriend = async (route_id) => {
+       console.log(username, route_id, friend_username)
+        try {
+            const response = await fetch('/api/shareroute', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, route_id, friend_username }),
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            console.log(data)
+        } catch (error) {
+            console.error('There was a problem with your fetch operation:', error);
+        }
     }
 
     const fetchUserRoutes = async () => {

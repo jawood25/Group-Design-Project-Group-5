@@ -31,6 +31,9 @@ class Comment(db.Document):
             'body': self.body
         }
 
+class SharedRoute(db.EmbeddedDocument):
+    route = db.StringField(required=True)  # ID of the route shared
+    shared_by = db.StringField(required=True)  # Username of the user who shared the route
 
 # Defines a Route document for storing information about specific routes
 class Route(db.Document):
@@ -187,7 +190,9 @@ class User(db.Document):
     phone = db.IntField(default=0)
     create_routes = db.ListField(db.ReferenceField(Route, reverse_delete_rule='PULL'))
     saved_routes = db.ListField(db.ReferenceField(Route, reverse_delete_rule='PULL'))
+    shared_routes = db.ListField(db.EmbeddedDocumentField(SharedRoute))  # Updated to use SharedRoute
     friends = db.ListField(db.ReferenceField('self', reverse_delete_rule='PULL'))
+    
 
     def __init__(self, *args, **kwargs):
         password = None
@@ -232,7 +237,6 @@ class User(db.Document):
     def get_saved_routes(self):
         return [route.toDICT() for route in self.saved_routes]
 
-    # Method to add a route to the user's created routes
     def add_create_routes(self, new_route):
         self.create_routes.append(new_route)
         self.save()
@@ -247,6 +251,16 @@ class User(db.Document):
         self.saved_routes.remove(route)
         self.save()
         return True
+    
+    def add_shared_route(self, route, shared_by):
+        self.shared_routes.append(SharedRoute(route=route, shared_by=shared_by))
+        self.save()
+
+    def get_shared_routes(self):
+        return [{
+            'route': shared_route.route,
+            'shared_by': shared_route.shared_by
+        } for shared_route in self.shared_routes]
 
     def add_friend(self, friend):
         self.friends.append(friend)
@@ -260,6 +274,7 @@ class User(db.Document):
 
     def get_friends(self):
         return [friend.toDICTFriend() for friend in self.friends]
+
     
     def get_friends_id(self):
         return [str(friend.id) for friend in self.friends]
@@ -291,6 +306,7 @@ class User(db.Document):
             "phone": self.phone,
             "create_routes": self.get_create_routes(),  # Convert routes to list of IDs
             "saved_routes": self.get_saved_routes(),  # Convert routes to list of IDs
+            "shared_routes": self.get_shared_routes(),
             "friends": self.get_friends(),  # Convert friends to list of IDs
         }
     
