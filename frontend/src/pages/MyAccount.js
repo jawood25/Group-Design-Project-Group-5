@@ -18,10 +18,12 @@ const MyAccount = () => {
     const [likedRouteData, setLikedRouteData] = useState(null);
     const [friends, setFriends] = useState(null);
     const [friend_username, setSelectedFriend] = useState(null);
+    const [editError, setEditError] = useState('');
+    const [editSuccess, setEditSuccess] = useState('');
 
     const dispatch = useDispatch();
-    const coordinates = useSelector((state) => state.coordinates.coordinates)
-    const mapCenter = useSelector((state) => state.mapCenter.center)
+    const coordinates_edited = useSelector((state) => state.coordinates.coordinates)
+    const mapCenter_edited = useSelector((state) => state.mapCenter.center)
 
     const shareRouteWithFriend = async (route_id) => {
         console.log(username, route_id, friend_username)
@@ -159,43 +161,46 @@ const MyAccount = () => {
         }
     }
 
-    // const editRoute = async (route) => {
-    //     if(coordinates.length > 1) {
+    const editRoute = async (route) => {
+        if (coordinates_edited.length > 1) {
 
-    //         const routeData = {
-    //             route_id: route.id,
-    //             username: username,
-    //             coordinates: route.coordinates,
-    //             mapCenter: route.mapCenter,
-    //             city: route.city,
-    //             location: route.location,
-    //             difficulty: route.difficulty,
-    //             mobility: route.mobility,
-    //         };
-    //         try {
-    //             const response = await fetch('/api/editroute', {
-    //                 method: 'POST',
-    //                 headers: {
-    //                     'Content-Type': 'application/json',
-    //                 },
-    //                 body: JSON.stringify(routeData),
-    //             });
-    //             if (!response.ok) {
-    //                 throw new Error('Network response was not ok');
-    //             }
-    //             else {
-    //                 const data = await response.json();
-    //                 console.log(data)
-    //                 dispatch(resetCoordinates());
-    //                 dispatch(resetMapCenter());
-    //                 await fetchUserRoutes()
-    //             }
-    //         }
-    //         catch (error) {
-    //             console.error('There was a problem with your fetch operation:', error);
-    //         }
-    //     }
-    // }
+            const routeData = {
+                route_id: route.id,
+                username: username,
+                coordinates: coordinates_edited,
+                mapCenter: mapCenter_edited,
+                city: route.city,
+                location: route.location,
+                difficulty: route.difficulty,
+                mobility: route.mobility,
+            };
+            try {
+                const response = await fetch('/api/editroute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(routeData),
+                });
+                if (!response.ok) {
+                    setEditError('Failed to edit the route. Please try again.');
+                    throw new Error('Network response was not ok');
+                }
+                else {
+                    const data = await response.json();
+                    console.log(data)
+                    dispatch(resetCoordinates());
+                    dispatch(resetMapCenter());
+                    await fetchUserRoutes()
+                    setEditSuccess("Route successfully edited!")
+                }
+            }
+            catch (error) {
+                setEditError('Failed to edit the route. Please try again.');
+                console.error('There was a problem with your fetch operation:', error);
+            }
+        }
+    }
 
     const deleteLikedRoute = async (route_id) => {
         try {
@@ -229,7 +234,7 @@ const MyAccount = () => {
             <Header />
             <h3>Username: {username}</h3>
             <h2>My Account Page</h2>
-            {/* <RouteSearch onSearch={handleSearch} /> */}
+            <RouteSearch onSearch={handleSearch} />
             <h4>My Paths</h4>
             <div className="grid-container">
                 {routeData && routeData.map((route, index) => (
@@ -242,29 +247,34 @@ const MyAccount = () => {
                             <div><b>Time:</b>  {route.hours}:{route.minutes}</div>
                             <div><b>Difficulty:</b>  {route.difficulty}</div>
                             <div><b>Mobility:</b>  {route.mobility}</div>
-                            <div><b>Comment:</b>  {route.comment}</div>
+                            <div><b>Comment:</b>  {route.comment.body}</div>
                         </div>
 
-                        {/* <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => {
+                            setEditError('');
+                            setEditSuccess('');
+                        }}>
                             Edit Route
                         </button>
 
-                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Edit your route</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div className="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div className="modal-dialog modal-dialog-centered modal-xl">
+                                <div className="modal-content">
+                                    <div className="modal-header">
+                                        <h5 className="modal-title" id="exampleModalLabel">Edit your route</h5>
+                                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <div class="modal-body">
+                                    <div className="modal-body">
                                         <EditRoute route={route} />
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary">Save changes</button>
+                                    <div className="modal-footer">
+                                        {editError && <div className="alert alert-danger" role="alert">{editError}</div>}
+                                        {editSuccess && <div className="alert alert-success" role="alert">{editSuccess}</div>}
+                                        <button type="button" className="btn btn-primary" onClick={() => editRoute(route)}>Save changes</button>
                                     </div>
                                 </div>
                             </div>
-                        </div> */}
+                        </div>
 
                         <button className="btn btn-primary" onClick={() => deleteRoute(route)}>Delete Route</button>
                         <select onChange={(e) => setSelectedFriend(e.target.value)}>
@@ -289,7 +299,7 @@ const MyAccount = () => {
                             <div><b>Time:</b>  {route.hours}:{route.minutes}</div>
                             <div><b>Difficulty:</b>  {route.difficulty}</div>
                             <div><b>Mobility:</b>  {route.mobility}</div>
-                            <div><b>Comment:</b>  {route.comment}</div>
+                            <div><b>Comment:</b>  {route.comment.body}</div>
                         </div>
                         <button onClick={() => deleteLikedRoute(route.id)}>Delete</button>
                         <select onChange={(e) => setSelectedFriend(e.target.value)}>
