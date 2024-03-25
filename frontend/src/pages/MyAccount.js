@@ -129,7 +129,7 @@ const MyAccount = () => {
     };
 
     const deleteRoute = async (route) => {
-        const routeData = {
+        const routeInfo = {
             route_id: route.id,
             username: username,
             coordinates: route.coordinates,
@@ -145,7 +145,7 @@ const MyAccount = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(routeData),
+                body: JSON.stringify(routeInfo),
             });
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -229,7 +229,7 @@ const MyAccount = () => {
             <Header />
             <h3>Username: {username}</h3>
             <h2>My Account Page</h2>
-            <RouteSearch onSearch={handleSearch} />
+            {/* <RouteSearch onSearch={handleSearch} /> */}
             <h4>My Paths</h4>
             <div className="grid-container">
                 {routeData && routeData.map((route, index) => (
