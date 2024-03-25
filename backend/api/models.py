@@ -95,7 +95,18 @@ class Route(db.Document):
         self.save()
 
     def get_comments(self):
-        return [comment.toDICT() for comment in self.comment]
+        """
+        Method to get comments associated with the user. Safely retrieves comments.
+        skipping any comments that cause exceptions during this process.
+        """
+        safe_comments = []
+        for comment in self.comments:
+            try:
+                safe_comments.append(comment.toDICT())
+            except Exception:
+                # Optionally log the exception or handle it as needed
+                continue
+        return safe_comments
 
     @classmethod
     def search_routes(cls, args):
@@ -149,11 +160,22 @@ class Route(db.Document):
         return True, "Route updated successfully"
 
     def delete_route(self):
-        for user in User.objects(saved_routes=self):
-            user.update(pull__saved_routes=self)
+        # Convert self.id to string for comparison
+        route_id = str(self.id)
+
+        # Iterate through all users to update their route references
+        for user in User.objects():
+            # Filter out this route from created and saved routes
+            user.update(
+                pull__create_routes=self,
+                pull__saved_routes=self
+            )
+
+            # Filter out this route from shared routes
+            user.update(pull__shared_routes__route=route_id)
+
         for comment in self.comment:
             comment.delete()
-        User.get_by_username(self.creator_username).remove_created_route(self)
         self.delete()
 
     @classmethod
@@ -238,13 +260,33 @@ class User(db.Document):
         self.create_routes.remove(route)
         self.save()
 
-    # Method to get routes created by the user
     def get_created_routes(self):
-        return [route.toDICT() for route in self.create_routes]
+        """
+        Method to get routes created by the user. Converts each created route to its dictionary representation,
+        safely skipping any routes that cause exceptions during this process.
+        """
+        safe_created_routes = []
+        for route in self.create_routes:
+            try:
+                safe_created_routes.append(route.toDICT())
+            except Exception:
+                # Optionally log the exception or handle it as needed
+                continue
+        return safe_created_routes
 
-    # Method to get routes' id created by the user
     def get_created_routes_id(self):
-        return [str(route.id) for route in self.create_routes]
+        """
+        Method to get the IDs of routes created by the user. Returns a list of route IDs as strings,
+        safely skipping any routes that cause exceptions when accessing their ID attribute.
+        """
+        safe_created_route_ids = []
+        for route in self.create_routes:
+            try:
+                safe_created_route_ids.append(str(route.id))
+            except Exception:
+                # Optionally log the exception or handle it as needed
+                continue
+        return safe_created_route_ids
 
     # Method to add a route to the user's saveed routes
     def add_saved_routes(self, route):
@@ -261,21 +303,49 @@ class User(db.Document):
         return True
 
     def get_saved_routes(self):
-        return [route.toDICT() for route in self.saved_routes]
+        """
+        Method to get saved routes by the user. Safely retrieves saveds
+        skipping any routes that cause exceptions during this process.
+        """
+        safe_routes = []
+        for route in self.saved_routes:
+            try:
+                safe_routes.append(route.toDICT())
+            except Exception:
+                # Optionally log the exception or handle it as needed
+                continue
+        return safe_routes
 
-    # Method to get routes saved by the user
     def get_saved_routes_id(self):
-        return [str(route.id) for route in self.saved_routes]
+        """
+        Method to get the IDs of routes saved by the user. Returns a list of route IDs as strings,
+        safely skipping any routes that cause exceptions when accessing their ID attribute.
+        """
+        safe_route_ids = []
+        for route in self.saved_routes:
+            try:
+                safe_route_ids.append(str(route.id))
+            except Exception:
+                # Optionally log the exception or handle it as needed
+                continue
+        return safe_route_ids
 
     def add_shared_route(self, route, shared_by):
         self.shared_routes.append(SharedRoute(route=route, shared_by=shared_by))
         self.save()
 
     def get_shared_routes(self):
-        return [{
-            'route': shared_route.route,
-            'shared_by': shared_route.shared_by
-        } for shared_route in self.shared_routes]
+        shared_routes_list = []
+        for shared_route in self.shared_routes:
+            try:
+                shared_route_dict = {
+                    'route': shared_route.route,
+                    'shared_by': shared_route.shared_by
+                }
+                shared_routes_list.append(shared_route_dict)
+            except AttributeError:
+                continue
+        return shared_routes_list
 
     def add_friend(self, friend):
         self.friends.append(friend)

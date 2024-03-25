@@ -583,3 +583,9 @@ class CreateEvent(Resource):
 
         return {"success": True, "event": new_event.toDICT(),
                 "msg": "Route is created"}, 200
+
+@api.route('/api/delevent/')
+class test(Resource):
+    def get(self):
+        user = User.get_by_username("newuser")
+        return {"success": True,"user": user.toDICT(), "msg": "Route is created"}, 200
