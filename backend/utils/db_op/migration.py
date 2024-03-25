@@ -21,7 +21,8 @@ def migrate_routes():
     updates = []
     for r in route_collection.find():
         if 'comment' in r and not isinstance(r['comment'], list):
-            new_comment = Comment(body=r['comment'], author="test").save()  # Create and save a Comment object using ORM
+            # Create and save a Comment object using ORM
+            new_comment = Comment(body=r['comment'], author="test").save()
 
             # Add directly to the database and get ID, or any other logic
             comment_id = new_comment.id
@@ -43,10 +44,12 @@ def migrate_comments():
     updates = []
     for c in comment_collection.find():
         if 'username' in c:
-            update = UpdateOne({'_id': c['_id']}, {'$set': {'author': c['username']},'$unset': {'username': ''}})
+            update = UpdateOne({'_id': c['_id']},
+                               {'$set': {'author': c['username']}, '$unset': {'username': ''}})
             updates.append(update)
         if 'author_username' in c:
-            update = UpdateOne({'_id': c['_id']}, {'$set': {'author': c['author_username']},'$unset': {'author_username': ''}})
+            update = UpdateOne({'_id': c['_id']},
+                               {'$set': {'author': c['author_username']}, '$unset': {'author_username': ''}})
             updates.append(update)
 
     # Execute bulk update
@@ -63,4 +66,3 @@ def migrate():
 
 if __name__ == '__main__':
     migrate()
-

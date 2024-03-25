@@ -16,8 +16,7 @@ class Comment(db.Document):
 
     def __init__(self, *args, **kwargs):
         kwargs.pop('route_id', None)
-        super(Comment, self).__init__(*args, **kwargs)
-        self.save()
+        super().__init__(*args, **kwargs)
 
     def __repr__(self):
         return f"{self.author}'s comment"
@@ -31,9 +30,6 @@ class Comment(db.Document):
             'body': self.body
         }
 
-class SharedRoute(db.EmbeddedDocument):
-    route = db.StringField(required=True)  # ID of the route shared
-    shared_by = db.StringField(required=True)  # Username of the user who shared the route
 
 # Defines a Route document for storing information about specific routes
 class Route(db.Document):
@@ -65,10 +61,8 @@ class Route(db.Document):
         username = kwargs.pop('username', None)
         if username:
             kwargs['creator_username'] = username
-        kwargs.pop('comment', None)
-        super(Route, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.update_distance_and_time()
-        self.save()
 
     def __repr__(self):
         return f"Route {self.id}"
@@ -79,7 +73,7 @@ class Route(db.Document):
 
     def cal_time(self):
         speed_map = {"Bike": 20, "Run": 10, "Walk": 5}
-        speed = speed_map.get(self.mobility, 10)  # Default to running speed if mobility is not recognized
+        speed = speed_map.get(self.mobility, 10)  # Default speed is 10 km/h
         self.min = round((self.distance / speed) * 60)
 
     def cal_distance(self):
@@ -89,12 +83,12 @@ class Route(db.Document):
             dlat, dlon = lat2 - lat1, lon2 - lon1
             a = math.sin(dlat / 2) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2) ** 2
             c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-            R = 6371  # Earth radius in kilometers
-            return R * c
+            radius = 6371  # Earth radius in kilometers
+            return radius * c
 
         if len(self.coordinates) > 1:
-            self.distance = round(sum(haversine_distance(self.coordinates[i], self.coordinates[i + 1]) for i in
-                                      range(len(self.coordinates) - 1)), 3)
+            self.distance = round(sum(haversine_distance(self.coordinates[i], self.coordinates[i + 1])
+                                      for i in range(len(self.coordinates) - 1)), 3)
 
     def add_comment(self, comment):
         self.comment.append(comment)
@@ -112,8 +106,12 @@ class Route(db.Document):
         time_margin = args.get('timeMargin', 0)
 
         # Build the query based on the provided parameters
-        query_fields = ['city', 'location', 'difficulty', 'mobility', 'comment', 'creator_username']
-        query_params = {f"{field}__icontains": args[field] for field in query_fields if field in args}
+        query_fields = ['city', 'location', 'difficulty',
+                        'mobility', 'comment', 'creator_username'
+                        ]
+        query_params = {f"{field}__icontains": args[field]
+                        for field in query_fields if field in args
+                        }
 
         if 'distance' in args:
             query_params['distance__gte'] = args['distance'] - distance_margin
@@ -180,6 +178,11 @@ class Route(db.Document):
         }
 
 
+class SharedRoute(db.EmbeddedDocument):
+    route = db.StringField(required=True)  # ID of the route shared
+    shared_by = db.StringField(required=True)  # Username of the user who shared the route
+
+
 # Defines a User document with various fields to store user information
 class User(db.Document):
     username = db.StringField(required=True, unique=True)
@@ -192,16 +195,14 @@ class User(db.Document):
     saved_routes = db.ListField(db.ReferenceField(Route, reverse_delete_rule='PULL'))
     shared_routes = db.ListField(db.EmbeddedDocumentField(SharedRoute))  # Updated to use SharedRoute
     friends = db.ListField(db.ReferenceField('self', reverse_delete_rule='PULL'))
-    
 
     def __init__(self, *args, **kwargs):
         password = None
         if 'password' in kwargs:
             password = kwargs.pop('password')
-        super(User, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         if password:
             self.password = password
-        self.save()  # Save the new user to the database
 
     # Returns a string representation of the User instance
     def __repr__(self):
@@ -221,37 +222,39 @@ class User(db.Document):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-    # Method to get routes created by the user
-    def get_create_routes(self):
-        return [route.toDICT() for route in self.create_routes]
-
-    # Method to get routes' id created by the user
-    def get_create_routes_id(self):
-        return [str(route.id) for route in self.create_routes]
-    
-    def get_saved_routes_id(self):
-        return [str(route.id) for route in self.saved_routes]
-
-    # Method to get routes saved by the user
-    # in development
-    def get_saved_routes(self):
-        return [route.toDICT() for route in self.saved_routes]
-
     def add_create_routes(self, new_route):
         self.create_routes.append(new_route)
         self.save()
 
+    # Method to get routes created by the user
+    def get_created_routes(self):
+        return [route.toDICT() for route in self.create_routes]
+
+    # Method to get routes' id created by the user
+    def get_created_routes_id(self):
+        return [str(route.id) for route in self.create_routes]
+
     # Method to add a route to the user's saveed routes
-    # in development
-    def add_saved_routes(self, new_route):
-        self.saved_routes.append(new_route)
+    def add_saved_routes(self, route):
+        route.saves += 1
+        route.save()
+        self.saved_routes.append(route)
         self.save()
-    
+
     def remove_saved_route(self, route):
+        route.save -= 1
+        route.save()
         self.saved_routes.remove(route)
         self.save()
         return True
-    
+
+    def get_saved_routes(self):
+        return [route.toDICT() for route in self.saved_routes]
+
+    # Method to get routes saved by the user
+    def get_saved_routes_id(self):
+        return [str(route.id) for route in self.saved_routes]
+
     def add_shared_route(self, route, shared_by):
         self.shared_routes.append(SharedRoute(route=route, shared_by=shared_by))
         self.save()
@@ -266,24 +269,32 @@ class User(db.Document):
         self.friends.append(friend)
         self.save()
         return True
-    
+
     def delete_friend(self, friend):
         self.friends.remove(friend)
         self.save()
         return True
 
-    def get_friends(self):
-        return [friend.toDICTFriend() for friend in self.friends]
-
-    
     def get_friends_id(self):
         return [str(friend.id) for friend in self.friends]
 
+    def get_friends(self):
+        friendinfo = [{
+            **friend.toDICT(),  # Unpack the dictionary returned by toDICT.
+            'create_routes': friend.get_created_routes_id(),
+            'saved_routes': friend.get_saved_routes_id(),
+            'friends': friend.get_friends_id()
+        } for friend in self.friends]
+
+        return friendinfo
+
     @classmethod
     def search_user(cls, args):
-        # Initialize query_params only with keys that are present in args and have a non-None value
-        valid_fields = ['username', 'email']  # Extend this list based on the fields you want to allow searching on
-        query_params = {f"{field}__icontains": args[field] for field in valid_fields if args.get(field) is not None}
+        # Define the fields that can be searched on
+        valid_fields = ['username', 'email']  # Add more fields as needed
+        query_params = {f"{field}__icontains": args[field]
+                        for field in valid_fields if args.get(field) is not None
+                        }
 
         # Assuming your ORM supports lazy loading, this query won't hit the database until iterated
         users_query = User.objects(**query_params)
@@ -304,22 +315,10 @@ class User(db.Document):
             "name": self.name,
             "age": self.age,
             "phone": self.phone,
-            "create_routes": self.get_create_routes(),  # Convert routes to list of IDs
+            "create_routes": self.get_created_routes(),  # Convert routes to list of IDs
             "saved_routes": self.get_saved_routes(),  # Convert routes to list of IDs
-            "shared_routes": self.get_shared_routes(),
             "friends": self.get_friends(),  # Convert friends to list of IDs
-        }
-    
-    def toDICTFriend(self):
-        return {
-            "username": self.username,
-            "email": self.email,
-            "name": self.name,
-            "age": self.age,
-            "phone": self.phone,
-            "create_routes": self.get_create_routes_id(),  # Convert routes to list of IDs
-            "saved_routes": self.get_saved_routes_id(),  # Convert routes to list of IDs
-            "friends": self.get_friends_id(),  # Convert friends to list of IDs
+            "shared_routes": self.get_shared_routes()
         }
 
 
@@ -340,8 +339,7 @@ class Event(db.Document):
             kwargs['route'] = Route.get_by_rid(rid)
         if 'date' in kwargs:
             kwargs['date'] = datetime.datetime.strptime(kwargs['date'], '%Y-%m-%dT%H:%M:%S')
-        super(Event, self).__init__(*args, **kwargs)
-        self.save()
+        super().__init__(*args, **kwargs)
 
     def __repr__(self):
         return f"Event {self.name}"
