@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Friend from '../components/Friend';
 import Header from '../components/Header';
 import { useSelector } from 'react-redux';
+import '../style/community.css'
 
 const Community = () => {
     const username = useSelector((state) => state.userInfo.username)
@@ -77,15 +78,15 @@ const Community = () => {
     }, []);
     
     return (
-        <div>
+        <div className='Community'>
             <Header />
             <h2>Search Users</h2>
             <form onSubmit={handleSubmit}>
                 <input type="text" name="username" placeholder="Username" value={searchParams.username} onChange={handleChange} />
                 <input type="text" name="email" placeholder="Email" value={searchParams.email} onChange={handleChange} />
-                <button type="submit">Search</button>
+                <button type="submit" id="submitbutton">Search</button>
             </form>
-            <div>
+            <div classname='resultDiv'>
             {searchResults.success && searchResults.users.length > 0 ? (
                 searchResults.users.map((user, index) => {
                     return (

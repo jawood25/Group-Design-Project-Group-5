@@ -1,0 +1,56 @@
+.Community {
+    align-items: center;
+    text-align: center;
+}
+
+h2 {
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    font-size: 22px;
+    background-color: #ecf0f1;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    width: 200px;
+    text-align: center;
+    margin-top: 20px;
+    width: 15%;
+    margin: 20px auto;
+}
+
+form {
+    border: 1px solid black;
+    padding: 10px;
+    width: 500px;
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+input {
+    margin-left: 15px;
+}
+
+#submitbutton {
+    background-color: #34c9eb;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 20px;
+    margin-left: 10px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.resultDiv {
+    margin-top: 25px;
+    border: 2px solid black;
+}
+
+p {
+    margin-top: 25px;
+    border-top: 1px solid black;
+    padding: 15px;
+}
