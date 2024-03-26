@@ -80,8 +80,8 @@ const Community = () => {
     return (
         <div className='Community'>
             <Header />
-            <h2>Search Users</h2>
-            <form onSubmit={handleSubmit}>
+            <h2 id="communityHeading">Search Users</h2>
+            <form id="userSearchForm" onSubmit={handleSubmit}>
                 <input type="text" name="username" placeholder="Username" value={searchParams.username} onChange={handleChange} />
                 <input type="text" name="email" placeholder="Email" value={searchParams.email} onChange={handleChange} />
                 <button type="submit" id="submitbutton">Search</button>

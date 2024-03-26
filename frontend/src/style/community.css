@@ -1,9 +1,8 @@
 .Community {
-    align-items: center;
     text-align: center;
 }
 
-h2 {
+#communityHeading {
     font-family: Arial, sans-serif;
     font-weight: bold;
     font-size: 22px;
@@ -18,7 +17,7 @@ h2 {
     margin: 20px auto;
 }
 
-form {
+#userSearchForm {
     border: 1px solid black;
     padding: 10px;
     width: 500px;

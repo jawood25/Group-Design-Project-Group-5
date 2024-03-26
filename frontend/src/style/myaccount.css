@@ -23,7 +23,10 @@
     margin-top: 5px;
     right: 25px;
     padding-top: 5px;
-    color: rgb(100, 100, 100);
+    color: black;
+    border: 1px solid lightgray;
+    padding: 5px;
+    background-color: #ecf0f1;
 }
 
 
@@ -64,4 +67,36 @@
     border-radius: 5px; 
     text-align: left;
     white-space: pre-wrap;
+}
+
+.btn-primary {
+    background-color: #34c9eb;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    margin: 5px;
+    float: left;
+}
+
+.friendSelect {
+    float: left;
+    margin-top: 15px;
+    margin-left: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    background-color: #ececf2;
+}
+
+.sharebtn {
+    background-color: rgb(66, 194, 46);
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    margin: 5px;
+    float: right;
 }

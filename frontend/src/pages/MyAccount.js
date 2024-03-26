@@ -277,13 +277,13 @@ const MyAccount = () => {
                         </div>
 
                         <button className="btn btn-primary" onClick={() => deleteRoute(route)}>Delete Route</button>
-                        <select onChange={(e) => setSelectedFriend(e.target.value)}>
+                        <select className="friendSelect" onChange={(e) => setSelectedFriend(e.target.value)}>
                             <option value="">Select Friend</option>
                             {friends && friends.map((friend, index) => (
                                 <option key={index} value={friend.username}>{friend.username}</option>
                             ))}
                         </select>
-                        <button onClick={() => shareRouteWithFriend(route.id)}>Share</button>
+                        <button className="sharebtn" onClick={() => shareRouteWithFriend(route.id)}>Share</button>
                     </div>
                 ))}
             </div>
