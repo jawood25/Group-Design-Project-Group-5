@@ -232,10 +232,10 @@ const MyAccount = () => {
     return (
         <div className='MyAccount'>
             <Header />
+            <RouteSearch onSearch={handleSearch} />
             <h3>Username: {username}</h3>
             <h2>My Account Page</h2>
-            <RouteSearch onSearch={handleSearch} />
-            <h4>My Paths</h4>
+            <h4 id="mypaths">My Paths</h4>
             <div className="grid-container">
                 {routeData && routeData.map((route, index) => (
                     <div className="grid-item" key={index}>

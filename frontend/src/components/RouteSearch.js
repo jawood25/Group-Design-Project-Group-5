@@ -1,5 +1,6 @@
 // RouteSearch.js
 import React, { useEffect, useState } from 'react';
+import '../style/routesearch.css'
 
 const RouteSearch = ({ onSearch }) => {
     // State variables to store filter criteria
@@ -57,7 +58,7 @@ const RouteSearch = ({ onSearch }) => {
 
     return (
         <div className="route-search">
-            <h3 onClick={toggleForm}>Route Search 🔎</h3>
+            <h3 id="search-toggle" onClick={toggleForm}>Route Search 🔎</h3>
             {expanded && (
             <form onSubmit={handleSearch}>
                 <div className="form-group">
@@ -85,7 +86,7 @@ const RouteSearch = ({ onSearch }) => {
                     </div>
                 </div>
                 <div className="form-group">
-                    <label className="control-label col-sm-2" htmlFor="distanceMargin">Marge:</label>
+                    <label className="control-label col-sm-2" htmlFor="distanceMargin">Margin:</label>
                     <div className="col">
                         <input type="number" className="form-control" id="distanceMargin" value={distanceMargin} onChange={(e) => setDistanceMargin(e.target.value)} />
                     </div>
@@ -97,7 +98,7 @@ const RouteSearch = ({ onSearch }) => {
                     </div>
                 </div>
                 <div className="form-group">
-                    <label className="control-label col-sm-2" htmlFor="timeMargin">Marge:</label>
+                    <label className="control-label col-sm-2" htmlFor="timeMargin">Margin:</label>
                     <div className="col">
                         <input type="number" className="form-control" id="timeMargin" value={timeMargin} onChange={(e) => setTimeMargin(e.target.value)} />
                     </div>
@@ -149,7 +150,7 @@ const RouteSearch = ({ onSearch }) => {
                 <div className="form-group">
                     <label className="control-label col-sm-2" htmlFor="description">Comment:</label>
                     <div className="col">
-                        <textarea className="form-control" rows="5" value={comment} onChange={(e) => setComment(e.target.value)} id="comment"></textarea>
+                        <textarea className="form-control commentbox" rows="5" value={comment} onChange={(e) => setComment(e.target.value)} id="comment"></textarea>
                     </div>
                 </div>
                 <div className="row">

@@ -13,6 +13,8 @@
     margin-bottom: 20px;
     margin-top: 20px;
     display: inline-block;
+    position: relative;
+    right: 7%
 }
 
 .MyAccount > h3 {
@@ -20,13 +22,18 @@
     position: absolute;
     font-size: 22px;
     text-align: center;
-    margin-top: 5px;
+    margin-top: 15px;
     right: 25px;
     padding-top: 5px;
     color: black;
     border: 1px solid lightgray;
     padding: 5px;
     background-color: #ecf0f1;
+}
+
+#mypaths {
+    position: relative;
+    right: 7%
 }
 
 
