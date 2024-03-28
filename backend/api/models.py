@@ -290,13 +290,13 @@ class User(db.Document):
 
     # Method to add a route to the user's saveed routes
     def add_saved_routes(self, route):
-        route.saves += 1
+        route.saves = route.saves + 1
         route.save()
         self.saved_routes.append(route)
         self.save()
 
     def remove_saved_route(self, route):
-        route.save -= 1
+        route.save = route.save - 1
         route.save()
         self.saved_routes.remove(route)
         self.save()
@@ -361,12 +361,19 @@ class User(db.Document):
         return [str(friend.id) for friend in self.friends]
 
     def get_friends(self):
-        friendinfo = [{
-            **friend.toDICT(),  # Unpack the dictionary returned by toDICT.
-            'create_routes': friend.get_created_routes_id(),
-            'saved_routes': friend.get_saved_routes_id(),
-            'friends': friend.get_friends_id()
-        } for friend in self.friends]
+        friendinfo = []
+        for friend in self.friends:
+            info = {
+                "username": friend.username,
+                "email": friend.email,
+                "name": friend.name,
+                "age": friend.age,
+                "phone": friend.phone,
+                "create_routes": friend.get_created_routes_id(),  # Convert routes to list of IDs
+                "saved_routes": friend.get_saved_routes_id(),  # Convert routes to list of IDs
+                "friends": friend.get_friends_id(),  # Convert friends to list of IDs
+            }
+            friendinfo.append(info)
 
         return friendinfo
 

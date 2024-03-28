@@ -442,7 +442,6 @@ class SavedRoutes(Resource):
             current_app.logger.error(e)
             return {"success": False, "msg": str(e)}, 403
 
-        print(111)
         return {"success": True, "routes": routes,
                 "msg": "Routes retrieved successfully"}, 200
 
