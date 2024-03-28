@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import { useSelector } from 'react-redux';
 
-mapboxgl.accessToken = "";
+mapboxgl.accessToken = "pk.eyJ1Ijoic29ub2RhbSIsImEiOiJjbHQ4bnNhM2cwNm4yMmttc2ljc2tuenA1In0.fBw9Dz2FIxgEMMFakE_VmQ";
 
 const MainMap = ({ allUR }) => {
     const username = useSelector((state) => state.userInfo.username)

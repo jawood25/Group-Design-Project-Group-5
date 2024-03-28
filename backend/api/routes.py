@@ -332,7 +332,34 @@ class CreatedRoute(Resource):
 
         return {"success": True, "routes": routes,
                 "msg": "Routes retrieved successfully"}, 200
+    
+@api.route('/api/usersharedroutes/')
+class CreatedRoute(Resource):
+    @api.expect(created_route_model, validate=True)
+    def post(self):
+        # Extract JSON data from the request
+        req_data = request.get_json()
+        _username = req_data.get("username")
 
+        try:
+            user = User.get_by_username(_username)
+            if not user:
+                return {"success": False, "msg": "User not exist"}, 401
+
+            shared_routes_data = user.get_shared_routes()
+            shared_routes = []
+            for shared_route_data in shared_routes_data:
+                route_id = shared_route_data['route']
+                shared_by = shared_route_data['shared_by']
+                route = Route.get_by_rid(route_id)
+                if route:
+                    route_dict = route.toDICT()
+                    route_dict['shared_by'] = shared_by
+                    shared_routes.append(route_dict)
+            return {"success": True, "routes": shared_routes, "msg": "Shared routes retrieved successfully"}, 200
+        except Exception as e:
+            current_app.logger.error(e)
+            return {"success": False, "msg": str(e)}, 403
 
 # Define a Resource for editing and deleting routes
 @api.route('/api/editroute/')
@@ -388,6 +415,8 @@ class SaveRoute(Resource):
             route = Route.get_by_rid(_route_id)
             if not route:
                 return {"success": False, "msg": "Route not exist"}, 404
+            if user.has_saved_route(route):
+                return {"success": False, "msg": "Route is already saved"}, 402
             user.add_saved_routes(route)
         except Exception as e:
             # catch all other exceptions
@@ -466,6 +495,8 @@ class ShareRoutes(Resource):
                 return {"success": False, "msg": "User not exist"}, 401
             if not Route.get_by_rid(_rid):
                 return {"success": False, "msg": "Route not exist"}, 401
+            if friend.has_shared_route(_rid):
+                return {"success": False, "msg": "Route is already shared"}, 402
             friend.add_shared_route(_rid, _username)
         except Exception as e:
             # catch all other exceptions

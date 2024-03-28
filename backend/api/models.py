@@ -273,7 +273,7 @@ class User(db.Document):
                 # Optionally log the exception or handle it as needed
                 continue
         return safe_created_routes
-
+    
     def get_created_routes_id(self):
         """
         Method to get the IDs of routes created by the user. Returns a list of route IDs as strings,
@@ -295,8 +295,14 @@ class User(db.Document):
         self.saved_routes.append(route)
         self.save()
 
+    def has_saved_route(self, route):
+        return route in self.saved_routes
+    
+    def has_shared_route(self, route):
+        return any(shared_route.route == route for shared_route in self.shared_routes)
+
     def remove_saved_route(self, route):
-        route.save -= 1
+        route.saves -= 1
         route.save()
         self.saved_routes.remove(route)
         self.save()
@@ -361,12 +367,19 @@ class User(db.Document):
         return [str(friend.id) for friend in self.friends]
 
     def get_friends(self):
-        friendinfo = [{
-            **friend.toDICT(),  # Unpack the dictionary returned by toDICT.
-            'create_routes': friend.get_created_routes_id(),
-            'saved_routes': friend.get_saved_routes_id(),
-            'friends': friend.get_friends_id()
-        } for friend in self.friends]
+        friendinfo = []
+        for friend in self.friends:
+            info = {
+                "username": friend.username,
+                "email": friend.email,
+                "name": friend.name,
+                "age": friend.age,
+                "phone": friend.phone,
+                "create_routes": friend.get_created_routes_id(),  # Convert routes to list of IDs
+                "saved_routes": friend.get_saved_routes_id(),  # Convert routes to list of IDs
+                "friends": friend.get_friends_id(),  # Convert friends to list of IDs
+            }
+            friendinfo.append(info)
 
         return friendinfo
 
