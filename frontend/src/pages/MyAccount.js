@@ -20,6 +20,7 @@ const MyAccount = () => {
     const [friend_username, setSelectedFriend] = useState(null);
     const [editError, setEditError] = useState('');
     const [editSuccess, setEditSuccess] = useState('');
+    const [comment, setComment] = useState('');
 
     const dispatch = useDispatch();
     const coordinates_edited = useSelector((state) => state.coordinates.coordinates)
@@ -129,6 +130,25 @@ const MyAccount = () => {
             console.error('There was a problem with your fetch operation:', error);
         }
     };
+
+    const commentRoad = async (route_id, body) => {
+        try {
+            const response = await fetch('/api/addingcomment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ route_id, body, author: username }),
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            console.log(data)
+        } catch (error) {
+            console.error('There was a problem with your fetch operation:', error);
+        }
+    }
 
     const deleteRoute = async (route) => {
         const routeInfo = {
@@ -249,6 +269,14 @@ const MyAccount = () => {
                             <div><b>Mobility:</b>  {route.mobility}</div>
                             {route.comment && route.comment.length >= 1 && (
                             <div><b>Creator Comment:</b> {route.comment[0].body}</div>)}
+                            {route.comment && route.comment.length >= 2 && (
+                                //ignore the first comment as it is the creator comment
+                            <div>
+                                <b>Users Comment:</b> { route.comment.slice(1).map ((comment, index) => (
+                                <div key={index}>
+                                    {comment.author} : {comment.body}
+                                </div>
+                            ))}</div>)}
                         </div>
 
                         <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => {
@@ -276,8 +304,9 @@ const MyAccount = () => {
                                 </div>
                             </div>
                         </div>
-
                         <button className="btn btn-primary" onClick={() => deleteRoute(route)}>Delete Route</button>
+                        <input type="text" placeholder="Comment" onChange={(e)=> setComment(e.target.value)}/>
+                        <button onClick={() => commentRoad(route.id, comment)}>Comment</button>
                         <select className="friendSelect" onChange={(e) => setSelectedFriend(e.target.value)}>
                             <option value="">Select Friend</option>
                             {friends && friends.map((friend, index) => (
@@ -300,9 +329,20 @@ const MyAccount = () => {
                             <div><b>Time:</b>  {route.hours}:{route.minutes}</div>
                             <div><b>Difficulty:</b>  {route.difficulty}</div>
                             <div><b>Mobility:</b>  {route.mobility}</div>
-                            <div><b>Comment:</b>  {route.comment.body}</div>
+                            {route.comment && route.comment.length >= 1 && (
+                            <div><b>Creator Comment:</b> {route.comment[0].body}</div>)}
+                            {route.comment && route.comment.length >= 2 && (
+                                //ignore the first comment as it is the creator comment
+                            <div>
+                                <b>Users Comment:</b> { route.comment.slice(1).map ((comment, index) => (
+                                <div key={index}>
+                                    {comment.author} : {comment.body}
+                                </div>
+                            ))}</div>)}
                         </div>
                         <button onClick={() => deleteLikedRoute(route.id)}>Delete</button>
+                        <input type="text" placeholder="Comment" onChange={(e)=> setComment(e.target.value)}/>
+                        <button onClick={() => commentRoad(route.id, comment)}>Comment</button>
                         <select onChange={(e) => setSelectedFriend(e.target.value)}>
                             <option value="">Select Friend</option>
                             {friends && friends.map((friend, index) => (
