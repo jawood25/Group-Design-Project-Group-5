@@ -247,7 +247,7 @@ const MyAccount = () => {
                             <div><b>Time:</b>  {route.hours}:{route.minutes}</div>
                             <div><b>Difficulty:</b>  {route.difficulty}</div>
                             <div><b>Mobility:</b>  {route.mobility}</div>
-                            <div><b>Comment:</b>  {route.comment.body}</div>
+                            <div><b>Creator Comment:</b>  {route.comment[0].body}</div>
                         </div>
 
                         <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => {
