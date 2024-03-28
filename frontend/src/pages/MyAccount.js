@@ -145,6 +145,8 @@ const MyAccount = () => {
             }
             const data = await response.json();
             console.log(data)
+            await fetchUserRoutes();
+            await fetchUserLikedRoutes();
         } catch (error) {
             console.error('There was a problem with your fetch operation:', error);
         }
