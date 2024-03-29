@@ -21,6 +21,28 @@ class Comment(db.Document):
     def __repr__(self):
         return f"{self.author}'s comment"
 
+    def delete_comment(self, owner,author):
+        if bool(owner) == bool(author):
+            return False
+        route = self.get_route()
+        if route:
+            if route.creator_username != owner and self.author != author:
+                return False
+        else:
+            return False
+        route.update(
+            pull__comment=self,
+        )
+        self.delete()
+        return True
+
+    def get_route(self):
+        return Route.objects(comment=self).first()
+
+    @classmethod
+    def get_by_cid(cls, cid):
+        return cls.objects(id=cid).first()
+
     def toDICT(self):
         return {
             'author': self.author,
@@ -43,6 +65,7 @@ class Route(db.Document):
     mobility = db.StringField()
     dislike = db.IntField(default=0)
     like = db.IntField(default=0)
+
     saves = db.IntField(default=0)
     distance = db.FloatField(default=0.0)
     creator_username = db.StringField(required=True)
@@ -361,21 +384,16 @@ class User(db.Document):
         return [str(friend.id) for friend in self.friends]
 
     def get_friends(self):
-        friendinfo = []
-        for friend in self.friends:
-            info = {
-                "username": friend.username,
-                "email": friend.email,
-                "name": friend.name,
-                "age": friend.age,
-                "phone": friend.phone,
-                "create_routes": friend.get_created_routes_id(),  # Convert routes to list of IDs
-                "saved_routes": friend.get_saved_routes_id(),  # Convert routes to list of IDs
-                "friends": friend.get_friends_id(),  # Convert friends to list of IDs
-            }
-            friendinfo.append(info)
-
-        return friendinfo
+        return [{
+            "username": friend.username,
+            "email": friend.email,
+            "name": friend.name,
+            "age": friend.age,
+            "phone": friend.phone,
+            "create_routes": friend.get_created_routes_id(),
+            "saved_routes": friend.get_saved_routes_id(),
+            "friends": friend.get_friends_id(),
+        } for friend in self.friends]
 
     @classmethod
     def search_user(cls, args):
