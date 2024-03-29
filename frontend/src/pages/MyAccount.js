@@ -10,6 +10,7 @@ import Friend from '../components/Friend';
 import { resetCoordinates } from '../redux/coordinates';
 import { resetMapCenter } from '../redux/mapCenter';
 import { useDispatch } from 'react-redux';
+import Comment from '../components/Comment';
 
 
 const MyAccount = () => {
@@ -25,6 +26,29 @@ const MyAccount = () => {
     const dispatch = useDispatch();
     const coordinates_edited = useSelector((state) => state.coordinates.coordinates)
     const mapCenter_edited = useSelector((state) => state.mapCenter.center)
+
+    const deleteComment = async (comment_id) => {
+        try {
+            const response = await fetch('/api/deletecomment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({comment_id }),
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            console.log(data)
+            await fetchUserRoutes();
+            await fetchUserLikedRoutes();
+        }
+        catch (error) {
+            console.error('There was a problem with your fetch operation:', error);
+        }
+    }
+
 
     const shareRouteWithFriend = async (route_id) => {
         console.log(username, route_id, friend_username)
@@ -276,7 +300,13 @@ const MyAccount = () => {
                             <div>
                                 <b>Users Comment:</b> { route.comment.slice(1).map ((comment, index) => (
                                 <div key={index}>
-                                    {comment.author} : {comment.body}
+                                    {console.log(comment)}
+                                    <Comment 
+                                        author={comment.author} 
+                                        body={comment.body} 
+                                        owner={username}
+                                        onDelete={() => deleteComment(comment.id)} 
+                                    />
                                 </div>
                             ))}</div>)}
                         </div>
@@ -338,7 +368,12 @@ const MyAccount = () => {
                             <div>
                                 <b>Users Comment:</b> { route.comment.slice(1).map ((comment, index) => (
                                 <div key={index}>
-                                    {comment.author} : {comment.body}
+                                    <Comment 
+                                        author={comment.author} 
+                                        body={comment.body} 
+                                        owner={route.creator_username}
+                                        onDelete={() => deleteComment(comment.id)} 
+                                    />
                                 </div>
                             ))}</div>)}
                         </div>

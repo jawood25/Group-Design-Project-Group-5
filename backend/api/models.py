@@ -20,9 +20,25 @@ class Comment(db.Document):
 
     def __repr__(self):
         return f"{self.author}'s comment"
+    
+    def delete_comment(self):
+        route = self.get_route()
+        route.update(
+            pull__comment=self,
+        )
+        self.delete()
+        return True
+
+    def get_route(self):
+        return Route.objects(comment=self).first()
+
+    @classmethod
+    def get_by_cid(cls, cid):
+        return cls.objects(id=cid).first()
 
     def toDICT(self):
         return {
+            'id': str(self.id),
             'author': self.author,
             'date_posted': self.date_posted.strftime('%Y-%m-%dT%H:%M:%S'),
             'dislikes': self.dislikes,
@@ -367,21 +383,16 @@ class User(db.Document):
         return [str(friend.id) for friend in self.friends]
 
     def get_friends(self):
-        friendinfo = []
-        for friend in self.friends:
-            info = {
-                "username": friend.username,
-                "email": friend.email,
-                "name": friend.name,
-                "age": friend.age,
-                "phone": friend.phone,
-                "create_routes": friend.get_created_routes_id(),  # Convert routes to list of IDs
-                "saved_routes": friend.get_saved_routes_id(),  # Convert routes to list of IDs
-                "friends": friend.get_friends_id(),  # Convert friends to list of IDs
-            }
-            friendinfo.append(info)
-
-        return friendinfo
+       return [{
+            "username": friend.username,
+            "email": friend.email,
+            "name": friend.name,
+            "age": friend.age,
+            "phone": friend.phone,
+            "create_routes": friend.get_created_routes_id(),
+            "saved_routes": friend.get_saved_routes_id(),
+            "friends": friend.get_friends_id(),
+        } for friend in self.friends]
 
     @classmethod
     def search_user(cls, args):

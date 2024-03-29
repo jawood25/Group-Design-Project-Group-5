@@ -113,6 +113,11 @@ created_comment_model = api.model('CreatedCommentModel', {
     "route_id": fields.String(required=True, min_length=2, max_length=32),
 })
 
+delete_comment_model = api.model('DeleteCommentModell', {
+    # Model for route upload, includes various route details
+    "comment_id": fields.String(required=True),
+})
+
 search_route_model = api.model('SearchRouteModel', {
     # Model for searching routes
     "city": fields.String(min_length=2, max_length=32),
@@ -586,6 +591,25 @@ class CreatedComment(Resource):
             return {"success": False, "msg": str(e)}, 403
         return {"success": True, "comment": comments, "msg": "Comments retrieved successfully"}, 200
 
+@api.route('/api/deletecomment/')
+class DeleteComment(Resource):
+    @api.expect(delete_comment_model, validate=True)  # Expecting data matching the route_model
+    def post(self):
+        # Extract JSON data from the request
+        req_data = request.get_json()
+        _cid = req_data.get("comment_id")
+        try:
+            comment = Comment.get_by_cid(_cid)
+            if comment:
+                if comment.delete_comment():
+                    return {"success": True, "msg": "Comment has been deleted"}, 200
+                else:
+                    return {"success": False, "msg": "Unauthorised"}, 402
+            return {"success": False, "msg": "Comment does not exist"}, 401
+        except Exception as e:
+            # catch all other exceptions
+            current_app.logger.error(e)
+            return {"success": False, "msg": str(e)}, 403
 
 # Define a Resource for creating events
 @api.route('/api/uploadevent/')
@@ -618,5 +642,6 @@ class CreateEvent(Resource):
 @api.route('/api/delevent/')
 class test(Resource):
     def get(self):
-        user = User.get_by_username("newuser")
-        return {"success": True,"user": user.toDICT(), "msg": "Route is created"}, 200
+        comment = Comment.get_by_cid("6601e93b987e7c70ce5c7cb5")
+        route = comment.get_route()
+        return {"success": True, "event": route.toDICT()},2
