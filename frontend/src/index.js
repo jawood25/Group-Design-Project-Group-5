@@ -12,6 +12,7 @@ import UploadRoute from './pages/UploadRoute'
 import './style/style.css';
 import store from './redux/store';
 import { Provider } from 'react-redux';
+import Profile from './components/Profile';
 
 const router = createBrowserRouter([
   {
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
   {
     path: "/community",
     element: <Community />
+  },
+  {
+    path: "/profile/:friend_username",
+    element: <Profile />
   }
 ]);
 
