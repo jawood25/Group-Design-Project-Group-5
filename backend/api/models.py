@@ -1,7 +1,9 @@
 # /api/models.py
 import datetime
 import math
+
 from werkzeug.security import generate_password_hash, check_password_hash
+
 from .exts import db  # Importing the database instance from an external module
 
 
@@ -21,7 +23,7 @@ class Comment(db.Document):
     def __repr__(self):
         return f"{self.author}'s comment"
 
-    def delete_comment(self, owner,author):
+    def delete_comment(self, owner, author):
         if bool(owner) == bool(author):
             return False
         route = self.get_route()
@@ -319,7 +321,7 @@ class User(db.Document):
         self.save()
 
     def remove_saved_route(self, route):
-        route.save = route.save - 1
+        route.saves = route.saves - 1
         route.save()
         self.saved_routes.remove(route)
         self.save()
@@ -380,10 +382,10 @@ class User(db.Document):
         self.save()
         return True
 
-    def get_friends_id(self):
-        return [str(friend.id) for friend in self.friends]
-
     def get_friends(self):
+        def get_friends_id():
+            return [str(friend.id) for friend in self.friends]
+
         return [{
             "username": friend.username,
             "email": friend.email,
@@ -392,7 +394,7 @@ class User(db.Document):
             "phone": friend.phone,
             "create_routes": friend.get_created_routes_id(),
             "saved_routes": friend.get_saved_routes_id(),
-            "friends": friend.get_friends_id(),
+            "friends": get_friends_id(),
         } for friend in self.friends]
 
     @classmethod
@@ -459,4 +461,53 @@ class Event(db.Document):
             'date': self.date.strftime('%Y-%m-%dT%H:%M:%S'),
             'host': self.host.username,
             'route': self.route.toDICT()
+        }
+
+
+class Group(db.Document):
+    name = db.StringField(required=True, unique=True)
+    manager = db.StringField(required=True)
+    members = db.ListField(db.ReferenceField(User, reverse_delete_rule='PULL'))
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def __repr__(self):
+        return f"Group {self.name}"
+
+    def get_manager(self):
+        return User.get_by_username(self.manager).toDICT()
+
+    def get_members(self):
+        return [member.toDICT() for member in self.members]
+
+    def add_member(self, member):
+        if member in self.members:
+            return False
+        self.members.append(member)
+        self.save()
+        return True
+
+    def remove_member(self, member):
+        if member not in self.members:
+            return False
+        self.members.remove(member)
+        self.save()
+        return True
+
+    def delete_group(self, manager):
+        if manager != self.manager:
+            return False
+        self.delete()
+        return True
+
+    @classmethod
+    def get_by_name(cls, name):
+        return cls.objects(name=name).first()
+
+    def toDICT(self):
+        return {
+            'name': self.name,
+            'manager': self.manager,  # Convert manager to dictionary
+            'members': self.get_members(),
         }
