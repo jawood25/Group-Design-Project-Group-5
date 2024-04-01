@@ -3,49 +3,48 @@
 from flask import current_app, request
 from flask_restx import Resource, fields
 from .exts import api
-from .models import Route, User, Comment, Event
+from .models import Route, User, Comment, Event, Group
 
 # Define API models for validating and documenting incoming data
 signup_model = api.model('SignUpModel', {
-    # Model for user sign-up, includes username and password
+    # Model for user registration.
     "username": fields.String(required=True, min_length=2, max_length=32),
     "password": fields.String(required=True, min_length=4, max_length=16)
 })
 
 login_model = api.model('LoginModel', {
-    # Model for user login, includes username and password
+    # Model for user login.
     "username": fields.String(required=True, min_length=2, max_length=32),
     "password": fields.String(required=True, min_length=4, max_length=16)
 })
 
 add_friend_model = api.model('AddFriendModel', {
-    # Model for adding comments
+    # Model for adding a friend.
     "username": fields.String(required=True, min_length=2, max_length=32),
     "friend_username": fields.String(required=True, min_length=2, max_length=32)
 })
 
 delete_friend_model = api.model('DeleteFriendModel', {
-    # Model for adding comments
+    # Model for deleting a friend.
     "username": fields.String(required=True, min_length=2, max_length=32),
     "friend_username": fields.String(required=True, min_length=2, max_length=32)
 })
 
 users_friend_model = api.model('UsersFriendModel', {
-    # Model for fetching comments
+    # Model to fetch a user's friends.
     "username": fields.String(required=True, min_length=2, max_length=32),
 })
 
 search_user_model = api.model('SearchUserModel', {
-    # Model for searching users
+    # Model for searching users by username or email.
     "username": fields.String(min_length=2, max_length=32),
     "email": fields.String(min_length=6, max_length=50)
 })
 
 create_route_model = api.model('CreateRouteModel', {
-    # Model for route upload, includes various route details
+    # Model for creating a new route.
     "username": fields.String(required=True, min_length=2, max_length=32),
-    "coordinates": fields.List(fields.List(
-        fields.Float, min_items=2, max_items=2, required=True), required=True),
+    "coordinates": fields.List(fields.List(fields.Float, min_items=2, max_items=2, required=True), required=True),
     "mapCenter": fields.Nested(api.model('MapCenterModel', {
         "lat": fields.Float(required=True),
         "lng": fields.Float(required=True)
@@ -58,12 +57,12 @@ create_route_model = api.model('CreateRouteModel', {
 })
 
 created_route_model = api.model('CreatedRoutesModel', {
-    # Model for fetching routes created by a user
+    # Model to fetch routes created by a user.
     "username": fields.String(required=True, min_length=2, max_length=32),
 })
 
 edit_route_model = api.model('EditRouteModel', {
-    # Model for route upload, includes various route details
+    # Model for editing route details.
     "route_id": fields.String(required=True, min_length=2, max_length=32),
     "username": fields.String(min_length=2, max_length=32),
     "coordinates": fields.List(fields.List(fields.Float, min_items=2, max_items=2, required=True)),
@@ -78,48 +77,30 @@ edit_route_model = api.model('EditRouteModel', {
 })
 
 save_routes_model = api.model('SaveRoutesModel', {
-    # Model for saving routes
+    # Model for saving a route.
     "username": fields.String(required=True, min_length=2, max_length=32),
     "route_id": fields.String(required=True, min_length=2, max_length=32)
 })
 
 remove_routes_model = api.model('RemoveRoutesModel', {
-    # Model for saving routes
+    # Model for removing a saved route.
     "username": fields.String(required=True, min_length=2, max_length=32),
     "route_id": fields.String(required=True, min_length=2, max_length=32)
 })
 
 saved_routes_model = api.model('SavedRoutesModel', {
-    # Model for fetching saved routes
+    # Model to fetch saved routes of a user.
     "username": fields.String(required=True, min_length=2, max_length=32),
 })
 
 share_routes_model = api.model('ShareRoutesModel', {
-    # Model for fetching shared routes
+    # Model for sharing a route with a friend.
     "username": fields.String(required=True, min_length=2, max_length=32),
     "route_id": fields.String(required=True, min_length=2, max_length=32),
     "friend_username": fields.String(required=True, min_length=2, max_length=32)
 })
 
-create_comment_model = api.model('CreateCommentModel', {
-    # Model for adding comments
-    "route_id": fields.String(required=True, min_length=2, max_length=32),
-    "body": fields.String(required=True, min_length=2, max_length=200),
-    "author": fields.String(required=True, min_length=2, max_length=32)
-})
-
-created_comment_model = api.model('CreatedCommentModel', {
-    # Model for fetching comments
-    "route_id": fields.String(required=True, min_length=2, max_length=32),
-})
-
-delete_comment_model = api.model('DeleteCommentModell', {
-    # Model for route upload, includes various route details
-    "comment_id": fields.String(required=True),
-})
-
 search_route_model = api.model('SearchRouteModel', {
-    # Model for searching routes
     "city": fields.String(min_length=2, max_length=32),
     "location": fields.String(min_length=2, max_length=32),
     "difficulty": fields.String(min_length=2, max_length=32),
@@ -129,17 +110,54 @@ search_route_model = api.model('SearchRouteModel', {
     "distance": fields.Float(),
     "distanceMargin": fields.Float(),
     "min": fields.Integer(),
-    "timeMargin": fields.Float()
+    "timeMargin": fields.Float(),
+    # Model for route search with optional filters.
+})
+
+create_comment_model = api.model('CreateCommentModel', {
+    # Model for adding a comment on a route.
+    "route_id": fields.String(required=True, min_length=2, max_length=32),
+    "body": fields.String(required=True, min_length=2, max_length=200),
+    "author": fields.String(required=True, min_length=2, max_length=32)
+})
+
+created_comment_model = api.model('CreatedCommentModel', {
+    # Model for retrieving comments of a specific route.
+    "route_id": fields.String(required=True, min_length=2, max_length=32),
+})
+
+delete_comment_model = api.model('DeleteCommentModel', {
+    # Model for deleting a comment.
+    "comment_id": fields.String(required=True),
 })
 
 create_event_model = api.model('CreateEventModel', {
-    # Model for route upload, includes various route details
+    # Model for creating an event.
     "hostname": fields.String(required=True, min_length=2, max_length=32),
     "name": fields.String(required=True, min_length=2, max_length=32),
     "interested": fields.Integer(default=0),
     "venue": fields.String(required=True, min_length=2, max_length=32),
     "date": fields.String(required=True, min_length=2, max_length=32),
-    "route_id": fields.String(required=True, min_length=2, max_length=32)
+    "route_id": fields.String(required=True, min_length=2, max_length=32),
+})
+
+create_group_model = api.model('CreateGroupModel', {
+    "name": fields.String(required=True, min_length=2, max_length=32),
+    "manager": fields.String(required=True, min_length=2, max_length=32),
+    "members": fields.List(fields.String(required=True, min_length=2, max_length=32)),
+    # Model for creating a group.
+})
+
+leave_group_model = api.model('LeaveGroupModel', {
+    "groupname": fields.String(required=True, min_length=2, max_length=32),
+    "username": fields.String(required=True, min_length=2, max_length=32),
+    # Model for a user leaving a group.
+})
+
+delete_group_model = api.model('DeleteGroupModel', {
+    "groupname": fields.String(required=True, min_length=2, max_length=32),
+    "manager": fields.String(required=True, min_length=2, max_length=32),
+    # Model for deleting a group.
 })
 
 
@@ -552,12 +570,15 @@ class CreateComment(Resource):
         # Extract JSON data from the request
         req_data = request.get_json()
         _route_id = req_data.get("route_id")
+        _author = req_data.get("author")
 
         # Create a new route with the provided details
         try:
             route = Route.get_by_rid(_route_id)  # Fetch route by username
             if not route:
                 return {"success": False, "msg": "Route not exist"}, 401
+            if not User.get_by_username(_author):
+                return {"success": False, "msg": "User not exist"}, 402
             new_comment = Comment(**req_data)  # Create a new route
             new_comment.save()
             route.add_comment(new_comment)
@@ -639,9 +660,82 @@ class CreateEvent(Resource):
         return {"success": True, "event": new_event.toDICT(),
                 "msg": "Route is created"}, 200
 
-@api.route('/api/delevent/')
-class test(Resource):
-    def get(self):
-        comment = Comment.get_by_cid("6601e93b987e7c70ce5c7cb5")
-        route = comment.get_route()
-        return {"success": True, "event": route.toDICT()},2
+@api.route('/api/creategroup/')
+class CreateGroup(Resource):
+    @api.expect(create_group_model, validate=True)  # Expecting data matching the route_model
+    def post(self):
+        # Extract JSON data from the request
+        req_data = request.get_json()
+
+        # Create a new route with the provided details
+        try:
+            manager = User.get_by_username(req_data.get("manager"))  # Fetch route by username
+            if not manager:
+                return {"success": False, "msg": "User not exist"}, 401
+            req_data['members'] = [User.get_by_username(member) for member in req_data['members']]
+            new_group = Group(**req_data)  # Create a new route
+            new_group.save()  # Save the new route to the database
+        except Exception as e:
+            # catch all other exceptions
+            current_app.logger.error(e)
+            return {"success": False, "msg": str(e)}, 403
+
+        # pylint: disable=maybe-no-member
+        return {"success": True, "group_name": new_group.name,
+                "msg": "Group is created"}, 200
+
+
+@api.route('/api/getgroup/')
+class GetGroup(Resource):
+    def post(self):
+        # Fetch all routes from the database
+        try:
+            groups = Group.all_groups()
+        except Exception as e:
+            current_app.logger.error(e)
+            return {"success": False, "msg": str(e)}, 500
+
+        return {"success": True, "groups": groups, "msg": "Groups retrieved successfully"}, 200
+
+
+@api.route('/api/leavinggroup/')
+class LeaveGroup(Resource):
+    @api.expect(leave_group_model, validate=True)  # Expecting data matching the route_model
+    def post(self):
+        # Fetch all routes from the database
+        req_data = request.get_json()
+        _groupname = req_data.get("groupname")
+        _member = req_data.get("username")
+        try:
+            group = Group.get_by_name(_groupname)
+            if not group:
+                return {"success": False, "msg": "Group not exist"}, 401
+            if not group.remove_member(User.get_by_username(_member)):
+                return {"success": False, "msg": "Member not exist or not in group"}, 402
+        except Exception as e:
+            current_app.logger.error(e)
+            return {"success": False, "msg": str(e)}, 500
+
+        return {"success": True, "msg": "member leave"}, 200
+
+
+@api.route('/api/deletegroup/')
+class DeleteGroup(Resource):
+    @api.expect(delete_group_model, validate=True)  # Expecting data matching the route_model
+    def post(self):
+        # Fetch all routes from the database
+        req_data = request.get_json()
+        _groupname = req_data.get("groupname")
+        _manager = req_data.get("manager")
+
+        try:
+            group = Group.get_by_name(_groupname)
+            if not group:
+                return {"success": False, "msg": "Group not exist"}, 401
+            if not group.delete_group(_manager):
+                return {"success": False, "msg": "Unauthorised"}, 402
+        except Exception as e:
+            current_app.logger.error(e)
+            return {"success": False, "msg": str(e)}, 500
+
+        return {"success": True, "msg": "Group deleted"}, 200

@@ -1,24 +1,22 @@
-// Community.js
-
 import React, { useState, useEffect } from 'react';
 import Friend from '../components/Friend';
 import Header from '../components/Header';
 import { useSelector } from 'react-redux';
-import '../style/community.css'
+import '../style/community.css';
 import MapboxRenderLine from './MapboxRenderLine';
 
-
-
 const Community = () => {
-    const username = useSelector((state) => state.userInfo.username)
+    const username = useSelector((state) => state.userInfo.username);
     const [friends, setFriends] = useState(null);
-    const [sharedRoutes, setsharedRoutes] = useState(null);
-    
+    const [sharedRoutes, setSharedRoutes] = useState(null);
     const [searchParams, setSearchParams] = useState({
         username: '',
         email: ''
     });
     const [searchResults, setSearchResults] = useState([]);
+    const [showSearch, setShowSearch] = useState(false); // State to control the visibility of search form
+    const [selectedFriends, setSelectedFriends] = useState([]);
+    const [groupName, setGroupName] = useState('');
 
     const fetchUserFriends = async () => {
         try {
@@ -33,7 +31,6 @@ const Community = () => {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
-            console.log(data)
             setFriends(data.friends);
         } catch (error) {
             console.error('There was a problem with your fetch operation:', error);
@@ -76,13 +73,11 @@ const Community = () => {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
-            console.log(data)
-            setsharedRoutes(data.routes.sort((a, b) => (a.shared_by > b.shared_by) ? 1 : -1));
+            setSharedRoutes(data.routes.sort((a, b) => (a.shared_by > b.shared_by) ? 1 : -1));
         } catch (error) {
             console.error('There was a problem with your fetch operation:', error);
         }
     };
-
 
     const handleChange = (e) => {
         setSearchParams({
@@ -105,6 +100,7 @@ const Community = () => {
             }
             const data = await response.json();
             data.users = data.users.filter(user => user.username !== username);
+            data.users = data.users.filter(user => friends.every(friend => friend.username !== user.username));
             setSearchResults(data);
         } catch (error) {
             console.error('There was a problem with your fetch operation:', error);
@@ -120,37 +116,82 @@ const Community = () => {
             }
         });
         handleUserSearch(filteredParams);
+        setShowSearch(true); // Show search results after form submission
     };
     
     useEffect(() => {
         fetchUserFriends();
         fetchUserSharedRoutes();
     }, []);
+
+    const toggleSearch = () => {
+        setShowSearch(!showSearch);
+    };
+
+    const handleFriendSelect = (friend) => {
+        // Check if the friend is already selected, if not add, otherwise remove
+        if (selectedFriends.includes(friend.username)) {
+            setSelectedFriends(selectedFriends.filter(username => username !== friend.username));
+        } else {
+            setSelectedFriends([...selectedFriends, friend.username]);
+        }
+    };    
+
+    const handleCreateGroup = (e) => {
+        e.preventDefault();
+        console.log("Group Name:", groupName);
+        console.log("Selected Friends:", selectedFriends);
+        setSelectedFriends([]);
+        setGroupName('');
+        fetch("/api/creategroup/", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name: groupName, manager:username, members:selectedFriends }),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            }
+            )
+            .then(data => {
+                console.log("Group created:", data);
+                alert('Group created successfully!');
+            }
+            )
+            .catch(error => {
+                console.error('There was a problem with your fetch operation:', error);
+            }
+            );
+    };
     
     return (
         <div className='Community'>
             <Header />
-            <h2 id="communityHeading">Search Users</h2>
-            <form id="userSearchForm" onSubmit={handleSubmit}>
-                <input type="text" name="username" placeholder="Username" value={searchParams.username} onChange={handleChange} />
-                <input type="text" name="email" placeholder="Email" value={searchParams.email} onChange={handleChange} />
-                <button type="submit" id="submitbutton">Search</button>
-            </form>
-            <div classname='resultDiv'>
-            {searchResults.success && searchResults.users.length > 0 ? (
-                searchResults.users.map((user, index) => {
-                    return (
-                        friends && friends.includes(user.username) ? (
-                            <Friend key={index} username={user.username} email={user.email} isFriend={true} />
+            <h2 id="communityHeading" onClick={toggleSearch}>Search New Friends🔎</h2>
+            {showSearch && (
+                <div>
+                    <form id="userSearchForm" onSubmit={handleSubmit}>
+                        <input type="text" name="username" placeholder="Username" value={searchParams.username} onChange={handleChange} />
+                        <input type="text" name="email" placeholder="Email" value={searchParams.email} onChange={handleChange} />
+                        <button type="submit" id="submitbutton">Search</button>
+                    </form>
+                    <div className='resultDiv'>
+                        {searchResults.success && searchResults.users.length > 0 ? (
+                            searchResults.users.map((user, index) => {
+                                return (
+                                    <Friend key={index} username={user.username} email={user.email} isFriend={false} />
+                                );
+                            })
                         ) : (
-                            <Friend key={index} username={user.username} email={user.email} isFriend={false} />
-                        )
-                    );
-                })
-            ) : (
-                <p>No users found</p>
+                            <p>No users found</p>
+                        )}
+                    </div>
+                </div>
             )}
-            </div>
             <h4 id="mypaths">Your Friends Shared you some Paths !</h4>
             <div className="grid-container">
                 {sharedRoutes && sharedRoutes.map((object, index) => (
@@ -167,12 +208,31 @@ const Community = () => {
                                 <div><b>Mobility:</b>  {object.mobility}</div>
                                 {object.comment && object.comment.length >= 1 && (
                                     <div><b>Creator Comment:</b> {object.comment[0].body}</div>)}
-                                <div><button  onClick={likeRoute(object.id)}>Like</button></div>
+                                <div><button onClick={() => likeRoute(object.id)}>Like</button></div>
                             </div>
                         </div>
                     </div>
                 ))}
             </div>
+            {friends && friends.length > 0 && (
+            <div>
+                <h2>Create a Group</h2>
+                <form onSubmit={handleCreateGroup}>
+                    <input type="text" placeholder="Group Name" value={groupName} onChange={(e) => setGroupName(e.target.value)} />
+                    <ul>
+                        {friends.map((friend, index) => (
+                            <li key={index}>
+                                <label>
+                                    <input type="checkbox" onChange={() => handleFriendSelect(friend)} />
+                                    {friend.username}
+                                </label>
+                            </li>
+                        ))}
+                    </ul>
+                    <button type="submit">Create Group</button>
+                </form>
+            </div>
+            )}
         </div>
     );
 };

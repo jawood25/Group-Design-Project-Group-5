@@ -459,3 +459,56 @@ class Event(db.Document):
             'host': self.host.username,
             'route': self.route.toDICT()
         }
+
+class Group(db.Document):
+    name = db.StringField(required=True, unique=True)
+    manager = db.StringField(required=True)
+    members = db.ListField(db.ReferenceField(User, reverse_delete_rule='PULL'))
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def __repr__(self):
+        return f"Group {self.name}"
+
+    def get_manager(self):
+        return User.get_by_username(self.manager).toDICT()
+
+    def get_members(self):
+        return [member.toDICT() for member in self.members]
+
+    def add_member(self, member):
+        if member in self.members:
+            return False
+        self.members.append(member)
+        self.save()
+        return True
+
+    def remove_member(self, member):
+        if member not in self.members:
+            return False
+        self.members.remove(member)
+        self.save()
+        return True
+
+    def delete_group(self, manager):
+        if manager != self.manager:
+            return False
+        self.delete()
+        return True
+
+    @classmethod
+    def get_by_name(cls, name):
+        return cls.objects(name=name).first()
+    
+    @classmethod
+    def all_groups(cls):
+        return [group.toDICT() for group in cls.objects()]
+
+
+    def toDICT(self):
+        return {
+            'name': self.name,
+            'manager': self.manager,  # Convert manager to dictionary
+            'members': self.get_members(),
+        }

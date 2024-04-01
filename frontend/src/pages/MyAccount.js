@@ -1,4 +1,3 @@
-// MyAccount.js
 import Header from '../components/Header';
 import { useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
@@ -22,6 +21,9 @@ const MyAccount = () => {
     const [editError, setEditError] = useState('');
     const [editSuccess, setEditSuccess] = useState('');
     const [comment, setComment] = useState('');
+    const [groups, setGroups] = useState(null);
+    const [groupsIManage, setGroupsIManage] = useState(null);
+
 
     const dispatch = useDispatch();
     const coordinates_edited = useSelector((state) => state.coordinates.coordinates)
@@ -48,7 +50,6 @@ const MyAccount = () => {
             console.error('There was a problem with your fetch operation:', error);
         }
     }
-
 
     const shareRouteWithFriend = async (route_id) => {
         console.log(username, route_id, friend_username)
@@ -125,6 +126,27 @@ const MyAccount = () => {
             const data = await response.json();
             console.log(data)
             setFriends(data.friends);
+        } catch (error) {
+            console.error('There was a problem with your fetch operation:', error);
+        }
+    };
+
+    const fetchGroups = async () => {
+        try {
+            const response = await fetch('/api/getgroup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            console.log(data.groups)
+
+            setGroupsIManage(data.groups.filter(group => group.manager === username));
+            setGroups(data.groups.filter(group => group.members.find(member => member.username === username)));
         } catch (error) {
             console.error('There was a problem with your fetch operation:', error);
         }
@@ -269,10 +291,53 @@ const MyAccount = () => {
         }
     }
 
+    const deleteGroup = async (group_name, username) => {
+        try {
+            const response = await fetch('/api/deletegroup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ groupname:group_name, manager:username }),
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            console.log(data)
+            await fetchGroups();
+        }
+        catch (error) {
+            console.error('There was a problem with your fetch operation:', error);
+        }
+    }
+
+    const leaveGroup = async (group_name, username) => {
+        try {
+            const response = await fetch('/api/leavinggroup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ groupname:group_name, username:username }),
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            console.log(data)
+            await fetchGroups();
+        }
+        catch (error) {
+            console.error('There was a problem with your fetch operation:', error);
+        }
+    }
+
     useEffect(() => {
         fetchUserRoutes();
         fetchUserLikedRoutes();
         fetchUserFriends();
+        fetchGroups();
     }, []);
 
     return (
@@ -390,6 +455,43 @@ const MyAccount = () => {
                     </div>
                 ))}
             </div>
+            <h3>The Groups</h3>
+            <h4>My Groups</h4>
+            <div>
+                {groupsIManage && groupsIManage.map((group, index) => (
+                    <div key={index}>
+                        <h5>{group.name}</h5>
+                        Manager : {group.manager}
+                        Members:
+                        <ul>
+                            {group.members.map((member, idx) => (
+                                <div>
+                                    <li key={idx}>{member.username}</li>
+                                    <button onClick={() => leaveGroup(group.name, member.username)}>Kick</button>
+                                </div>
+                            ))}
+                        </ul>
+                        <button onClick={() => deleteGroup(group.name, username)}>Delete</button>
+                    </div>
+                ))}
+            </div>
+            <h4>Groups I am in</h4>
+            <div>
+                {groups && groups.map((group, index) => (
+                    <div key={index}>
+                        <h5>{group.name}</h5>
+                        Manager : {group.manager}
+                        Members:
+                        <ul>
+                            {group.members.map((member, idx) => (
+                                <li key={idx}>{member.username}</li>
+                            ))}
+                        </ul>
+                        <button onClick={() => leaveGroup(group.name, username)}>Leave Group</button>
+                    </div>
+                ))}
+            </div>
+            <h4>My Friends</h4>
             <div>
                 {friends && friends.map((friend, index) => (
                     <Friend key={index} username={friend.username} isFriend={true} />
