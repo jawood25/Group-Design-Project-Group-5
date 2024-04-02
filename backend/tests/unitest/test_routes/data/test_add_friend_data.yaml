@@ -1,0 +1,24 @@
+- username: "user1"
+  friend_username: "friend1"
+  content_type: "application/json"
+  expected_status: 200
+
+- username: "nonexistent"
+  friend_username: "friend1"
+  content_type: "application/json"
+  expected_status: 401
+
+- username: "user1"
+  friend_username: "nonexistent"
+  content_type: "application/json"
+  expected_status: 401
+
+- username: "alreadyfriends"
+  friend_username: "friend1"
+  content_type: "application/json"
+  expected_status: 402
+
+- username: "user1"
+  friend_username: "friend1"
+  content_type: "text/plain"
+  expected_status: 415

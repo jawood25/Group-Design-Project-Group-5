@@ -1,0 +1,11 @@
+- username: "user1"
+  content_type: "application/json"
+  expected_status: 200
+
+- username: "nonexistent"
+  content_type: "application/json"
+  expected_status: 401
+
+- username: "user1"
+  content_type: "plain/text"
+  expected_status: 415
