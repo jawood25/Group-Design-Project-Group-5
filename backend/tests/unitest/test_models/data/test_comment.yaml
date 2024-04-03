@@ -1,0 +1,86 @@
+- method: "__init__"
+  params:
+    author: "testAuthor"
+    body: "This is a test comment."
+  expected:
+    author: "testAuthor"
+    body: "This is a test comment."
+  expected_success: True
+
+- method: "__repr__"
+  author: "testAuthor"
+  body: "This is a test comment."
+  expected_repr: "testAuthor's comment"
+  expected_success: True
+
+- method: "get_route"
+  expected_success: True
+
+- method: "delete_comment"
+  owner: null
+  author: "commentAuthor"
+  no_route: True
+  expected_result: False
+  expected_success: True
+
+- method: "delete_comment"
+  owner: null
+  author: "commentAuthor"
+  expected_result: True
+  expected_success: True
+
+- method: "delete_comment"
+  owner: "testuser"
+  author: null
+  expected_result: True
+  expected_success: True
+
+- method: "delete_comment"
+  owner: "testuser"
+  author: "commentAuthor"
+  expected_result: False
+  expected_success: True
+
+- method: "delete_comment"
+  owner: null
+  author: null
+  expected_result: False
+  expected_success: True
+
+- method: "delete_comment"
+  owner: "testuser1"
+  author: null
+  expected_result: False
+  expected_success: True
+
+- method: "delete_comment"
+  owner: null
+  author: "commentAuthor1"
+  expected_result: False
+  expected_success: True
+
+- method: "delete_comment"
+  owner: "routeOwner"
+  author: "anotherUser"
+  route_creator: "differentOwner"
+  expected_result: False
+  expected_success: True
+
+- method: "get_by_cid"
+  cid: "commentId123"
+  expected_author: "testAuthor"
+  expected_success: True
+
+- method: "toDICT"
+  author: "testAuthor"
+  date_posted: "2023-04-01T12:00:00"
+  dislikes: 2
+  likes: 5
+  body: "This is a test comment."
+  expected_dict:
+    author: "testAuthor"
+    date_posted: "2023-04-01T12:00:00"
+    dislikes: 2
+    likes: 5
+    body: "This is a test comment."
+  expected_success: True

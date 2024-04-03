@@ -1,0 +1,37 @@
+- comment_id: "existingComment"
+  owner: null
+  author: "commentAuthor"
+  expected_status: 200
+
+- comment_id: "existingComment"
+  owner: "validOwner"
+  author: null
+  expected_status: 200
+
+- comment_id: "existingComment"
+  owner: "invalidOwner"
+  author: null
+  expected_status: 402  # Unauthorized deletion attempt
+
+- comment_id: "existingComment"
+  owner: null
+  author: "invalidAuthor"
+  expected_status: 402  # Unauthorized deletion attempt
+
+
+- comment_id: "nonexistent"
+  owner: null
+  author: null
+  expected_status: 401  # Comment does not exist
+
+
+- comment_id: "disconnected"
+  owner: null
+  author: null
+  expected_status: 403
+
+- comment_id: "existingComment"
+  owner: null
+  author: "commentAuthor"
+  content_type: "text/plain"
+  expected_status: 415

@@ -18,6 +18,16 @@
   content_type: "application/json"
   expected_status: 402
 
+- username: "disconnected"
+  friend_username: "friend2"
+  content_type: "application/json"
+  expected_status: 403
+
+- username: "user1"
+  friend_username: "disconnected"
+  content_type: "application/json"
+  expected_status: 403
+
 - username: "user1"
   friend_username: "friend2"
   content_type: "text/plain"

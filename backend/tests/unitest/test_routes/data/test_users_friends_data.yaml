@@ -1,10 +1,11 @@
 - username: "user1"
-  content_type: "application/json"
   expected_status: 200
 
 - username: "nonexistent"
-  content_type: "application/json"
   expected_status: 401
+
+- username: "disconnected"
+  expected_status: 403
 
 - username: "user1"
   content_type: "plain/text"

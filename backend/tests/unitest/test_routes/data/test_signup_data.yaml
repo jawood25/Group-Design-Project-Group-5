@@ -1,27 +1,22 @@
 # test_signup_data.yaml
-- username: "newuser"
+- username: "nonexistent"
   password: "newpassword"
-  content_type: "application/json"
   expected_status: 200
 
 - username: "newuser"
   password: null
-  content_type: "application/json"
   expected_status: 400
 
 - username: null
   password: "newpassword"
-  content_type: "application/json"
   expected_status: 400
 
-- username: "newuser"
+- username: "disconnected"
   password: "newpassword"
-  content_type: "application/json"
   expected_status: 401
 
 - username: "testuser"
   password: "testpassword"
-  content_type: "application/json"
   expected_status: 405
 
 - username: "newuser1"

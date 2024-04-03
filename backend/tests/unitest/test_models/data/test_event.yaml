@@ -1,0 +1,22 @@
+- method: "__init__"
+  params:
+    name: "Tech Meetup"
+    venue: "Downtown Convention Center"
+    interested: 5
+    date: "2024-09-15T18:00:00"
+  expected_success: True
+
+- method: "__repr__"
+  name: "Annual Developer Conference"
+  expected_repr: "Event Annual Developer Conference"
+  expected_success: True
+
+- method: "toDICT"
+  expected_dict:
+    name: "Sample Event"
+    venue: "Sample Venue"
+    interested: 10
+    date: "2024-09-15T18:00:00"
+    host: "hostUser"
+    rid: null
+  expected_success: True

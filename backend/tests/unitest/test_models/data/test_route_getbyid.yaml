@@ -1,6 +1,0 @@
-# test_route_getbyid.yaml
-- username: "testuser"
-  expected_success: True
-
-- username: "testuser"
-  expected_success: False

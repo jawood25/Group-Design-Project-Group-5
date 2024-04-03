@@ -1,0 +1,42 @@
+- req_data:
+    route_id: "validRoute"
+    body: "Great route!"
+    author: "user1"
+  expected_status: 200
+
+- req_data:
+    route_id: "nonexistent"
+    body: "This route does not exist."
+    author: "user1"
+  expected_status: 401
+
+- req_data:
+    route_id: "validRoute"
+    body: ""
+    author: "user1"
+  expected_status: 400  # Assuming validation fails due to an empty body
+
+- req_data:
+    route_id: "validRoute"
+    body: "Another comment."
+    author: "nonexistent"
+  expected_status: 402
+
+- req_data:
+    route_id: "validRoute"
+    body: "Great route!"
+    author: "user1"
+  content_type: "text/plain"
+  expected_status: 415
+
+- req_data:
+    route_id: "validRoute"
+    body: "Great route!"
+    author: "disconnected"
+  expected_status: 403
+
+- req_data:
+    route_id: "disconnected"
+    body: "Great route!"
+    author: "user1"
+  expected_status: 403

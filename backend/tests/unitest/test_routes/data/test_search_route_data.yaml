@@ -1,0 +1,25 @@
+- search_criteria:
+    city: "TestCity"
+    location: "TestLocation"
+    difficulty: "Medium"
+    mobility: "Walk"
+    creator_username: "user1"
+  expected_status: 200
+
+- search_criteria:
+    city: "nonexistent"
+  expected_status: 200  # Search succeeds but returns an empty list if no matching routes are found.
+
+- search_criteria:
+     city: "disconnected"
+  expected_status: 500
+
+
+- search_criteria:
+    city: "TestCity"
+    location: "TestLocation"
+    difficulty: "Medium"
+    mobility: "Walk"
+    creator_username: "user1"
+  content_type: "text/plain"
+  expected_status: 415

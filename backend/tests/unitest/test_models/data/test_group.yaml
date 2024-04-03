@@ -1,0 +1,50 @@
+- method: "__repr__"
+  name: "Group Alpha"
+  expected_repr: "Group Group Alpha"
+  expected_success: True
+
+- method: "remove_member"
+  name: "Group Epsilon"
+  members: [ "Member One", "Member Two" ]
+  member_to_remove: "Member One"
+  expected_result: True
+  expected_success: True
+
+- method: "delete_group"
+  name: "Group Zeta"
+  manager: "testuser"
+  expected_result: True
+  expected_success: True
+
+- method: "get_by_name"
+  name: "Group Eta"
+  expected_group_name: "Group Eta"
+  expected_success: True
+
+- method: "toDICT"
+  name: "Group Theta"
+  manager: "managerId"
+  expected_dict:
+    name: "Group Theta"
+    manager: 'testuser'
+    members: [ ]
+  expected_success: True
+
+- method: "add_member"
+  name: "Group Iota"
+  member_to_add: "existingMemberId"
+  expected_result: False
+  expected_success: True
+
+- method: "remove_member"
+  name: "Group Kappa"
+  member_to_remove: "nonExistingMemberId"
+  expected_result: False
+  expected_success: True
+
+- method: "delete_group"
+  name: "Group Lambda"
+  manager: "unauthorizedManagerId"
+  expected_result: False
+  expected_success: True
+

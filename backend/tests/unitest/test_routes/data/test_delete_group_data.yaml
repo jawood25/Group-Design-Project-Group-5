@@ -1,0 +1,21 @@
+- groupname: "existinggroup"
+  manager: "authorizedmanager"
+  expected_status: 200
+
+- groupname: "nonexistent"
+  manager: "user"
+  expected_status: 401
+
+- groupname: "existinggroup"
+  manager: "unauthorizedmanager"
+  expected_status: 402
+
+- groupname: "disconnected"
+  manager: "authorizedmanager"
+  expected_status: 500
+
+- groupname: "existinggroup"
+  manager: "authorizedmanager"
+  content_type: "text/plain"
+  expected_status: 415
+

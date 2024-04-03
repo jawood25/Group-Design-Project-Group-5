@@ -1,8 +1,0 @@
-# test_user_getroute.yaml
-- username: "testuser"
-  expected_success: True
-
-- username: "testuser"
-  expected_success: False
-
-

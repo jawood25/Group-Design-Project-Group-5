@@ -1,0 +1,29 @@
+post:
+  - req_data:
+      route_id: "existent"
+    expected_status: 200
+  - req_data:
+      route_id: "nonexistent"
+    expected_status: 401
+  - req_data:
+      route_id: "disconnected"
+    expected_status: 403
+  - req_data:
+      route_id: "existent"
+    content_type: "text/plain"
+    expected_status: 415
+
+delete:
+  - req_data:
+      route_id: "existent"
+    expected_status: 200
+  - req_data:
+      route_id: "nonexistent"
+    expected_status: 401
+  - req_data:
+      route_id: "disconnected"
+    expected_status: 403
+  - req_data:
+      route_id: "existent"
+    content_type: "text/plain"
+    expected_status: 415

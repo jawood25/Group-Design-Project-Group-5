@@ -1,0 +1,25 @@
+- name: "group1"
+  manager: "user1"
+  members: [ "user2", "user3" ]
+  expected_status: 200
+
+- name: "group3"
+  manager: "user1"
+  members: [ "user2", "nonexistent" ]
+  expected_status: 200
+
+- name: "group2"
+  manager: "nonexistent"
+  members: [ "user2", "user3" ]
+  expected_status: 401
+
+- name: "group4"
+  manager: "disconnected"
+  members: [ "user2", "user3" ]
+  expected_status: 403
+
+- name: "group5"
+  manager: "user1"
+  members: [ "user2", "user3" ]
+  content_type: "text/plain"
+  expected_status: 415
