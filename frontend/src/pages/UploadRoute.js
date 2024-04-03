@@ -3,9 +3,13 @@ import MapboxDrawLine from '../components/MapboxDrawLine';
 import { useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { resetCoordinates } from '../redux/coordinates';
+import { resetMapCenter } from '../redux/mapCenter';
 import '../style/upload.css'
 
 const UploadRoute = () => {
+    const dispatch = useDispatch();
     const isLoggedIn = useSelector((state) => state.loginStatus.isLoggedIn);
 
     const [city, setCity] = useState('');
@@ -64,6 +68,8 @@ const UploadRoute = () => {
     
                 if (response.ok) {
                     console.log('Upload successful');
+                    dispatch(resetCoordinates());
+                    dispatch(resetMapCenter());
                     navigate("/my-account");
                 } else {
                     console.error('Upload failed');
@@ -154,15 +160,15 @@ const UploadRoute = () => {
                                                     <label className="control-label col-sm-2">Difficulty:</label>
                                                     <div className="col">
                                                         <div className="form-check form-check-inline">
-                                                            <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="Easy" onChange={(e) => setDifficulty(e.target.value)} />
+                                                            <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="Easy" onChange={(e) => setDifficulty(e.target.value)} required/>
                                                             <label className="form-check-label" htmlFor="inlineRadio1">Easy</label>
                                                         </div>
                                                         <div className="form-check form-check-inline">
-                                                            <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="Normal" onChange={(e) => setDifficulty(e.target.value)} />
+                                                            <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="Normal" onChange={(e) => setDifficulty(e.target.value)} required/>
                                                             <label className="form-check-label" htmlFor="inlineRadio2">Normal</label>
                                                         </div>
                                                         <div className="form-check form-check-inline">
-                                                            <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="Hard" onChange={(e) => setDifficulty(e.target.value)} />
+                                                            <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="Hard" onChange={(e) => setDifficulty(e.target.value)} required/>
                                                             <label className="form-check-label" htmlFor="inlineRadio3">Hard</label>
                                                         </div>
                                                     </div>
@@ -171,19 +177,19 @@ const UploadRoute = () => {
                                                     <label className="control-label col-sm-2">Mobility:</label>
                                                     <div className="col">
                                                         <div className="form-check form-check-inline">
-                                                            <input className="form-check-input" type="radio" name="inlineRadioOptions2" id="inlineRadio21" value="Walk" onChange={(e) => setMobility(e.target.value)} />
+                                                            <input className="form-check-input" type="radio" name="inlineRadioOptions2" id="inlineRadio21" value="Walk" onChange={(e) => setMobility(e.target.value)} required/>
                                                             <label className="form-check-label" htmlFor="inlineRadio1">Walk</label>
                                                         </div>
                                                         <div className="form-check form-check-inline">
-                                                            <input className="form-check-input" type="radio" name="inlineRadioOptions2" id="inlineRadio22" value="Run" onChange={(e) => setMobility(e.target.value)} />
+                                                            <input className="form-check-input" type="radio" name="inlineRadioOptions2" id="inlineRadio22" value="Run" onChange={(e) => setMobility(e.target.value)} required/>
                                                             <label className="form-check-label" htmlFor="inlineRadio2">Run</label>
                                                         </div>
                                                         <div className="form-check form-check-inline">
-                                                            <input className="form-check-input" type="radio" name="inlineRadioOptions2" id="inlineRadio23" value="Bike" onChange={(e) => setMobility(e.target.value)} />
+                                                            <input className="form-check-input" type="radio" name="inlineRadioOptions2" id="inlineRadio23" value="Bike" onChange={(e) => setMobility(e.target.value)} required/>
                                                             <label className="form-check-label" htmlFor="inlineRadio3">Bike</label>
                                                         </div>
                                                         <div className="form-check form-check-inline">
-                                                            <input className="form-check-input" type="radio" name="inlineRadioOptions2" id="inlineRadio24" value="All" onChange={(e) => setMobility(e.target.value)} />
+                                                            <input className="form-check-input" type="radio" name="inlineRadioOptions2" id="inlineRadio24" value="All" onChange={(e) => setMobility(e.target.value)} required/>
                                                             <label className="form-check-label" htmlFor="inlineRadio4">All</label>
                                                         </div>
                                                     </div>
@@ -191,7 +197,7 @@ const UploadRoute = () => {
                                                 <div className="form-group">
                                                     <label className="control-label col-sm-2" htmlFor="description">Comment:</label>
                                                     <div className="col">
-                                                        <textarea className="form-control" rows="5" value={comment} onChange={(e) => setComment(e.target.value)} id="comment"></textarea>
+                                                        <textarea className="form-control" rows="5" value={comment} onChange={(e) => setComment(e.target.value)} id="comment" required></textarea>
                                                     </div>
                                                 </div>
                                                 <div className="row">

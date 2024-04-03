@@ -11,10 +11,13 @@ export const mapCenter = createSlice({
                 lat: action.payload.lat,
                 lng: action.payload.lng
             };
+        },
+        resetMapCenter: state => {
+            state.center = {};
         }
     }
 });
 
-export const { saveMapCenter } = mapCenter.actions
+export const { saveMapCenter, resetMapCenter } = mapCenter.actions
 
 export default mapCenter.reducer

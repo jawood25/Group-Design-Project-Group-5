@@ -1,6 +1,7 @@
 import { useState } from "react";
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom'; // Import Link from React Router
 
 const Friend = ({ username, isFriend }) => {
     const adder = useSelector((state) => state.userInfo.username)
@@ -65,7 +66,9 @@ const Friend = ({ username, isFriend }) => {
 
     return (
         <div style={{ display: 'flex', alignItems: 'center', margin: 0, padding: 0 }}>
-            <p style={{ marginRight: '10px' }}>{username}</p>
+            <Link to={`/profile/${username}`} style={{ marginRight: '10px', textDecoration: 'none', color: 'inherit' }}>
+                <p>{username}</p>
+            </Link>
             {show ? (
                 <button style={{ marginLeft: 'auto' }} onClick={() => onFollow(username)}>Follow</button>
             ) : <button style={{ marginLeft: 'auto' }} onClick={() => onUnfollow(username)}>Unfollow</button>}

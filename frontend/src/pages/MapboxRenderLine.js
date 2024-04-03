@@ -7,7 +7,6 @@ mapboxgl.accessToken = "";
 const MapboxRenderLine = (route) => {
     const mapContainerRef = useRef(null);
 
-  // Initialize map when component mounts
     useEffect(() => {
         const map = new mapboxgl.Map({
             container: mapContainerRef.current,
@@ -28,7 +27,7 @@ const MapboxRenderLine = (route) => {
                     }
                 },
             });
-            // Add a symbol layer
+            
             map.addLayer({
                 id: "route",
                 type: "line",
@@ -48,7 +47,7 @@ const MapboxRenderLine = (route) => {
             map.remove();
         };
 
-    }, []);
+    }, [route.route.coordinates]);
 
     return <div className="map-container" ref={mapContainerRef} style={{ width: "700px", height: "400px" }}/>;
 };

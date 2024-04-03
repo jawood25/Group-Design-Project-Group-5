@@ -1,11 +1,15 @@
-// MyAccount.js
 import Header from '../components/Header';
 import { useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import MapboxRenderLine from './MapboxRenderLine';
+import EditRoute from '../components/EditRoute';
 import '../style/myaccount.css'
 import RouteSearch from '../components/RouteSearch';
 import Friend from '../components/Friend';
+import { resetCoordinates } from '../redux/coordinates';
+import { resetMapCenter } from '../redux/mapCenter';
+import { useDispatch } from 'react-redux';
+import Comment from '../components/Comment';
 
 
 const MyAccount = () => {
@@ -14,10 +18,49 @@ const MyAccount = () => {
     const [likedRouteData, setLikedRouteData] = useState(null);
     const [friends, setFriends] = useState(null);
     const [friend_username, setSelectedFriend] = useState(null);
+    const [editError, setEditError] = useState('');
+    const [editSuccess, setEditSuccess] = useState('');
+    const [comment, setComment] = useState('');
+    const [groups, setGroups] = useState(null);
+    const [groupsIManage, setGroupsIManage] = useState(null);
 
+    const [meetingPlace, setMeetingPlace] = useState('');
+    const [meetingTime, setMeetingTime] = useState({ hour: '00', minute: '00' });
+    const [generalInfo, setGeneralInfo] = useState('');
+    const hours = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0'));
+    const minutes = Array.from({ length: 60 }, (_, i) => i.toString().padStart(2, '0'));
+    const [eventRoute, setEventRoute] = useState(null);
+
+
+
+    const dispatch = useDispatch();
+    const coordinates_edited = useSelector((state) => state.coordinates.coordinates)
+    const mapCenter_edited = useSelector((state) => state.mapCenter.center)
+
+    const deleteComment = async (comment_id) => {
+        try {
+            const response = await fetch('/api/deletecomment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ comment_id }),
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            console.log(data)
+            await fetchUserRoutes();
+            await fetchUserLikedRoutes();
+        }
+        catch (error) {
+            console.error('There was a problem with your fetch operation:', error);
+        }
+    }
 
     const shareRouteWithFriend = async (route_id) => {
-       console.log(username, route_id, friend_username)
+        console.log(username, route_id, friend_username)
         try {
             const response = await fetch('/api/shareroute', {
                 method: 'POST',
@@ -96,6 +139,27 @@ const MyAccount = () => {
         }
     };
 
+    const fetchGroups = async () => {
+        try {
+            const response = await fetch('/api/getgroup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            console.log(data.groups)
+
+            setGroupsIManage(data.groups.filter(group => group.manager === username));
+            setGroups(data.groups.filter(group => group.members.find(member => member.username === username)));
+        } catch (error) {
+            console.error('There was a problem with your fetch operation:', error);
+        }
+    };
+
 
     const handleSearch = async (searchParams) => {
         try {
@@ -121,8 +185,29 @@ const MyAccount = () => {
         }
     };
 
+    const commentRoad = async (route_id, body) => {
+        try {
+            const response = await fetch('/api/addingcomment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ route_id, body, author: username }),
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            console.log(data)
+            await fetchUserRoutes();
+            await fetchUserLikedRoutes();
+        } catch (error) {
+            console.error('There was a problem with your fetch operation:', error);
+        }
+    }
+
     const deleteRoute = async (route) => {
-        const routeData = {
+        const routeInfo = {
             route_id: route.id,
             username: username,
             coordinates: route.coordinates,
@@ -138,7 +223,7 @@ const MyAccount = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(routeData),
+                body: JSON.stringify(routeInfo),
             });
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -152,6 +237,47 @@ const MyAccount = () => {
         }
     }
 
+    const editRoute = async (route) => {
+        if (coordinates_edited.length > 1) {
+
+            const routeData = {
+                route_id: route.id,
+                username: username,
+                coordinates: coordinates_edited,
+                mapCenter: mapCenter_edited,
+                city: route.city,
+                location: route.location,
+                difficulty: route.difficulty,
+                mobility: route.mobility,
+            };
+            try {
+                const response = await fetch('/api/editroute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(routeData),
+                });
+                if (!response.ok) {
+                    setEditError('Failed to edit the route. Please try again.');
+                    throw new Error('Network response was not ok');
+                }
+                else {
+                    const data = await response.json();
+                    console.log(data)
+                    dispatch(resetCoordinates());
+                    dispatch(resetMapCenter());
+                    await fetchUserRoutes()
+                    setEditSuccess("Route successfully edited!")
+                }
+            }
+            catch (error) {
+                setEditError('Failed to edit the route. Please try again.');
+                console.error('There was a problem with your fetch operation:', error);
+            }
+        }
+    }
+
     const deleteLikedRoute = async (route_id) => {
         try {
             const response = await fetch('/api/unsavingroutes', {
@@ -159,7 +285,7 @@ const MyAccount = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username,  route_id}),
+                body: JSON.stringify({ username, route_id }),
             });
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -172,20 +298,97 @@ const MyAccount = () => {
             console.error('There was a problem with your fetch operation:', error);
         }
     }
-    
+
+    const deleteGroup = async (group_name, username) => {
+        try {
+            const response = await fetch('/api/deletegroup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ groupname: group_name, manager: username }),
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            console.log(data)
+            await fetchGroups();
+        }
+        catch (error) {
+            console.error('There was a problem with your fetch operation:', error);
+        }
+    }
+
+    const leaveGroup = async (group_name, username) => {
+        try {
+            const response = await fetch('/api/leavinggroup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ groupname: group_name, username: username }),
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            console.log(data)
+            await fetchGroups();
+        }
+        catch (error) {
+            console.error('There was a problem with your fetch operation:', error);
+        }
+    }
+
+    const uploadEvent = async (e) => {
+        e.preventDefault(); 
+
+        const eventData = {
+            username,
+            routeId: eventRoute.id,
+            meetingPlace,
+            meetingTime: `${meetingTime.hour}:${meetingTime.minute}`,
+            generalInfo,
+            friends
+        };
+
+        console.log(eventData)
+
+        try {
+            const response = await fetch('/api/uploadevent', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(eventData),
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error('There was a problem with your fetch operation:', error);
+        }
+    };
+
     useEffect(() => {
         fetchUserRoutes();
         fetchUserLikedRoutes();
         fetchUserFriends();
+        fetchGroups();
     }, []);
 
     return (
         <div className='MyAccount'>
             <Header />
+            <RouteSearch onSearch={handleSearch} />
             <h3>Username: {username}</h3>
             <h2>My Account Page</h2>
-            <RouteSearch onSearch={handleSearch} />
-            <h4>My Paths</h4>
+            <h4 id="mypaths">My Paths</h4>
             <div className="grid-container">
                 {routeData && routeData.map((route, index) => (
                     <div className="grid-item" key={index}>
@@ -197,16 +400,116 @@ const MyAccount = () => {
                             <div><b>Time:</b>  {route.hours}:{route.minutes}</div>
                             <div><b>Difficulty:</b>  {route.difficulty}</div>
                             <div><b>Mobility:</b>  {route.mobility}</div>
-                            <div><b>Comment:</b>  {route.comment}</div>
+                            {route.comment && route.comment.length >= 1 && (
+                                <div><b>Creator Comment:</b> {route.comment[0].body}</div>)}
+                            {route.comment && route.comment.length >= 2 && (
+                                //ignore the first comment as it is the creator comment
+                                <div>
+                                    <b>Users Comment:</b> {route.comment.slice(1).map((comment, index) => (
+                                        <div key={index}>
+                                            {console.log(comment)}
+                                            <Comment
+                                                author={comment.author}
+                                                body={comment.body}
+                                                owner={username}
+                                                onDelete={() => deleteComment(comment.id)}
+                                            />
+                                        </div>
+                                    ))}</div>)}
                         </div>
-                        <button onClick={() => deleteRoute(route)}>Delete</button>
-                        <select onChange={(e) => setSelectedFriend(e.target.value)}>
+
+                        <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => {
+                            setEditError('');
+                            setEditSuccess('');
+                        }}>
+                            Edit Route
+                        </button>
+
+                        <div className="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div className="modal-dialog modal-dialog-centered modal-xl">
+                                <div className="modal-content">
+                                    <div className="modal-header">
+                                        <h5 className="modal-title" id="exampleModalLabel">Edit your route</h5>
+                                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div className="modal-body">
+                                        <EditRoute route={route} />
+                                    </div>
+                                    <div className="modal-footer">
+                                        {editError && <div className="alert alert-danger" role="alert">{editError}</div>}
+                                        {editSuccess && <div className="alert alert-success" role="alert">{editSuccess}</div>}
+                                        <button type="button" className="btn btn-primary" onClick={() => editRoute(route)}>Save changes</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button className="btn btn-primary" onClick={() => deleteRoute(route)}>Delete Route</button>
+
+                        <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#eventModal" onClick={() => setEventRoute(route)}>
+                            Create Event
+                        </button>
+
+                        <div className="modal fade" id="eventModal" tabIndex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+                            <div className="modal-dialog modal-dialog-centered modal-xl">
+                                <div className="modal-content">
+                                    <form onSubmit={uploadEvent}>
+                                        <div className="modal-header">
+                                            <h5 className="modal-title" id="eventModalLabel">Create an exercise event</h5>
+                                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div className="modal-body p-5">
+                                            <div className="mb-4">
+                                                <div className="row align-items-center">
+                                                    <div className="col-auto">
+                                                        <label htmlFor="meetingPlace" className="form-label" style={{fontSize: "20px"}}>Meeting Place</label>
+                                                    </div>
+                                                    <div className="col">
+                                                        <input type="text" className="form-control" id="meetingPlace" value={meetingPlace} onChange={(e) => setMeetingPlace(e.target.value)} required />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="mb-3">
+                                                <div className="row align-items-center">
+                                                    <div className="col-auto">
+                                                        <label htmlFor="meetingTimeHour" className="form-label mb-0" style={{fontSize: "20px"}}>Meeting Time</label>
+                                                    </div>
+                                                    <div className="col-auto">
+                                                        <select className="form-select" id="meetingTimeHour" value={meetingTime.hour} onChange={(e) => setMeetingTime({ ...meetingTime, hour: e.target.value })} required>
+                                                            {hours.map(hour => <option key={hour} value={hour}>{hour}</option>)}
+                                                        </select>
+                                                    </div>
+                                                    <div className="col-auto">
+                                                        <span style={{fontSize: "20px", fontWeight: "bold"}}>:</span>
+                                                    </div>
+                                                    <div className="col-auto">
+                                                        <select className="form-select" id="meetingTimeMinute" value={meetingTime.minute} onChange={(e) => setMeetingTime({ ...meetingTime, minute: e.target.value })} required>
+                                                            {minutes.map(minute => <option key={minute} value={minute}>{minute}</option>)}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="mb-3">
+                                                <label htmlFor="generalInfo" className="form-label" style={{fontSize: "20px"}}>General Information</label>
+                                                <textarea className="form-control" id="generalInfo" value={generalInfo} onChange={(e) => setGeneralInfo(e.target.value)} required />
+                                            </div>
+                                        </div>
+                                        <div className="modal-footer">
+                                            <button type="submit" className="btn btn-primary btn-lg">Share!</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <input type="text" placeholder="Comment" onChange={(e) => setComment(e.target.value)} />
+                        <button onClick={() => commentRoad(route.id, comment)}>Comment</button>
+                        <select className="friendSelect" onChange={(e) => setSelectedFriend(e.target.value)}>
                             <option value="">Select Friend</option>
                             {friends && friends.map((friend, index) => (
                                 <option key={index} value={friend.username}>{friend.username}</option>
                             ))}
                         </select>
-                        <button onClick={() => shareRouteWithFriend(route.id)}>Share</button>
+                        <button className="sharebtn" onClick={() => shareRouteWithFriend(route.id)}>Share</button>
                     </div>
                 ))}
             </div>
@@ -222,9 +525,25 @@ const MyAccount = () => {
                             <div><b>Time:</b>  {route.hours}:{route.minutes}</div>
                             <div><b>Difficulty:</b>  {route.difficulty}</div>
                             <div><b>Mobility:</b>  {route.mobility}</div>
-                            <div><b>Comment:</b>  {route.comment}</div>
+                            {route.comment && route.comment.length >= 1 && (
+                                <div><b>Creator Comment:</b> {route.comment[0].body}</div>)}
+                            {route.comment && route.comment.length >= 2 && (
+                                //ignore the first comment as it is the creator comment
+                                <div>
+                                    <b>Users Comment:</b> {route.comment.slice(1).map((comment, index) => (
+                                        <div key={index}>
+                                            <Comment
+                                                author={comment.author}
+                                                body={comment.body}
+                                                owner={route.creator_username}
+                                                onDelete={() => deleteComment(comment.id)}
+                                            />
+                                        </div>
+                                    ))}</div>)}
                         </div>
                         <button onClick={() => deleteLikedRoute(route.id)}>Delete</button>
+                        <input type="text" placeholder="Comment" onChange={(e) => setComment(e.target.value)} />
+                        <button onClick={() => commentRoad(route.id, comment)}>Comment</button>
                         <select onChange={(e) => setSelectedFriend(e.target.value)}>
                             <option value="">Select Friend</option>
                             {friends && friends.map((friend, index) => (
@@ -235,9 +554,46 @@ const MyAccount = () => {
                     </div>
                 ))}
             </div>
+            <h3>The Groups</h3>
+            <h4>My Groups</h4>
+            <div>
+                {groupsIManage && groupsIManage.map((group, index) => (
+                    <div key={index}>
+                        <h5>{group.name}</h5>
+                        Manager : {group.manager}
+                        Members:
+                        <ul>
+                            {group.members.map((member, idx) => (
+                                <div>
+                                    <li key={idx}>{member.username}</li>
+                                    <button onClick={() => leaveGroup(group.name, member.username)}>Kick</button>
+                                </div>
+                            ))}
+                        </ul>
+                        <button onClick={() => deleteGroup(group.name, username)}>Delete</button>
+                    </div>
+                ))}
+            </div>
+            <h4>Groups I am in</h4>
+            <div>
+                {groups && groups.map((group, index) => (
+                    <div key={index}>
+                        <h5>{group.name}</h5>
+                        Manager : {group.manager}
+                        Members:
+                        <ul>
+                            {group.members.map((member, idx) => (
+                                <li key={idx}>{member.username}</li>
+                            ))}
+                        </ul>
+                        <button onClick={() => leaveGroup(group.name, username)}>Leave Group</button>
+                    </div>
+                ))}
+            </div>
+            <h4>My Friends</h4>
             <div>
                 {friends && friends.map((friend, index) => (
-                    <Friend key={index} username={friend.username} isFriend={true}/>
+                    <Friend key={index} username={friend.username} isFriend={true} />
                 ))}
             </div>
         </div>
