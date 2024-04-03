@@ -81,7 +81,7 @@ p {
     font-size: 40px;
 }
 
-#mypaths {
+.Community > #mypaths {
     left: 0%;
     margin-top: 0px;
 }
@@ -117,7 +117,7 @@ p {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-h2 {
+.Community > #groupdiv > h2 {
     font-family: Arial, sans-serif;
     color: black;
     background-color: #ecf0f1;
@@ -175,3 +175,60 @@ h2 {
 #groupbutton:active {
     background-color: #71cfe4;
 }
+
+.nameshared {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.liketoggle {
+    display:none;
+}
+
+.like-button {
+    width: 50px;
+    height: 45px;
+    position: relative;
+    margin-top: 10px;
+    border: none;
+    background: none;
+}
+
+.like-button::before,
+.like-button::after {
+    content: '';
+    position: absolute;
+    top: 0px;
+    width: 26px;
+    height: 40px;
+    background: rgb(249, 195, 216);
+    border-radius: 25px 25px 0 0;
+}
+
+.liketoggle:checked +.like-button::before,
+.liketoggle:checked +.like-button::after {
+    background: red;
+}
+
+.like-button::before {
+    left: 25px;
+    transform: rotate(-45deg);
+    transform-origin: 0 100%;
+}
+
+.like-button::after {
+    left: 0;
+    transform: rotate(45deg);
+    transform-origin: 100% 100%;
+}
+
+.like-button:hover:before,
+.like-button:hover:after {
+    background-color: rgb(243, 154, 188);
+}
+
+.liketoggle:checked +.like-button:hover:before,
+.liketoggle:checked +.like-button:hover:after {
+    background-color: rgb(166, 2, 2);
+}
+

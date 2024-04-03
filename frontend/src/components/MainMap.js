@@ -77,6 +77,10 @@ const MainMap = ({ allUR }) => {
                             .setHTML(description)
                             .addTo(map);
 
+                        const liketoggle = document.createElement("input");
+                        liketoggle.type = "checkbox";
+                        liketoggle.id= "liketoggle";
+                        liketoggle.className = "liketoggle"
                         const likeButton = document.createElement("button");
                         likeButton.classList.add("like-button");
                         likeButton.textContent = "Like";
@@ -87,6 +91,7 @@ const MainMap = ({ allUR }) => {
                             likeRoute(route.id); // Call your likeRoute function with the route ID
                         });
 
+                        popup._content.appendChild(liketoggle);
                         popup._content.appendChild(likeButton);
                         popup._content.style.cursor = "default";
                     });
@@ -108,6 +113,8 @@ const MainMap = ({ allUR }) => {
     }, [lat, lng, allUR]);
 
     const likeRoute = (route_id) => {
+        const checkbox = document.getElementById("liketoggle");
+        checkbox.checked = !checkbox.checked;
         console.log("Route liked:", route_id);
         fetch("/api/savingroutes/", {
             method: "POST",
