@@ -235,9 +235,12 @@ class Route(db.Document):
 
 # pylint: enable=no-member
 class SharedRoute(db.EmbeddedDocument):
-    route = db.StringField(required=True)  # ID of the route shared
+    route = db.StringField(reqiured = True)  # ID of the route shared
     shared_by = db.StringField(required=True)  # Username of the user who shared the route
 
+class SharedEvent(db.EmbeddedDocument):
+    event = db.StringField(required=True)  # ID of the event shared
+    shared_by = db.StringField(required=True)  # Username of the user who shared the event
 
 # Defines a User document with various fields to store user information
 class User(db.Document):
@@ -250,6 +253,7 @@ class User(db.Document):
     create_routes = db.ListField(db.ReferenceField(Route, reverse_delete_rule='PULL'))
     saved_routes = db.ListField(db.ReferenceField(Route, reverse_delete_rule='PULL'))
     shared_routes = db.ListField(db.EmbeddedDocumentField(SharedRoute))
+    shared_events = db.ListField(db.EmbeddedDocumentField(SharedEvent))
     friends = db.ListField(db.ReferenceField('self', reverse_delete_rule='PULL'))
 
     def __init__(self, *args, **kwargs):
@@ -374,6 +378,23 @@ class User(db.Document):
                 continue
         return shared_routes_list
 
+    def add_shared_event(self, event, shared_by):
+        self.shared_events.append(SharedEvent(event=event, shared_by=shared_by))
+        self.save()
+
+    def get_shared_events(self):
+        shared_events_list = []
+        for shared_event in self.shared_events:
+            try:
+                shared_event_dict = {
+                    'event': shared_event.event,
+                    'shared_by': shared_event.shared_by
+                }
+                shared_events_list.append(shared_event_dict)
+            except AttributeError:
+                continue
+        return shared_events_list
+
     def add_friend(self, friend):
         self.friends.append(friend)
         self.save()
@@ -429,7 +450,8 @@ class User(db.Document):
             "create_routes": self.get_created_routes(),  # Convert routes to list of IDs
             "saved_routes": self.get_saved_routes(),  # Convert routes to list of IDs
             "friends": self.get_friends(),  # Convert friends to list of IDs
-            "shared_routes": self.get_shared_routes()
+            "shared_routes": self.get_shared_routes(),
+            "shared_events": self.get_shared_events()
         }
 
 
@@ -440,6 +462,7 @@ class Event(db.Document):
     date = db.DateTimeField(required=True)
     host = db.ReferenceField(User, reverse_delete_rule='PULL')
     route = db.ReferenceField(Route, reverse_delete_rule='PULL')
+    information = db.StringField()
 
     def __init__(self, *args, **kwargs):
         host = kwargs.pop('hostname', None)

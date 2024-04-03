@@ -146,6 +146,23 @@ create_event_model = api.model('CreateEventModel', {
     "route_id": fields.String(required=True, min_length=2, max_length=32),
     # Model for creating an event.
 })
+shared_event_model = api.model('SharedEventModel', {
+    "username": fields.String(required=True, min_length=2, max_length=32),
+    "routeId": fields.String(required=True, min_length=2, max_length=32),
+    "meetingPlace": fields.String(required=True, min_length=2, max_length=32),
+    "meetingTime": fields.String(required=True, min_length=2, max_length=32),
+    "generalInfo": fields.String(required=True, min_length=2, max_length=32),
+    "friends": fields.List(fields.Nested(api.model('Friend', {
+        "username": fields.String,
+        "email": fields.Raw,
+        "name": fields.Raw,
+        "age": fields.Integer,
+        "phone": fields.Integer,
+        "create_routes": fields.List(fields.String),
+        "saved_routes": fields.List(fields.String),
+        "friends": fields.List(fields.String)
+    })))
+})
 
 create_group_model = api.model('CreateGroupModel', {
     "name": fields.String(required=True, min_length=2, max_length=32),
@@ -642,6 +659,34 @@ class CreateEvent(Resource):
 
         return {"success": True, "event": new_event.toDICT(),
                 "msg": "Route is created"}, 200
+
+# Define the API Resource for creating events
+@api.route('/api/sharedevent/')
+class SharedEvent(Resource):
+    @api.expect(shared_event_model, validate=True)
+    def post(self):
+        # Extract JSON data from the request
+        req_data = request.get_json()
+        friends = req_data.get('friends', [])  # Remove the friends data to handle separately
+        username = req_data.get('username')
+        try:
+            # Create a new Event object
+            new_event = Event(name=f"{username}'s event", hostname=req_data.get(username),
+                              venue=req_data.get('meetingPlace'), date=req_data.get('meetingTime'),
+                              route_id=req_data.get('routeId'))
+            new_event.save()
+
+            # Update each friend with the new event
+            for friend_info in friends:
+                friendsname = friend_info.get('username')
+                friend = User.get_by_username(friendsname)
+                if friend:
+                    friend.add_shared_event(str(new_event.id), username)
+        except Exception as e:
+            current_app.logger.error(e)
+            return {"success": False, "msg": str(e)}, 500
+
+        return {"success": True, "event_id": str(new_event.id), "msg": "Event created and friends updated"}, 200
 
 
 @api.route('/api/creategroup/')
