@@ -38,6 +38,8 @@ const Community = () => {
     };
 
     const likeRoute = (route_id) => {
+        const checkbox = document.getElementById("liketoggle");
+        checkbox.checked = !checkbox.checked;
         console.log("Route liked:", route_id);
         fetch("/api/savingroutes/", {
             method: "POST",
@@ -196,7 +198,7 @@ const Community = () => {
             <div className="grid-container">
                 {sharedRoutes && sharedRoutes.map((object, index) => (
                     <div key={index}>
-                        <div>{object.shared_by} shared you :</div>
+                        <div className="nameshared">{object.shared_by} shared to you:</div>
                         <div className="grid-item">
                             <MapboxRenderLine route={object} />
                             <div className="info">
@@ -208,7 +210,10 @@ const Community = () => {
                                 <div><b>Mobility:</b>  {object.mobility}</div>
                                 {object.comment && object.comment.length >= 1 && (
                                     <div><b>Creator Comment:</b> {object.comment[0].body}</div>)}
-                                <div><button onClick={() => likeRoute(object.id)}>Like</button></div>
+                                <div>
+                                    <input type="checkbox" id="liketoggle" className="liketoggle"></input>
+                                    <button className="like-button"  onClick={() => likeRoute(object.id)}></button>
+                                </div>
                             </div>
                         </div>
                     </div>
