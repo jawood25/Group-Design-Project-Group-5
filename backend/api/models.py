@@ -47,6 +47,7 @@ class Comment(db.Document):
 
     def toDICT(self):
         return {
+            'id': str(self.id),
             'author': self.author,
             'date_posted': self.date_posted.strftime('%Y-%m-%dT%H:%M:%S'),
             'dislikes': self.dislikes,
@@ -114,7 +115,7 @@ class Route(db.Document):
         if len(self.coordinates) > 1:
             self.distance = round(sum(
                 haversine_distance(self.coordinates[i], self.coordinates[i + 1])
-                                      for i in range(len(self.coordinates) - 1)), 3)
+                for i in range(len(self.coordinates) - 1)), 3)
 
     def add_comment(self, comment):
         self.comment.append(comment)
@@ -233,14 +234,17 @@ class Route(db.Document):
             'creator_username': self.creator_username
         }
 
+
 # pylint: enable=no-member
 class SharedRoute(db.EmbeddedDocument):
-    route = db.StringField(reqiured = True)  # ID of the route shared
+    route = db.StringField(reqiured=True)  # ID of the route shared
     shared_by = db.StringField(required=True)  # Username of the user who shared the route
+
 
 class SharedEvent(db.EmbeddedDocument):
     event = db.StringField(required=True)  # ID of the event shared
     shared_by = db.StringField(required=True)  # Username of the user who shared the event
+
 
 # Defines a User document with various fields to store user information
 class User(db.Document):
@@ -347,6 +351,12 @@ class User(db.Document):
                 continue
         return safe_routes
 
+    def has_saved_route(self, route):
+        return route in self.saved_routes
+
+    def has_shared_route(self, route):
+        return any(shared_route.route == route for shared_route in self.shared_routes)
+
     def get_saved_routes_id(self):
         """
         Method to get the IDs of routes saved by the user. Returns a list of route IDs as strings,
@@ -405,10 +415,10 @@ class User(db.Document):
         self.save()
         return True
 
-    def get_friends(self):
-        def get_friends_id():
-            return [str(friend.id) for friend in self.friends]
+    def get_friends_id(self):
+        return [str(friend.id) for friend in self.friends]
 
+    def get_friends(self):
         return [{
             "username": friend.username,
             "email": friend.email,
@@ -417,7 +427,7 @@ class User(db.Document):
             "phone": friend.phone,
             "create_routes": friend.get_created_routes_id(),
             "saved_routes": friend.get_saved_routes_id(),
-            "friends": get_friends_id(),
+            "friends": friend.get_friends_id(),
         } for friend in self.friends]
 
     @classmethod
@@ -471,12 +481,16 @@ class Event(db.Document):
         rid = kwargs.pop('route_id', None)
         if rid:
             kwargs['route'] = Route.get_by_rid(rid)
-        if 'date' in kwargs:
+        if 'date' in kwargs and isinstance(kwargs['date'], str):
             kwargs['date'] = datetime.datetime.strptime(kwargs['date'], '%Y-%m-%dT%H:%M:%S')
         super().__init__(*args, **kwargs)
 
     def __repr__(self):
         return f"Event {self.name}"
+
+    @classmethod
+    def get_by_eid(cls, eid):
+        return cls.objects(id=eid).first()
 
     def toDICT(self):
         return {
@@ -485,7 +499,8 @@ class Event(db.Document):
             'interested': self.interested,
             'date': self.date.strftime('%Y-%m-%dT%H:%M:%S'),
             'host': self.host.username,
-            'route': self.route.toDICT()
+            'route': self.route.toDICT(),
+            'information': self.information
         }
 
 
@@ -503,7 +518,6 @@ class Group(db.Document):
     def get_members(self):
         return [member.toDICT() for member in self.members]
 
-
     def remove_member(self, member):
         if member not in self.members:
             return False
@@ -520,6 +534,10 @@ class Group(db.Document):
     @classmethod
     def get_by_name(cls, name):
         return cls.objects(name=name).first()
+
+    @classmethod
+    def all_groups(cls):
+        return [group.toDICT() for group in cls.objects()]
 
     def toDICT(self):
         return {

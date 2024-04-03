@@ -154,13 +154,6 @@ shared_event_model = api.model('SharedEventModel', {
     "generalInfo": fields.String(required=True, min_length=2, max_length=32),
     "friends": fields.List(fields.Nested(api.model('Friend', {
         "username": fields.String,
-        "email": fields.Raw,
-        "name": fields.Raw,
-        "age": fields.Integer,
-        "phone": fields.Integer,
-        "create_routes": fields.List(fields.String),
-        "saved_routes": fields.List(fields.String),
-        "friends": fields.List(fields.String)
     })))
 })
 
@@ -439,6 +432,8 @@ class SaveRoute(Resource):
             route = Route.get_by_rid(_route_id)
             if not route:
                 return {"success": False, "msg": "Route not exist"}, 404
+            if user.has_saved_route(route):
+                return {"success": False, "msg": "Route is already saved"}, 402
             user.add_saved_routes(route)
         except Exception as e:
             # catch all other exceptions
@@ -516,6 +511,8 @@ class ShareRoutes(Resource):
                 return {"success": False, "msg": "User not exist"}, 401
             if not Route.get_by_rid(_rid):
                 return {"success": False, "msg": "Route not exist"}, 401
+            if friend.has_shared_route(_rid):
+                return {"success": False, "msg": "Route is already shared"}, 402
             friend.add_shared_route(_rid, _username)
         except Exception as e:
             # catch all other exceptions
@@ -524,6 +521,35 @@ class ShareRoutes(Resource):
 
         return {"success": True, "routes": friend.toDICT(),
                 "msg": "Routes retrieved successfully"}, 200
+
+
+@api.route('/api/usersharedroutes/')
+class CreatedRoute(Resource):
+    @api.expect(created_route_model, validate=True)
+    def post(self):
+        # Extract JSON data from the request
+        req_data = request.get_json()
+        _username = req_data.get("username")
+
+        try:
+            user = User.get_by_username(_username)
+            if not user:
+                return {"success": False, "msg": "User not exist"}, 401
+
+            shared_routes_data = user.get_shared_routes()
+            shared_routes = []
+            for shared_route_data in shared_routes_data:
+                route_id = shared_route_data['route']
+                shared_by = shared_route_data['shared_by']
+                route = Route.get_by_rid(route_id)
+                if route:
+                    route_dict = route.toDICT()
+                    route_dict['shared_by'] = shared_by
+                    shared_routes.append(route_dict)
+            return {"success": True, "routes": shared_routes, "msg": "Shared routes retrieved successfully"}, 200
+        except Exception as e:
+            current_app.logger.error(e)
+            return {"success": False, "msg": str(e)}, 403
 
 
 # Define a Resource for fetching all routes
@@ -660,6 +686,7 @@ class CreateEvent(Resource):
         return {"success": True, "event": new_event.toDICT(),
                 "msg": "Route is created"}, 200
 
+
 # Define the API Resource for creating events
 @api.route('/api/sharedevent/')
 class SharedEvent(Resource):
@@ -671,9 +698,9 @@ class SharedEvent(Resource):
         username = req_data.get('username')
         try:
             # Create a new Event object
-            new_event = Event(name=f"{username}'s event", hostname=req_data.get(username),
+            new_event = Event(name=f"{username}'s event", hostname=username,
                               venue=req_data.get('meetingPlace'), date=req_data.get('meetingTime'),
-                              route_id=req_data.get('routeId'))
+                              route_id=req_data.get('routeId'), information=req_data.get('generalInfo'))
             new_event.save()
 
             # Update each friend with the new event
@@ -687,6 +714,35 @@ class SharedEvent(Resource):
             return {"success": False, "msg": str(e)}, 500
 
         return {"success": True, "event_id": str(new_event.id), "msg": "Event created and friends updated"}, 200
+
+
+@api.route('/api/usersharedevents/')
+class UsersEvent(Resource):
+    @api.expect(created_route_model, validate=True)
+    def post(self):
+        # Extract JSON data from the request
+        req_data = request.get_json()
+        _username = req_data.get("username")
+
+        try:
+            user = User.get_by_username(_username)
+            if not user:
+                return {"success": False, "msg": "User not exist"}, 401
+
+            shared_events_data = user.get_shared_events()
+            shared_events = []
+            for shared_event_data in shared_events_data:
+                event_id = shared_event_data['event']
+                shared_by = shared_event_data['shared_by']
+                event = Event.get_by_eid(event_id)
+                if event:
+                    event_dict = event.toDICT()
+                    event_dict['shared_by'] = shared_by
+                    shared_events.append(event_dict)
+            return {"success": True, "events": shared_events, "msg": "Shared events retrieved successfully"}, 200
+        except Exception as e:
+            current_app.logger.error(e)
+            return {"success": False, "msg": str(e)}, 403
 
 
 @api.route('/api/creategroup/')
@@ -710,27 +766,21 @@ class CreateGroup(Resource):
             return {"success": False, "msg": str(e)}, 403
 
         # pylint: disable=maybe-no-member
-        return {"success": True, "route_id": new_group.name,
+        return {"success": True, "group_name": new_group.name,
                 "msg": "Group is created"}, 200
 
 
 @api.route('/api/getgroup/')
 class GetGroup(Resource):
-    @api.expect(get_group_model, validate=True)  # Expecting data matching the route_model
     def post(self):
         # Fetch all routes from the database
-        req_data = request.get_json()
-        _groupname = req_data.get("groupname")
         try:
-            group = Group.get_by_name(_groupname)
-            if not group:
-                return {"success": False, "msg": "Group not exist"}, 401
+            groups = Group.all_groups()
         except Exception as e:
             current_app.logger.error(e)
             return {"success": False, "msg": str(e)}, 500
 
-        return {"success": True, "groups": group.toDICT(),
-                "msg": "Groups retrieved successfully"}, 200
+        return {"success": True, "groups": groups, "msg": "Groups retrieved successfully"}, 200
 
 
 @api.route('/api/leavinggroup/')
