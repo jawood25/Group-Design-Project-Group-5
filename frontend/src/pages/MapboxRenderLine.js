@@ -47,7 +47,7 @@ const MapboxRenderLine = (route) => {
             map.remove();
         };
 
-    }, [route]);
+    }, [route.route.coordinates]);
 
     return <div className="map-container" ref={mapContainerRef} style={{ width: "700px", height: "400px" }}/>;
 };
