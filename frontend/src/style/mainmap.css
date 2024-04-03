@@ -1,4 +1,4 @@
-.map-container {
+.Main > .map-container {
     position: absolute;
     border: 3px solid black;
     display: inline-block;

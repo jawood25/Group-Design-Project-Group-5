@@ -6,15 +6,26 @@
     font-family: Arial, sans-serif;
     font-weight: bold;
     font-size: 22px;
-    background-color: #ecf0f1;
+    background-color: lightcyan;
     padding: 10px;
     border-radius: 5px;
     margin-bottom: 15px;
-    width: 200px;
+    width: 500px;
     text-align: center;
     margin-top: 20px;
-    width: 15%;
     margin: 20px auto;
+    cursor: pointer;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border: 1px solid lightslategray;
+}
+
+#communityHeading:hover {
+    background-color: rgb(125, 199, 199);
+}
+
+#communityHeading:active {
+    background-color: #ededed;
 }
 
 #userSearchForm {
@@ -24,11 +35,15 @@
     display: inline-block;
     margin-left: auto;
     margin-right: auto;
+    margin-bottom: 35px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    background-color: lightgray;
 }
 
 input {
     margin-left: 15px;
+    padding-left: 10px;
 }
 
 #submitbutton {
@@ -43,13 +58,120 @@ input {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+#submitbutton:hover {
+    background-color: #20a7c5;
+}
+
+#submitbutton:active {
+    background-color: #71cfe4;
+}
+
 .resultDiv {
-    margin-top: 25px;
     border: 2px solid black;
+    width: 90%;
+    margin: 0 auto;
+    border-radius: 25px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    margin-bottom: 100px;
 }
 
 p {
     margin-top: 25px;
-    border-top: 1px solid black;
     padding: 15px;
+    font-size: 40px;
+}
+
+#mypaths {
+    left: 0%;
+    margin-top: 0px;
+}
+
+.Community > .grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(700px, 1fr));
+    grid-row-gap: 50px; 
+    margin-left: 2%;
+    margin-right: 2%;
+    margin-bottom: 100px;
+    justify-items: center;
+    border: 2px solid black;
+    padding-left: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-radius: 25px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    grid-auto-flow: dense;
+    width: 90%;
+    margin: 0 auto;
+}
+
+#groupdiv {
+    background-color: lightgrey;
+    padding: 15px;
+    width: 90%;
+    margin: 0 auto;
+    margin-top: 75px;
+    margin-bottom: 50px;
+    border: 2px solid black;
+    border-radius: 25px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+h2 {
+    font-family: Arial, sans-serif;
+    color: black;
+    background-color: #ecf0f1;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    margin-top: 10px;
+    display: inline-block;
+    border: 1px solid lightslategray;
+}
+
+#groupnameinput {
+    width: 300px;
+    font-size: 20px;
+    margin: 0 auto;
+    margin-bottom: 15px;;
+}
+
+.friendcheckbox{
+    margin-right: 30px;
+}
+
+.friendlabel {
+    position: relative;
+    font-size: 25px;
+    background-color: #ededed;
+    padding: 15px 95px;
+    right: 1%;
+    max-width: 300px;
+}
+
+#friendlist {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#groupbutton {
+    background-color: #34c9eb;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 5px;
+    margin-left: 10px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#groupbutton:hover {
+    background-color: #20a7c5;
+}
+
+#groupbutton:active {
+    background-color: #71cfe4;
 }

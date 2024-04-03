@@ -215,21 +215,21 @@ const Community = () => {
                 ))}
             </div>
             {friends && friends.length > 0 && (
-            <div>
+            <div id="groupdiv">
                 <h2>Create a Group</h2>
                 <form onSubmit={handleCreateGroup}>
-                    <input type="text" placeholder="Group Name" value={groupName} onChange={(e) => setGroupName(e.target.value)} />
+                    <input type="text" id="groupnameinput" placeholder="Group Name" value={groupName} onChange={(e) => setGroupName(e.target.value)} />
                     <ul>
                         {friends.map((friend, index) => (
-                            <li key={index}>
-                                <label>
-                                    <input type="checkbox" onChange={() => handleFriendSelect(friend)} />
+                            <li id="friendlist" key={index}>
+                                <label className="friendlabel">
+                                    <input type="checkbox" class="friendcheckbox" onChange={() => handleFriendSelect(friend)} />
                                     {friend.username}
                                 </label>
                             </li>
                         ))}
                     </ul>
-                    <button type="submit">Create Group</button>
+                    <button type="submit" id="groupbutton">Create Group</button>
                 </form>
             </div>
             )}
