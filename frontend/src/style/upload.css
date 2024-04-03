@@ -64,6 +64,14 @@ h5 {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+#getmapbtn:hover {
+    background-color: #20a7c5;
+}
+
+#getmapbtn:active {
+    background-color: #71cfe4;
+}
+
 #sharebtn {
     background-color: #34c9eb;
     color: #ffffff;
@@ -72,6 +80,14 @@ h5 {
     padding: 10px 20px;
     cursor: pointer;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#sharebtn:hover {
+    background-color: #20a7c5;
+}
+
+#sharebtn:active {
+    background-color: #71cfe4;
 }
 
 

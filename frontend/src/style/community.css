@@ -81,7 +81,7 @@ p {
     font-size: 40px;
 }
 
-#mypaths {
+.Community > #mypaths {
     left: 0%;
     margin-top: 0px;
 }
@@ -117,7 +117,7 @@ p {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-h2 {
+.Community > #groupdiv > h2 {
     font-family: Arial, sans-serif;
     color: black;
     background-color: #ecf0f1;
