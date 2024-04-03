@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import { useSelector } from 'react-redux';
+import '../style/mainmap.css'
 
 mapboxgl.accessToken = "pk.eyJ1Ijoic29ub2RhbSIsImEiOiJjbHQ4bnNhM2cwNm4yMmttc2ljc2tuenA1In0.fBw9Dz2FIxgEMMFakE_VmQ";
 
@@ -129,7 +130,7 @@ const MainMap = ({ allUR }) => {
             });
     };
 
-    return <div className="map-container" ref={mapContainerRef} style={{ width: "100%", height: "100vh" }} />;
+    return <div className="map-container" ref={mapContainerRef} />;
 };
 
 export default MainMap;

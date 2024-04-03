@@ -1,0 +1,10 @@
+.map-container {
+    position: absolute;
+    border: 3px solid black;
+    display: inline-block;
+    min-height: 80%;
+    min-width: 72%;
+    margin: 25px 25px;
+    border-radius: 30px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
