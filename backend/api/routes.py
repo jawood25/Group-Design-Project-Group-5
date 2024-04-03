@@ -1,5 +1,6 @@
 # /api/routes.py
 # pylint: disable=broad-exception-caught
+
 from flask import current_app, request
 from flask_restx import Resource, fields
 
@@ -44,7 +45,9 @@ search_user_model = api.model('SearchUserModel', {
 
 create_route_model = api.model('CreateRouteModel', {
     "username": fields.String(required=True, min_length=2, max_length=32),
-    "coordinates": fields.List(fields.List(fields.Float, min_items=2, max_items=2, required=True), required=True),
+    "coordinates": fields.List(fields.List(
+        fields.Float, min_items=2, max_items=2, required=True
+    ), required=True),
     "mapCenter": fields.Nested(api.model('MapCenterModel', {
         "lat": fields.Float(required=True),
         "lng": fields.Float(required=True)
@@ -257,8 +260,8 @@ class DeletingFriend(Resource):
 
         # Create a new route with the provided details
         try:
-            user = User.get_by_username(req_data.get("username"))  # Fetch route by username
-            friend = User.get_by_username(req_data.get("friend_username"))  # Fetch route by username
+            user = User.get_by_username(req_data.get("username"))
+            friend = User.get_by_username(req_data.get("friend_username"))
             if not user:
                 return {"success": False, "msg": "User not exist"}, 401
             if not friend:
@@ -430,7 +433,7 @@ class SaveRoute(Resource):
 
 @api.route('/api/unsavingroutes/')
 class UnsavingRoute(Resource):
-    @api.expect(remove_routes_model, validate=True)  # Expecting data matching the unsavingroutes_model
+    @api.expect(remove_routes_model, validate=True)
     def post(self):
         # Extract JSON data from the request
         req_data = request.get_json()
@@ -681,7 +684,8 @@ class GetGroup(Resource):
             current_app.logger.error(e)
             return {"success": False, "msg": str(e)}, 500
 
-        return {"success": True, "groups": group.toDICT(), "msg": "Groups retrieved successfully"}, 200
+        return {"success": True, "groups": group.toDICT(),
+                "msg": "Groups retrieved successfully"}, 200
 
 
 @api.route('/api/leavinggroup/')
@@ -725,10 +729,3 @@ class DeleteGroup(Resource):
             return {"success": False, "msg": str(e)}, 500
 
         return {"success": True, "msg": "Group deleted"}, 200
-
-# @api.route('/api/delevent/')
-# class test(Resource):
-#     def get(self):
-#         comment = Comment.get_by_cid("6601e93b987e7c70ce5c7cb5")
-#         route = comment.get_route()
-#         return {"success": True, "event": route.toDICT()}, 200

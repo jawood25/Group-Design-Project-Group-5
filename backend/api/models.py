@@ -112,7 +112,8 @@ class Route(db.Document):
             return radius * c
 
         if len(self.coordinates) > 1:
-            self.distance = round(sum(haversine_distance(self.coordinates[i], self.coordinates[i + 1])
+            self.distance = round(sum(
+                haversine_distance(self.coordinates[i], self.coordinates[i + 1])
                                       for i in range(len(self.coordinates) - 1)), 3)
 
     def add_comment(self, comment):
@@ -232,7 +233,7 @@ class Route(db.Document):
             'creator_username': self.creator_username
         }
 
-
+# pylint: enable=no-member
 class SharedRoute(db.EmbeddedDocument):
     route = db.StringField(required=True)  # ID of the route shared
     shared_by = db.StringField(required=True)  # Username of the user who shared the route
@@ -248,7 +249,7 @@ class User(db.Document):
     phone = db.IntField(default=0)
     create_routes = db.ListField(db.ReferenceField(Route, reverse_delete_rule='PULL'))
     saved_routes = db.ListField(db.ReferenceField(Route, reverse_delete_rule='PULL'))
-    shared_routes = db.ListField(db.EmbeddedDocumentField(SharedRoute))  # Updated to use SharedRoute
+    shared_routes = db.ListField(db.EmbeddedDocumentField(SharedRoute))
     friends = db.ListField(db.ReferenceField('self', reverse_delete_rule='PULL'))
 
     def __init__(self, *args, **kwargs):
@@ -287,7 +288,8 @@ class User(db.Document):
 
     def get_created_routes(self):
         """
-        Method to get routes created by the user. Converts each created route to its dictionary representation,
+        Method to get routes created by the user.
+        Converts each created route to its dictionary representation,
         safely skipping any routes that cause exceptions during this process.
         """
         safe_created_routes = []
@@ -475,18 +477,9 @@ class Group(db.Document):
     def __repr__(self):
         return f"Group {self.name}"
 
-    def get_manager(self):
-        return User.get_by_username(self.manager).toDICT()
-
     def get_members(self):
         return [member.toDICT() for member in self.members]
 
-    def add_member(self, member):
-        if member in self.members:
-            return False
-        self.members.append(member)
-        self.save()
-        return True
 
     def remove_member(self, member):
         if member not in self.members:

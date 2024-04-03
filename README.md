@@ -25,7 +25,7 @@ Follow these steps to run the app. You'll need to split your terminal into **two
    - Add the following content to the file:
    ```
    DB_NAME=pathpal
-   DB_HOST=mongodb+srv://cluster0.b6yu9ji.mongodb.net
+   DB_HOST=cluster0.b6yu9ji.mongodb.net
    DB_USERNAME=[YOUR_USERNAME]
    DB_PASSWORD=[YOUR_PASSWORD]
    ```
@@ -82,7 +82,7 @@ Follow these steps to run the app. You'll need to split your terminal into **two
    - Go to the My Account page by clicking the my account button on the header.
    - On the My Account Page, it will show a route uploaded by the user.
 
-## Backends
+## Backend
 
 ### Flask
  Running on http://localhost:3001
