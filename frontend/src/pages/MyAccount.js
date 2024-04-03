@@ -10,6 +10,8 @@ import { resetCoordinates } from '../redux/coordinates';
 import { resetMapCenter } from '../redux/mapCenter';
 import { useDispatch } from 'react-redux';
 import Comment from '../components/Comment';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 
 const MyAccount = () => {
@@ -27,6 +29,7 @@ const MyAccount = () => {
     const [meetingPlace, setMeetingPlace] = useState('');
     const [meetingTime, setMeetingTime] = useState({ hour: '00', minute: '00' });
     const [generalInfo, setGeneralInfo] = useState('');
+    const [selectedDate, setSelectedDate] = useState(new Date());
     const hours = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0'));
     const minutes = Array.from({ length: 60 }, (_, i) => i.toString().padStart(2, '0'));
     const [eventRoute, setEventRoute] = useState(null);
@@ -342,21 +345,22 @@ const MyAccount = () => {
     }
 
     const uploadEvent = async (e) => {
-        e.preventDefault(); 
+        e.preventDefault();
+
+        const datePart = selectedDate.toISOString().split('T')[0];
+        const timePart = `${meetingTime.hour}:${meetingTime.minute}:00`;
 
         const eventData = {
             username,
             routeId: eventRoute.id,
             meetingPlace,
-            meetingTime: `${meetingTime.hour}:${meetingTime.minute}`,
+            meetingTime: `${datePart}T${timePart}`,
             generalInfo,
             friends
         };
 
-        console.log(eventData)
-
         try {
-            const response = await fetch('/api/uploadevent', {
+            const response = await fetch('/api/sharedevent', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -461,7 +465,7 @@ const MyAccount = () => {
                                             <div className="mb-4">
                                                 <div className="row align-items-center">
                                                     <div className="col-auto">
-                                                        <label htmlFor="meetingPlace" className="form-label" style={{fontSize: "20px"}}>Meeting Place</label>
+                                                        <label htmlFor="meetingPlace" className="form-label mb-0" style={{ fontSize: "20px" }}>Meeting Place :</label>
                                                     </div>
                                                     <div className="col">
                                                         <input type="text" className="form-control" id="meetingPlace" value={meetingPlace} onChange={(e) => setMeetingPlace(e.target.value)} required />
@@ -471,7 +475,22 @@ const MyAccount = () => {
                                             <div className="mb-3">
                                                 <div className="row align-items-center">
                                                     <div className="col-auto">
-                                                        <label htmlFor="meetingTimeHour" className="form-label mb-0" style={{fontSize: "20px"}}>Meeting Time</label>
+                                                        <label htmlFor="meetingDate" className="form-label mb-0" style={{ fontSize: "20px" }}>Meeting Date :</label>
+                                                    </div>
+                                                    <div className="col-auto">
+                                                        <DatePicker
+                                                            selected={selectedDate}
+                                                            onChange={(date) => setSelectedDate(date)}
+                                                            dateFormat="dd/MM/yyyy"
+                                                            className="form-control"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="mb-3">
+                                                <div className="row align-items-center">
+                                                    <div className="col-auto">
+                                                        <label htmlFor="meetingTimeHour" className="form-label mb-0" style={{ fontSize: "20px" }}>Meeting Time :</label>
                                                     </div>
                                                     <div className="col-auto">
                                                         <select className="form-select" id="meetingTimeHour" value={meetingTime.hour} onChange={(e) => setMeetingTime({ ...meetingTime, hour: e.target.value })} required>
@@ -479,7 +498,7 @@ const MyAccount = () => {
                                                         </select>
                                                     </div>
                                                     <div className="col-auto">
-                                                        <span style={{fontSize: "20px", fontWeight: "bold"}}>:</span>
+                                                        <span style={{ fontSize: "20px", fontWeight: "bold" }}>:</span>
                                                     </div>
                                                     <div className="col-auto">
                                                         <select className="form-select" id="meetingTimeMinute" value={meetingTime.minute} onChange={(e) => setMeetingTime({ ...meetingTime, minute: e.target.value })} required>
@@ -489,7 +508,7 @@ const MyAccount = () => {
                                                 </div>
                                             </div>
                                             <div className="mb-3">
-                                                <label htmlFor="generalInfo" className="form-label" style={{fontSize: "20px"}}>General Information</label>
+                                                <label htmlFor="generalInfo" className="form-label" style={{ fontSize: "20px" }}>General Information</label>
                                                 <textarea className="form-control" id="generalInfo" value={generalInfo} onChange={(e) => setGeneralInfo(e.target.value)} required />
                                             </div>
                                         </div>
