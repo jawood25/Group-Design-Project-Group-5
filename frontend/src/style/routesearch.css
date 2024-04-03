@@ -1,12 +1,13 @@
 .route-search {
     margin: 25px 25px;
     background-color: lightgray;
-    padding: 15px;
+    padding: 15px 30px;
     text-align: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     border: 2px solid black;
     border-radius: 25px;
     float: left;
+    justify-content: center;
 }
 
 #search-toggle {
@@ -21,6 +22,7 @@
 .form-control {
     width: 450px;
     margin-right: 15px;
+    margin: 0 auto;
 }
 
 .control-label {
@@ -34,4 +36,5 @@
 
 .commentbox {
     margin-left: 15px;
+    margin: 0 auto;
 }
