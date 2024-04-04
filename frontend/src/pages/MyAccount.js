@@ -20,6 +20,7 @@ const MyAccount = () => {
     const [likedRouteData, setLikedRouteData] = useState(null);
     const [friends, setFriends] = useState(null);
     const [friend_username, setSelectedFriend] = useState(null);
+    const [groupList, setGroupList] = useState(null);
     const [selectedGroup, setSelectedGroup] = useState(null);
     const [editError, setEditError] = useState('');
     const [editSuccess, setEditSuccess] = useState('');
@@ -85,25 +86,26 @@ const MyAccount = () => {
         }
     }
 
-    // const shareRouteWithGroup = async (route_id) => {
-    //     console.log(selectedGroup)
-    //     try {
-    //         const response = await fetch('/api/', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             body: JSON.stringify({ username, route_id, friend_username }),
-    //         });
-    //         if (!response.ok) {
-    //             throw new Error('Network response was not ok');
-    //         }
-    //         const data = await response.json();
-    //         console.log(data)
-    //     } catch (error) {
-    //         console.error('There was a problem with your fetch operation:', error);
-    //     }
-    // }
+    const shareRouteWithGroup = async (route_id) => {
+        const group = groupList.filter(group => group.name === selectedGroup);
+        const members = group[0].members
+        try {
+            const response = await fetch('/api/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, route_id, members }),
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            console.log(data)
+        } catch (error) {
+            console.error('There was a problem with your fetch operation:', error);
+        }
+    }
 
     const fetchUserRoutes = async () => {
         try {
@@ -181,6 +183,8 @@ const MyAccount = () => {
 
             setGroupsIManage(data.groups.filter(group => group.manager === username));
             setGroups(data.groups.filter(group => group.members.find(member => member.username === username)));
+            const combinedGroups = [...data.groups.filter(group => group.manager === username), ...data.groups.filter(group => group.members.find(member => member.username === username))];
+            setGroupList(combinedGroups)
         } catch (error) {
             console.error('There was a problem with your fetch operation:', error);
         }
@@ -587,7 +591,7 @@ const MyAccount = () => {
                                                 <div className='d-flex justify-content-center'>
                                                     <select class="form-select" onChange={(e) => setSelectedGroup(e.target.value)}>
                                                         <option value="" selected>Select Group</option>
-                                                        {groupsIManage && groupsIManage.map((group, index) => (
+                                                        {groupList && groupList.map((group, index) => (
                                                             <option key={index} value={group.name}>{group.name}</option>
                                                         ))}
                                                     </select>
@@ -602,7 +606,7 @@ const MyAccount = () => {
                                             </div>
                                         ) : (
                                             <div>
-                                                {/* <button className="sharebtn" onClick={() => shareRouteWithGroup(route.id)}>Share</button> */}
+                                                <button className="sharebtn" onClick={() => shareRouteWithGroup(route.id)}>Share</button>
                                             </div>
                                         )}
                                     </div>
