@@ -20,6 +20,7 @@ const MyAccount = () => {
     const [likedRouteData, setLikedRouteData] = useState(null);
     const [friends, setFriends] = useState(null);
     const [friend_username, setSelectedFriend] = useState(null);
+    const [selectedGroup, setSelectedGroup] = useState(null);
     const [editError, setEditError] = useState('');
     const [editSuccess, setEditSuccess] = useState('');
     const [comment, setComment] = useState('');
@@ -33,6 +34,8 @@ const MyAccount = () => {
     const hours = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0'));
     const minutes = Array.from({ length: 60 }, (_, i) => i.toString().padStart(2, '0'));
     const [eventRoute, setEventRoute] = useState(null);
+
+    const [selectedOption, setSelectedOption] = useState('Friend');
 
 
 
@@ -81,6 +84,26 @@ const MyAccount = () => {
             console.error('There was a problem with your fetch operation:', error);
         }
     }
+
+    // const shareRouteWithGroup = async (route_id) => {
+    //     console.log(selectedGroup)
+    //     try {
+    //         const response = await fetch('/api/', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify({ username, route_id, friend_username }),
+    //         });
+    //         if (!response.ok) {
+    //             throw new Error('Network response was not ok');
+    //         }
+    //         const data = await response.json();
+    //         console.log(data)
+    //     } catch (error) {
+    //         console.error('There was a problem with your fetch operation:', error);
+    //     }
+    // }
 
     const fetchUserRoutes = async () => {
         try {
@@ -401,7 +424,14 @@ const MyAccount = () => {
                             <div><b>City:</b>  {route.city}</div>
                             <div><b>Location:</b>  {route.location}</div>
                             <div><b>Distance:</b>  {route.distance}km</div>
-                            <div><b>Time:</b>  {route.hours}:{route.minutes}</div>
+                            <div><b>Time:</b>  {
+                                (() => {
+                                    const totalMinutes = route.minutes;
+                                    const hours = Math.floor(totalMinutes / 60);
+                                    const minutes = totalMinutes % 60;
+                                    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+                                })()
+                            }</div>
                             <div><b>Difficulty:</b>  {route.difficulty}</div>
                             <div><b>Mobility:</b>  {route.mobility}</div>
                             {route.comment && route.comment.length >= 1 && (
@@ -520,15 +550,68 @@ const MyAccount = () => {
                             </div>
                         </div>
 
+                        <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#shareModal">
+                            Share
+                        </button>
+
+                        <div className="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
+                            <div className="modal-dialog modal-dialog-centered modal-xl">
+                                <div className="modal-content">
+                                    <div className="modal-header">
+                                        <h5 className="modal-title" id="exampleModalLabel">Share your route</h5>
+                                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div className="modal-body">
+                                        <div className="container mt-3">
+                                            <div className="mb-3">
+                                                <div className="form-check form-check-inline">
+                                                    <input className="form-check-input" type="radio" name="inlineRadioOptions" id="radio1" value="Friend" onChange={(e) => setSelectedOption(e.target.value)} />
+                                                    <label className="form-check-label" htmlFor="radio1">Friend</label>
+                                                </div>
+                                                <div className="form-check form-check-inline">
+                                                    <input className="form-check-input" type="radio" name="inlineRadioOptions" id="radio2" value="Group" onChange={(e) => setSelectedOption(e.target.value)} />
+                                                    <label className="form-check-label" htmlFor="radio2">Group</label>
+                                                </div>
+                                            </div>
+
+                                            {selectedOption === 'Friend' ? (
+                                                <div className='d-flex justify-content-center'>
+                                                    <select class="form-select" onChange={(e) => setSelectedFriend(e.target.value)}>
+                                                        <option value="" selected>Select Friend</option>
+                                                        {friends && friends.map((friend, index) => (
+                                                            <option key={index} value={friend.username}>{friend.username}</option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                            ) : (
+                                                <div className='d-flex justify-content-center'>
+                                                    <select class="form-select" onChange={(e) => setSelectedGroup(e.target.value)}>
+                                                        <option value="" selected>Select Group</option>
+                                                        {groupsIManage && groupsIManage.map((group, index) => (
+                                                            <option key={index} value={group.name}>{group.name}</option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="modal-footer">
+                                        {selectedOption === 'Friend' ? (
+                                            <div>
+                                                <button className="sharebtn" onClick={() => shareRouteWithFriend(route.id)}>Share</button>
+                                            </div>
+                                        ) : (
+                                            <div>
+                                                {/* <button className="sharebtn" onClick={() => shareRouteWithGroup(route.id)}>Share</button> */}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <input type="text" placeholder="Comment" onChange={(e) => setComment(e.target.value)} />
                         <button onClick={() => commentRoad(route.id, comment)}>Comment</button>
-                        <select className="friendSelect" onChange={(e) => setSelectedFriend(e.target.value)}>
-                            <option value="">Select Friend</option>
-                            {friends && friends.map((friend, index) => (
-                                <option key={index} value={friend.username}>{friend.username}</option>
-                            ))}
-                        </select>
-                        <button className="sharebtn" onClick={() => shareRouteWithFriend(route.id)}>Share</button>
                     </div>
                 ))}
             </div>
