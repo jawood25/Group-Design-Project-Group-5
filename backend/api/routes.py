@@ -100,7 +100,6 @@ saved_routes_model = api.model('SavedRoutesModel', {
 share_routes_model = api.model('ShareRoutesModel', {
     "username": fields.String(required=True, min_length=2, max_length=32),
     "route_id": fields.String(required=True, min_length=2, max_length=32),
-    "friend_username": fields.String(required=True, min_length=2, max_length=32)
     # Model for sharing a route with a friend.
 })
 
@@ -432,9 +431,8 @@ class SaveRoute(Resource):
             route = Route.get_by_rid(_route_id)
             if not route:
                 return {"success": False, "msg": "Route not exist"}, 404
-            if user.has_saved_route(route):
+            if not user.add_saved_routes(route):
                 return {"success": False, "msg": "Route is already saved"}, 402
-            user.add_saved_routes(route)
         except Exception as e:
             # catch all other exceptions
             current_app.logger.error(e)
@@ -500,42 +498,47 @@ class ShareRoutes(Resource):
         req_data = request.get_json()
         _username = req_data.get("username")
         _rid = req_data.get("route_id")
-        _friend = req_data.get("friend_username")
+        _friend = req_data.get("friend_username", None)
+        _members = req_data.get("members", [])
         # Fetch routes created by the user
         try:
-            friend = User.get_by_username(_friend)
-            if not friend:
-                return {"success": False, "msg": "Friend not exist"}, 401
-
             if not User.get_by_username(_username):
                 return {"success": False, "msg": "User not exist"}, 401
             if not Route.get_by_rid(_rid):
                 return {"success": False, "msg": "Route not exist"}, 401
-            if friend.has_shared_route(_rid):
-                return {"success": False, "msg": "Route is already shared"}, 402
-            friend.add_shared_route(_rid, _username)
+
+            if _friend:
+                friend = User.get_by_username(_friend)
+                if not friend:
+                    return {"success": False, "msg": "Friend not exist"}, 401
+                if not friend.add_shared_route(_rid, _username):
+                    return {"success": False, "msg": "Route is already shared"}, 402
+            if _members:
+                for _member in _members:
+                    member = User.get_by_username(_member)
+                    if member and not member.add_shared_route(_rid, _username):
+                        return {"success": False, "msg": "Route is already shared"}, 402
         except Exception as e:
             # catch all other exceptions
             current_app.logger.error(e)
             return {"success": False, "msg": str(e)}, 403
 
-        return {"success": True, "routes": friend.toDICT(),
-                "msg": "Routes retrieved successfully"}, 200
+        return {"success": True, "msg": "Routes shared successfully"}, 200
 
 
 @api.route('/api/usersharedroutes/')
-class CreatedRoute(Resource):
+class SharedRoute(Resource):
     @api.expect(created_route_model, validate=True)
     def post(self):
         # Extract JSON data from the request
         req_data = request.get_json()
         _username = req_data.get("username")
+        _shared_by = req_data.get("shared_by", None)
 
         try:
             user = User.get_by_username(_username)
             if not user:
                 return {"success": False, "msg": "User not exist"}, 401
-
             shared_routes_data = user.get_shared_routes()
             shared_routes = []
             for shared_route_data in shared_routes_data:
@@ -545,7 +548,11 @@ class CreatedRoute(Resource):
                 if route:
                     route_dict = route.toDICT()
                     route_dict['shared_by'] = shared_by
-                    shared_routes.append(route_dict)
+                    if _shared_by:
+                        if _shared_by == shared_by:
+                            shared_routes.append(route_dict)
+                    else:
+                        shared_routes.append(route_dict)
             return {"success": True, "routes": shared_routes, "msg": "Shared routes retrieved successfully"}, 200
         except Exception as e:
             current_app.logger.error(e)
@@ -689,7 +696,7 @@ class CreateEvent(Resource):
 
 # Define the API Resource for creating events
 @api.route('/api/sharedevent/')
-class SharedEvent(Resource):
+class ShareEvent(Resource):
     @api.expect(shared_event_model, validate=True)
     def post(self):
         # Extract JSON data from the request
