@@ -323,12 +323,18 @@ class User(db.Document):
                 continue
         return safe_created_route_ids
 
+    def has_saved_route(self, route):
+        return route in self.saved_routes
+
     # Method to add a route to the user's saveed routes
     def add_saved_routes(self, route):
+        if self.has_saved_route(route):
+            return False
         route.saves = route.saves + 1
         route.save()
         self.saved_routes.append(route)
         self.save()
+        return True
 
     def remove_saved_route(self, route):
         route.saves = route.saves - 1
@@ -351,9 +357,6 @@ class User(db.Document):
                 continue
         return safe_routes
 
-    def has_saved_route(self, route):
-        return route in self.saved_routes
-
     def has_shared_route(self, route):
         return any(shared_route.route == route for shared_route in self.shared_routes)
 
@@ -372,8 +375,11 @@ class User(db.Document):
         return safe_route_ids
 
     def add_shared_route(self, route, shared_by):
+        if self.has_shared_route(route):
+            return False
         self.shared_routes.append(SharedRoute(route=route, shared_by=shared_by))
         self.save()
+        return True
 
     def get_shared_routes(self):
         shared_routes_list = []
