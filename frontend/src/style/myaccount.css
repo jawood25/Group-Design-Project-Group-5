@@ -90,6 +90,14 @@
     float: left;
 }
 
+.btn-primary:hover {
+    background-color: #20a7c5;
+}
+
+.btn-primary:active {
+    background-color: #71cfe4;
+}
+
 .friendSelect {
     float: left;
     margin-top: 15px;
@@ -109,3 +117,69 @@
     margin: 5px;
     float: right;
 }
+
+.commentinput {
+    float: left;
+    border: 1px solid black;
+    margin-right: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.commentbutton {
+    float: left;
+    margin-top: 10px;
+    background-color: #34c9eb;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    padding: 2px 10px;
+}
+
+.commentbutton:hover {
+    background-color: #20a7c5;
+}
+
+.commentbutton:active {
+    background-color: #71cfe4;
+}
+
+#groupsh2 {
+    right: 0%;
+}
+
+#groupsdiv {
+    margin-left: 2%;
+    margin-right: 2%;
+    margin-bottom: 25px;
+    justify-items: center;
+    border: 2px solid lightgray;
+    padding-left: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-radius: 25px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#friendsdiv {
+    margin-left: 2%;
+    margin-right: 2%;
+    margin-bottom: 25px;
+    justify-items: center;
+    border: 2px solid lightgray;
+    padding-left: 40%;
+    padding-right: 40%;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-radius: 25px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#friendsdiv > .acctfriend > username {
+    float: right;
+}
+

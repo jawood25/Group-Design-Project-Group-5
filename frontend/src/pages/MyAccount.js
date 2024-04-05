@@ -614,8 +614,8 @@ const MyAccount = () => {
                             </div>
                         </div>
 
-                        <input type="text" placeholder="Comment" onChange={(e) => setComment(e.target.value)} />
-                        <button onClick={() => commentRoad(route.id, comment)}>Comment</button>
+                        <input type="text" className="commentinput" placeholder="Comment..." onChange={(e) => setComment(e.target.value)} />
+                        <button className="commentbutton" onClick={() => commentRoad(route.id, comment)}>Publish Comment</button>
                     </div>
                 ))}
             </div>
@@ -647,22 +647,74 @@ const MyAccount = () => {
                                         </div>
                                     ))}</div>)}
                         </div>
-                        <button onClick={() => deleteLikedRoute(route.id)}>Delete</button>
-                        <input type="text" placeholder="Comment" onChange={(e) => setComment(e.target.value)} />
-                        <button onClick={() => commentRoad(route.id, comment)}>Comment</button>
-                        <select onChange={(e) => setSelectedFriend(e.target.value)}>
-                            <option value="">Select Friend</option>
-                            {friends && friends.map((friend, index) => (
-                                <option key={index} value={friend.username}>{friend.username}</option>
-                            ))}
-                        </select>
-                        <button onClick={() => shareRouteWithFriend(route.id)}>Share</button>
+                        <button className="btn btn-primary" onClick={() => deleteLikedRoute(route.id)}>Unlike</button>
+                        <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#shareModal">Share</button>
+
+                        <div className="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
+                            <div className="modal-dialog modal-dialog-centered modal-xl">
+                                <div className="modal-content">
+                                    <div className="modal-header">
+                                        <h5 className="modal-title" id="exampleModalLabel">Share your route</h5>
+                                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div className="modal-body">
+                                        <div className="container mt-3">
+                                            <div className="mb-3">
+                                                <div className="form-check form-check-inline">
+                                                    <input className="form-check-input" type="radio" name="inlineRadioOptions" id="radio1" value="Friend" onChange={(e) => setSelectedOption(e.target.value)} />
+                                                    <label className="form-check-label" htmlFor="radio1">Friend</label>
+                                                </div>
+                                                <div className="form-check form-check-inline">
+                                                    <input className="form-check-input" type="radio" name="inlineRadioOptions" id="radio2" value="Group" onChange={(e) => setSelectedOption(e.target.value)} />
+                                                    <label className="form-check-label" htmlFor="radio2">Group</label>
+                                                </div>
+                                            </div>
+
+                                            {selectedOption === 'Friend' ? (
+                                                <div className='d-flex justify-content-center'>
+                                                    <select class="form-select" onChange={(e) => setSelectedFriend(e.target.value)}>
+                                                        <option value="" selected>Select Friend</option>
+                                                        {friends && friends.map((friend, index) => (
+                                                            <option key={index} value={friend.username}>{friend.username}</option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                            ) : (
+                                                <div className='d-flex justify-content-center'>
+                                                    <select class="form-select" onChange={(e) => setSelectedGroup(e.target.value)}>
+                                                        <option value="" selected>Select Group</option>
+                                                        {groupList && groupList.map((group, index) => (
+                                                            <option key={index} value={group.name}>{group.name}</option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="modal-footer">
+                                        {selectedOption === 'Friend' ? (
+                                            <div>
+                                                <button className="sharebtn" onClick={() => shareRouteWithFriend(route.id)}>Share</button>
+                                            </div>
+                                        ) : (
+                                            <div>
+                                                <button className="sharebtn" onClick={() => shareRouteWithGroup(route.id)}>Share</button>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <input className="commentinput" type="text" placeholder="Comment" onChange={(e) => setComment(e.target.value)} />
+                        <button className="commentbutton" onClick={() => commentRoad(route.id, comment)}>Comment</button>
+                        
+                        
                     </div>
                 ))}
             </div>
-            <h3>The Groups</h3>
+            <h2 id="groupsh2">The Groups</h2>
             <h4>My Groups</h4>
-            <div>
+            <div id="groupsdiv">
                 {groupsIManage && groupsIManage.map((group, index) => (
                     <div key={index}>
                         <h5>{group.name}</h5>
@@ -672,16 +724,16 @@ const MyAccount = () => {
                             {group.members.map((member, idx) => (
                                 <div>
                                     <li key={idx}>{member.username}</li>
-                                    <button onClick={() => leaveGroup(group.name, member.username)}>Kick</button>
+                                    <button className="btn btn-primary" onClick={() => leaveGroup(group.name, member.username)}>Kick</button>
                                 </div>
                             ))}
                         </ul>
-                        <button onClick={() => deleteGroup(group.name, username)}>Delete</button>
+                        <button className="btn btn-primary" onClick={() => deleteGroup(group.name, username)}>Delete</button>
                     </div>
                 ))}
             </div>
             <h4>Groups I am in</h4>
-            <div>
+            <div id="groupsdiv">
                 {groups && groups.map((group, index) => (
                     <div key={index}>
                         <h5>{group.name}</h5>
@@ -692,14 +744,14 @@ const MyAccount = () => {
                                 <li key={idx}>{member.username}</li>
                             ))}
                         </ul>
-                        <button onClick={() => leaveGroup(group.name, username)}>Leave Group</button>
+                        <button className="btn btn-primary" onClick={() => leaveGroup(group.name, username)}>Leave Group</button>
                     </div>
                 ))}
             </div>
             <h4>My Friends</h4>
-            <div>
+            <div id="friendsdiv">
                 {friends && friends.map((friend, index) => (
-                    <Friend key={index} username={friend.username} isFriend={true} />
+                    <Friend className="acctfriend" key={index} username={friend.username} isFriend={true} />
                 ))}
             </div>
         </div>

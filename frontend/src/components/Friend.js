@@ -65,13 +65,13 @@ const Friend = ({ username, isFriend }) => {
     };   
 
     return (
-        <div style={{ display: 'flex', alignItems: 'center', margin: 0, padding: 0 }}>
-            <Link to={`/profile/${username}`} style={{ marginRight: '10px', textDecoration: 'none', color: 'inherit' }}>
+        <div style={{ display: 'flex', alignItems: 'center', margin: 0, padding: "5px", background: "lightgrey", borderRadius: "35px", marginBottom: "25px", marginRight: "15px"}}>
+            <Link to={`/profile/${username}`} style={{ margin: '0 auto', textDecoration: 'none', color: 'inherit' }}>
                 <p>{username}</p>
             </Link>
             {show ? (
-                <button style={{ marginLeft: 'auto' }} onClick={() => onFollow(username)}>Follow</button>
-            ) : <button style={{ marginLeft: 'auto' }} onClick={() => onUnfollow(username)}>Unfollow</button>}
+                <button className="btn btn-primary" style={{ margin: '0 auto' }} onClick={() => onFollow(username)}>Follow</button>
+            ) : <button className="btn btn-primary" style={{ margin: '0 auto' }} onClick={() => onUnfollow(username)}>Unfollow</button>}
         </div>
     );
 };
