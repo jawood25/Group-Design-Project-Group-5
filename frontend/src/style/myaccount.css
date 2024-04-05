@@ -159,7 +159,7 @@
     justify-items: center;
     border: 2px solid lightgray;
     padding-left: 20px;
-    padding-top: 20px;
+    padding-top: 50px;
     padding-bottom: 20px;
     border-radius: 25px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -179,7 +179,41 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-#friendsdiv > .acctfriend > username {
-    float: right;
+ul {
+    list-style-type: none;
+    text-align: center;
 }
 
+.btn-groups {
+    float: none;
+}
+
+.groupsubdiv {
+    text-align: center;
+    background-color: lightgray;
+    max-width: 20%;
+    left: 39%;
+    position: relative;
+    padding: 15px 0px;
+    margin-bottom: 25px;
+    border-radius: 35px;
+}
+
+li {
+    font-size: 20px;
+}
+
+.group {
+    border: 2px solid lightgray;
+    border-radius: 25px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    margin-bottom: 35px;
+    background-color: #eae7e7;
+    padding: 20px;
+    margin-right: 1%;
+}
+
+.mylikedpaths {
+    position: relative;
+    left: 1%;
+}

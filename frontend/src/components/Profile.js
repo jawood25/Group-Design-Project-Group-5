@@ -134,12 +134,12 @@ const Profile = () => {
                                     {comment.author} : {comment.body}
                                 </div>
                             ))}</div>)}
-                        </div>                        
-                        <div><button onClick={likeRoute(route.id)}>Like</button></div>
+                        </div>                     
+                        <button className="btn btn-primary" onClick={likeRoute(route.id)}>Like</button>
                     </div>
                 ))}
             </div>
-            <h4>Liked Paths</h4>
+            <h4 className="mylikedpaths">Liked Paths</h4>
             <div className="grid-container">
                 {likedRouteData && likedRouteData.map((route, index) => (
                     <div className="grid-item" key={index}>
@@ -161,8 +161,8 @@ const Profile = () => {
                                     {comment.author} : {comment.body}
                                 </div>
                             ))}</div>)}
-                            <div><button  onClick={likeRoute(route.id)}>Like</button></div>
                         </div>
+                        <button className="btn btn-primary"  onClick={likeRoute(route.id)}>Like</button>
                     </div>
                 ))}
             </div>

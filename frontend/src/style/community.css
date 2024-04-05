@@ -73,6 +73,8 @@ input {
     border-radius: 25px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     margin-bottom: 100px;
+    padding-top: 15px;
+    padding-left: 10px;
 }
 
 p {
@@ -147,7 +149,9 @@ p {
     background-color: #ededed;
     padding: 15px 95px;
     right: 1%;
-    max-width: 300px;
+    max-width: 30%;
+    margin-bottom: 15px;
+    border-radius: 15px;
 }
 
 #friendlist {
@@ -230,5 +234,9 @@ p {
 .liketoggle:checked +.like-button:hover:before,
 .liketoggle:checked +.like-button:hover:after {
     background-color: rgb(166, 2, 2);
+}
+
+.like > .btn-primary {
+    float:none;
 }
 

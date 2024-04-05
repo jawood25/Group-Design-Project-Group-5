@@ -619,7 +619,7 @@ const MyAccount = () => {
                     </div>
                 ))}
             </div>
-            <h4>My Liked Paths</h4>
+            <h4 className="mylikedpaths">My Liked Paths</h4>
             <div className="grid-container">
                 {likedRouteData && likedRouteData.map((route, index) => (
                     <div className="grid-item" key={index}>
@@ -706,7 +706,7 @@ const MyAccount = () => {
                             </div>
                         </div>
                         <input className="commentinput" type="text" placeholder="Comment" onChange={(e) => setComment(e.target.value)} />
-                        <button className="commentbutton" onClick={() => commentRoad(route.id, comment)}>Comment</button>
+                        <button className="commentbutton" onClick={() => commentRoad(route.id, comment)}>Publish Comment</button>
                         
                         
                     </div>
@@ -716,35 +716,37 @@ const MyAccount = () => {
             <h4>My Groups</h4>
             <div id="groupsdiv">
                 {groupsIManage && groupsIManage.map((group, index) => (
-                    <div key={index}>
-                        <h5>{group.name}</h5>
-                        Manager : {group.manager}
-                        Members:
+                    <div className="group" key={index}>
+                        <h4>{group.name}</h4>
+                        <h6>Manager: {group.manager}</h6>
+                        <h6>Members:</h6>
                         <ul>
                             {group.members.map((member, idx) => (
-                                <div>
+                                <div className="groupsubdiv">
                                     <li key={idx}>{member.username}</li>
-                                    <button className="btn btn-primary" onClick={() => leaveGroup(group.name, member.username)}>Kick</button>
+                                    <button className="btn btn-primary btn-groups" onClick={() => leaveGroup(group.name, member.username)}>Kick</button>
                                 </div>
                             ))}
                         </ul>
-                        <button className="btn btn-primary" onClick={() => deleteGroup(group.name, username)}>Delete</button>
+                        <button className="btn btn-primary btn-groups" onClick={() => deleteGroup(group.name, username)}>Delete</button>
                     </div>
                 ))}
             </div>
             <h4>Groups I am in</h4>
             <div id="groupsdiv">
                 {groups && groups.map((group, index) => (
-                    <div key={index}>
-                        <h5>{group.name}</h5>
-                        Manager : {group.manager}
-                        Members:
+                    <div className="group" key={index}>
+                        <h4>{group.name}</h4>
+                        <h6>Manager : {group.manager}</h6>
+                        <h6>Members:</h6>
                         <ul>
                             {group.members.map((member, idx) => (
-                                <li key={idx}>{member.username}</li>
+                                <div className="groupsubdiv">
+                                    <li key={idx}>{member.username}</li>
+                                </div>
                             ))}
                         </ul>
-                        <button className="btn btn-primary" onClick={() => leaveGroup(group.name, username)}>Leave Group</button>
+                        <button className="btn btn-primary btn-groups" onClick={() => leaveGroup(group.name, username)}>Leave Group</button>
                     </div>
                 ))}
             </div>
