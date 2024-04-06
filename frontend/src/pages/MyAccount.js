@@ -92,8 +92,6 @@ const MyAccount = () => {
         const group = groupList.filter(group => group.name === selectedGroup);
         const members = group[0].members
         const route_id = sharedRoute
-        const test = { username, route_id: route_id, members }
-        console.log(test)
         try {
             const response = await fetch('/api/shareroute', {
                 method: 'POST',
@@ -146,6 +144,7 @@ const MyAccount = () => {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
+            console.log(data)
             setLikedRouteData(data.routes);
         } catch (error) {
             console.error('There was a problem with your fetch operation:', error);
@@ -559,7 +558,11 @@ const MyAccount = () => {
                             </div>
                         </div>
 
-                        <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#shareModal" onClick={() => setSharedRoute(route.id)}>
+                        <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#shareModal" onClick={() => {
+                            setSharedRoute(route.id)
+                            setSelectedGroup('')
+                            setSelectedFriend('')
+                        }}>
                             Share
                         </button>
 
@@ -585,7 +588,7 @@ const MyAccount = () => {
 
                                             {selectedOption === 'Friend' ? (
                                                 <div className='d-flex justify-content-center'>
-                                                    <select class="form-select" onChange={(e) => setSelectedFriend(e.target.value)}>
+                                                    <select class="form-select" value={friend_username} onChange={(e) => setSelectedFriend(e.target.value)}>
                                                         <option value="" selected>Select Friend</option>
                                                         {friends && friends.map((friend, index) => (
                                                             <option key={index} value={friend.username}>{friend.username}</option>
@@ -594,7 +597,7 @@ const MyAccount = () => {
                                                 </div>
                                             ) : (
                                                 <div className='d-flex justify-content-center'>
-                                                    <select class="form-select" onChange={(e) => setSelectedGroup(e.target.value)}>
+                                                    <select class="form-select" value={selectedGroup} onChange={(e) => setSelectedGroup(e.target.value)}>
                                                         <option value="" selected>Select Group</option>
                                                         {groupList && groupList.map((group, index) => (
                                                             <option key={index} value={group.name}>{group.name}</option>
@@ -653,9 +656,15 @@ const MyAccount = () => {
                                     ))}</div>)}
                         </div>
                         <button className="btn btn-primary" onClick={() => deleteLikedRoute(route.id)}>Unlike</button>
-                        <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#shareModal">Share</button>
+                        <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#shareModal2" onClick={() => {
+                            setSharedRoute(route.id)
+                            setSelectedGroup('')
+                            setSelectedFriend('')
+                        }}>
+                            Share
+                        </button>
 
-                        <div className="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
+                        <div className="modal fade" id="shareModal2" tabindex="-1" aria-labelledby="shareModal2Label" aria-hidden="true">
                             <div className="modal-dialog modal-dialog-centered modal-xl">
                                 <div className="modal-content">
                                     <div className="modal-header">
@@ -677,7 +686,7 @@ const MyAccount = () => {
 
                                             {selectedOption === 'Friend' ? (
                                                 <div className='d-flex justify-content-center'>
-                                                    <select class="form-select" onChange={(e) => setSelectedFriend(e.target.value)}>
+                                                    <select class="form-select" value={friend_username} onChange={(e) => setSelectedFriend(e.target.value)}>
                                                         <option value="" selected>Select Friend</option>
                                                         {friends && friends.map((friend, index) => (
                                                             <option key={index} value={friend.username}>{friend.username}</option>
@@ -686,7 +695,7 @@ const MyAccount = () => {
                                                 </div>
                                             ) : (
                                                 <div className='d-flex justify-content-center'>
-                                                    <select class="form-select" onChange={(e) => setSelectedGroup(e.target.value)}>
+                                                    <select class="form-select" value={selectedGroup} onChange={(e) => setSelectedGroup(e.target.value)}>
                                                         <option value="" selected>Select Group</option>
                                                         {groupList && groupList.map((group, index) => (
                                                             <option key={index} value={group.name}>{group.name}</option>
@@ -699,11 +708,11 @@ const MyAccount = () => {
                                     <div className="modal-footer">
                                         {selectedOption === 'Friend' ? (
                                             <div>
-                                                <button className="sharebtn" onClick={() => shareRouteWithFriend(route.id)}>Share</button>
+                                                <button className="sharebtn" onClick={() => shareRouteWithFriend()}>Share</button>
                                             </div>
                                         ) : (
                                             <div>
-                                                <button className="sharebtn" onClick={() => shareRouteWithGroup(route.id)}>Share</button>
+                                                <button className="sharebtn" onClick={() => shareRouteWithGroup()}>Share</button>
                                             </div>
                                         )}
                                     </div>

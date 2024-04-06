@@ -82,26 +82,6 @@ const Community = () => {
         }
     };
 
-    const fetchGroupSharedRoutes = async () => {
-        try {
-            const response = await fetch('/api/usersharedroutes', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username }),
-            });
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const data = await response.json();
-            console.log("group")
-            console.log(data);
-        } catch (error) {
-            console.error('There was a problem with your fetch operation:', error);
-        }
-    };
-
     const fetchSharedEvents = async () => {
         try {
             const response = await fetch('/api/usersharedevents', {
@@ -165,7 +145,6 @@ const Community = () => {
         fetchUserFriends();
         fetchSharedEvents();
         fetchUserSharedRoutes();
-        fetchGroupSharedRoutes();
     }, []);
 
     const toggleSearch = () => {
