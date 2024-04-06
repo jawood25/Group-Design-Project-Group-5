@@ -7,46 +7,53 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-# pylint: disable=too-few-public-methods
-class BaseConfig():
-    # Base configuration
-    HOST = 'localhost'  # Default host
-    PORT = 3001  # Default port
+class BaseConfig:
+    """
+    Base configuration class. Contains default settings and environment-dependent
+    database connection settings.
+    """
+    # Default server settings
+    HOST = 'localhost'
+    PORT = 3001
 
-    # Environment variables for database connection
-    DBNAME = os.getenv("DB_NAME")  # Database name
-    DBHOST = os.getenv("DB_HOST")  # Database host URL
-    DBUSERNAME = os.getenv("DB_USERNAME")  # Database username
-    DBPASSWORD = os.getenv("DB_PASSWORD")  # Database password
+    # Environment-dependent database settings
+    DBNAME = os.getenv("DB_NAME")
+    DBHOST = os.getenv("DB_HOST")
+    DBUSERNAME = os.getenv("DB_USERNAME")
+    DBPASSWORD = os.getenv("DB_PASSWORD")
 
-    # MongoDB connection settings
+    # MongoDB connection settings using environment variables
     MONGODB_SETTINGS = {
-        'db': DBNAME,  # Name of the database
-        'host': f"mongodb+srv://{DBHOST}",  # Database host URL
-        'username': DBUSERNAME,  # Database username
-        'password': DBPASSWORD,  # Database password
-        'retryWrites': True,  # Retry writes in case of failure
-        'w': 'majority'  # Write acknowledgment level
+        'db': DBNAME,
+        'host': f"mongodb+srv://{DBHOST}",
+        'username': DBUSERNAME,
+        'password': DBPASSWORD,
+        'retryWrites': True,
+        'w': 'majority'
     }
 
 
-# pylint: disable=too-few-public-methods
 class DevelopmentConfig(BaseConfig):
-    # Configuration for the development environment
-    DEBUG = True  # Enable debug mode
+    """
+    Configuration for the development environment. Enables debug mode.
+    """
+    DEBUG = True
 
 
-# pylint: disable=too-few-public-methods
 class ProductionConfig(BaseConfig):
-    # Configuration for the production environment
-    pass  # No specific changes from BaseConfig
+    """
+    Configuration for the production environment. Inherits settings from BaseConfig
+    without modification.
+    """
+    pass
 
 
-# pylint: disable=too-few-public-methods
 class TestingConfig(BaseConfig):
-    # Configuration for the testing environment
-    DEBUG = True  # Enable debug mode for testing
-    # Environment variables for database connection
+    """
+    Configuration for the testing environment. Overrides database settings for
+    testing and enables debug mode.
+    """
+    DEBUG = True
     DBNAME = 'pytest'
     DBHOST = os.getenv("DB_HOST")  # Database host URL
     DBUSERNAME = os.getenv("DB_USERNAME")  # Database username
@@ -55,15 +62,14 @@ class TestingConfig(BaseConfig):
     MONGO_URI = f"mongodb+srv://{DBUSERNAME}:{DBPASSWORD}@{DBHOST}/{DBNAME}" \
                 f"?retryWrites=true&w=majority&authSource=admin"
 
-    # MongoDB connection settings
     MONGODB_SETTINGS = {
         'host': MONGO_URI
     }
 
 
-# Dictionary to select the configuration based on the environment
+# Mapping of configuration names to configuration classes
 config = {
-    "development": DevelopmentConfig,  # Development configuration
-    "production": ProductionConfig,  # Production configuration
-    "testing": TestingConfig  # Testing configuration
+    "development": DevelopmentConfig,
+    "production": ProductionConfig,
+    "testing": TestingConfig,
 }

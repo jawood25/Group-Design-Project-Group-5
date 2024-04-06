@@ -1,21 +1,35 @@
 # /api/__init__.py
 from flask import Flask
 from flask_cors import CORS
-from .exts import init_exts
-from .routes import *
-from .config import config
+
+from .config import config  # Importing configuration settings
+from .exts import init_exts  # Importing extension initializer
+from .routes import *  # Importing all routes
 
 
-# Function to create and configure the Flask app
 def create_app(config_name='development'):
-    # Initialize the Flask app
+    """
+    Creates and configures an instance of the Flask application.
+
+    Args:
+        config_name (str): The configuration name to use for the Flask app.
+                           Defaults to 'development'.
+
+    Returns:
+        Flask: The configured Flask application instance.
+    """
+
+    # Initialize Flask application
     app = Flask(__name__)
-    # Load the configuration settings for the Flask app
+
+    # Load app configuration from 'config' dict based on the provided config_name
     app.config.from_object(config[config_name])
-    # Enable CORS for all domains on all routes
+
+    # Enable Cross-Origin Resource Sharing (CORS) for all domains across all routes
     CORS(app)
-    # Call the init_exts function to initialize Flask extensions with the app context
+
+    # Initialize Flask extensions with the current app context
     init_exts(app=app)
 
-    # Return the configured Flask app
+    # Return the configured Flask app instance
     return app

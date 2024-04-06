@@ -7,8 +7,10 @@ from backend.utils.file.yaml_op import load_data
 
 class TestCreateGroup:
 
-    @pytest.mark.parametrize("test_case", load_data(Path(__file__).parent / "data/test_create_group_data.yaml"))
-    def test_create_group(self, test_client, test_case, monkeypatch):
+    @pytest.mark.parametrize("test_case", load_data(
+        Path(__file__).parent / "data/test_create_group_data.yaml"
+    ))
+    def test_create_group(self, test_client, test_case):
         # Simulate a POST request to create a group
         response = test_client.post('/api/creategroup/', json={
             "name": test_case["name"],
@@ -26,8 +28,10 @@ class TestCreateGroup:
 
 
 class TestDeleteGroup:
-    @pytest.mark.parametrize("test_case", load_data(Path(__file__).parent / "data/test_delete_group_data.yaml"))
-    def test_delete_group(self, test_client, test_case, monkeypatch):
+    @pytest.mark.parametrize("test_case", load_data(
+        Path(__file__).parent / "data/test_delete_group_data.yaml"
+    ))
+    def test_delete_group(self, test_client, test_case):
 
         response = test_client.post('/api/deletegroup/', json={
             "groupname": test_case["groupname"],
@@ -66,8 +70,10 @@ class TestGetGroup:
 
 
 class TestLeaveGroup:
-    @pytest.mark.parametrize("test_case", load_data(Path(__file__).parent / "data/test_leave_group_data.yaml"))
-    def test_leave_group(self, test_client, test_case, monkeypatch):
+    @pytest.mark.parametrize("test_case", load_data(
+        Path(__file__).parent / "data/test_leave_group_data.yaml"
+    ))
+    def test_leave_group(self, test_client, test_case):
 
         response = test_client.post('/api/leavinggroup/', json={
             "groupname": test_case["groupname"],

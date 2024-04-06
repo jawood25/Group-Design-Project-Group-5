@@ -1,3 +1,6 @@
+# pylint: disable=broad-except
+# pylint: disable=no-member
+
 # /api/models.py
 import datetime
 import math
@@ -7,7 +10,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from .exts import db  # Importing the database instance from an external module
 
 
-# pylint: disable=no-member
 # Defines a Comment document associated with users and their interactions
 class Comment(db.Document):
     author = db.StringField(required=True)  # pylint: disable=E1101
@@ -235,7 +237,6 @@ class Route(db.Document):
         }
 
 
-# pylint: enable=no-member
 class SharedRoute(db.EmbeddedDocument):
     route = db.StringField(reqiured=True)  # ID of the route shared
     shared_by = db.StringField(required=True)  # Username of the user who shared the route
