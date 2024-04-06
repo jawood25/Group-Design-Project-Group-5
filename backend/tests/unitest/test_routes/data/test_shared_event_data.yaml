@@ -1,0 +1,30 @@
+- request_body:
+    username: "userA"
+    meetingPlace: "Park"
+    meetingTime: "2023-04-01T14:00:00"
+    routeId: "route123"
+    generalInfo: "Bring snacks."
+    friends:
+      [ { username: "friend1" }, { username: "friend2" } ]
+  expected_status: 200
+
+- request_body:
+    username: "disconnected"
+    meetingPlace: "Park"
+    meetingTime: "2023-04-01T14:00:00"
+    routeId: "route123"
+    generalInfo: "Bring snacks."
+    friends:
+      [ { username: "friend1" }, { username: "friend2" } ]
+  expected_status: 500
+
+- request_body:
+    username: "userA"
+    meetingPlace: "Park"
+    meetingTime: "2023-04-01T14:00:00"
+    routeId: "route123"
+    generalInfo: "Bring snacks."
+    friends:
+      [ { username: "friend1" }, { username: "friend2" } ]
+  content_type: "text/plain"
+  expected_status: 415

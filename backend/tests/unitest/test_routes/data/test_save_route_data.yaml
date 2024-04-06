@@ -7,6 +7,10 @@
   expected_status: 401
 
 - username: "existinguser"
+  route_id: "already_shared"
+  expected_status: 402
+
+- username: "existinguser"
   route_id: "nonexistent"
   expected_status: 404
 

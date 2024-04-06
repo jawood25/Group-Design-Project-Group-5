@@ -48,3 +48,7 @@
   expected_result: False
   expected_success: True
 
+- method: "all_groups"
+  name: "Group Mu"
+  expected_groups_num: 3
+  expected_success: True

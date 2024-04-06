@@ -18,6 +18,11 @@
   friend_username: "nonexistent"
   expected_status: 401
 
+- username: "user1"
+  route_id: "already_shared"
+  friend_username: "friend1"
+  expected_status: 402
+
 - username: "disconnected"
   route_id: "route123"
   friend_username: "friend1"
@@ -38,3 +43,13 @@
   friend_username: "friend1"
   content_type: "text/plain"
   expected_status: 415
+
+- username: "user1"
+  route_id: "route123"
+  members: [ "friend1", "friend2","nonexistent" ]
+  expected_status: 200
+
+- username: "user1"
+  route_id: "already_shared"
+  members: [ "friend1", "friend2","nonexistent" ]
+  expected_status: 402

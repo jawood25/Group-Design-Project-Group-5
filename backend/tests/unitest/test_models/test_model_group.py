@@ -25,15 +25,22 @@ def create_test_user(username="testmember"):
     return added_user
 
 
-def create_test_group(test_case):
+def create_test_group(test_case, i=0):
     users = []
     for member in test_case.get('members', []):
         user = User.objects(username=member).first()
         if user:
             users.append(user)
-    g = Group(name=test_case['name'], manager="testuser", members=users)
+    if i == 0:
+        g = Group(name=test_case['name'], manager="testuser", members=users)
+    else:
+        g = Group(name=f"{test_case['name']}{i}", manager="testuser", members=users)
     g.save()
     return g
+
+def create_groups(test_case):
+    for i in range(test_case['expected_groups_num'] - 1):
+        create_test_group(test_case,i+1)
 
 
 @pytest.mark.parametrize("test_case", load_data(Path(__file__).parent / "data/test_group.yaml"))
@@ -53,6 +60,10 @@ def test_group_methods(test_client, test_case):
         elif method == "get_by_name":
             group = Group.get_by_name(test_case['name'])
             assert group is not None, "get_by_name method failed."
+        elif method == "all_groups":
+            create_groups(test_case)
+            all_groups = Group.all_groups()
+            assert isinstance(all_groups, list) and len(all_groups) > 0, "Failed to retrieve all routes."
         elif method == "toDICT":
             group_dict = group.toDICT()
             assert group_dict == test_case['expected_dict'], "toDICT method failed."

@@ -32,11 +32,16 @@ def test_event_methods(test_client, test_case):
         elif method == "__repr__":
             event = Event(name=test_case['name'])
             assert event.__repr__() == f"Event {test_case['name']}", "__repr__ method failed."
+        elif method == "get_by_eid":
+            event = Event(**test_case['params'])
+            event.save()
+            found_event = Event.get_by_eid(event.id)
+            assert found_event is not None, "Failed to retrieve event by ID."
         elif method == "toDICT":
             user, route = create_test_user_and_route()
             event = Event(name=test_case['expected_dict']['name'], venue=test_case['expected_dict']['venue'], interested=test_case['expected_dict']['interested'],
                           date=test_case['expected_dict']['date'], hostname=test_case['expected_dict']['host'],
-                          route_id=route.id)
+                          route_id=route.id,information=test_case['expected_dict']['information'])
             event_dict = event.toDICT()
             test_case['expected_dict'].pop('rid')
             test_case['expected_dict']['route'] = route.toDICT()

@@ -1,0 +1,14 @@
+- username: "existent"
+  expected_status: 200
+
+- username: "nonexistent"
+  expected_status: 401
+  expected_msg: "User not exist"
+
+- username: "disconnected"
+  expected_status: 403
+
+- username: "existent"
+  content_type: "text/plain"
+  expected_status: 415
+
