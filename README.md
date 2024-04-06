@@ -87,7 +87,7 @@ Follow these steps to run the app. You'll need to split your terminal into **two
 ### Flask
  Running on http://localhost:3001
 
- More information about API [here](./backend/README.md)
+ More information about Backend [here](./backend/README.md)
 
 ### DataBase
  **MongoDB** is used as the database for this project.
