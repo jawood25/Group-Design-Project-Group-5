@@ -61,7 +61,8 @@ class TestEditRoute:
 
         response = test_client.delete('/api/editroute/',
                                       json=test_case["req_data"],
-                                      content_type=test_case.get("content_type", "application/json"))
+                                      content_type=test_case.get("content_type",
+                                                                 "application/json"))
 
         assert response.status_code == test_case["expected_status"]
 

@@ -657,8 +657,7 @@ class DeleteComment(Resource):
             if comment:
                 if comment.delete_comment(_owner, _author):
                     return {"success": True, "msg": "Comment has been deleted"}, 200
-                else:
-                    return {"success": False, "msg": "Unauthorised"}, 402
+                return {"success": False, "msg": "Unauthorised"}, 402
             return {"success": False, "msg": "Comment does not exist"}, 401
         except Exception as e:
             # catch all other exceptions

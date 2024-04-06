@@ -1,3 +1,5 @@
+# pylint: disable=too-few-public-methods
+
 from pathlib import Path
 
 import pytest
@@ -104,7 +106,7 @@ class TestSavedRoutes:
         assert response.status_code == test_case["expected_status"]
         if response.status_code == 200:
             assert response.json['success'] is True
-            assert type(response.json['routes']) is list
+            assert isinstance(response.json['routes'], list)
             assert "Routes retrieved successfully" in response.json['msg']
         elif response.status_code in [401, 403]:
             assert response.json['success'] is False
@@ -236,7 +238,7 @@ class TestUserSharedRoutes:
         # Simulate a POST request to the endpoint
         response = test_client.post('/api/usersharedroutes/', json={
             "username": test_case["username"],
-            "shared_by" : test_case.get("shared_by", None)
+            "shared_by": test_case.get("shared_by", None)
         }, content_type=test_case.get("content_type", "application/json"))
 
         # Validate the status code

@@ -1,5 +1,7 @@
 # pylint: disable=broad-except
 # pylint: disable=no-member
+# pylint: disable=too-few-public-methods
+# pylint: disable=invalid-name
 
 # /api/models.py
 import datetime
