@@ -35,6 +35,7 @@ const MyAccount = () => {
     const hours = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0'));
     const minutes = Array.from({ length: 60 }, (_, i) => i.toString().padStart(2, '0'));
     const [eventRoute, setEventRoute] = useState(null);
+    const [sharedRoute, setSharedRoute] = useState(null)
 
     const [selectedOption, setSelectedOption] = useState('Friend');
 
@@ -66,7 +67,8 @@ const MyAccount = () => {
         }
     }
 
-    const shareRouteWithFriend = async (route_id) => {
+    const shareRouteWithFriend = async () => {
+        const route_id = sharedRoute
         console.log(username, route_id, friend_username)
         try {
             const response = await fetch('/api/shareroute', {
@@ -86,17 +88,19 @@ const MyAccount = () => {
         }
     }
 
-    const shareRouteWithGroup = async (route_id) => {
+    const shareRouteWithGroup = async () => {
         const group = groupList.filter(group => group.name === selectedGroup);
         const members = group[0].members
-        console.log(members)
+        const route_id = sharedRoute
+        const test = { username, route_id: route_id, members }
+        console.log(test)
         try {
             const response = await fetch('/api/shareroute', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username, route_id, members }),
+                body: JSON.stringify({ username, route_id: route_id, members }),
             });
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -555,7 +559,7 @@ const MyAccount = () => {
                             </div>
                         </div>
 
-                        <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#shareModal">
+                        <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#shareModal" onClick={() => setSharedRoute(route.id)}>
                             Share
                         </button>
 
@@ -603,11 +607,11 @@ const MyAccount = () => {
                                     <div className="modal-footer">
                                         {selectedOption === 'Friend' ? (
                                             <div>
-                                                <button className="sharebtn" onClick={() => shareRouteWithFriend(route.id)}>Share</button>
+                                                <button className="sharebtn" onClick={() => shareRouteWithFriend()}>Share</button>
                                             </div>
                                         ) : (
                                             <div>
-                                                <button className="sharebtn" onClick={() => shareRouteWithGroup(route.id)}>Share</button>
+                                                <button className="sharebtn" onClick={() => shareRouteWithGroup()}>Share</button>
                                             </div>
                                         )}
                                     </div>
