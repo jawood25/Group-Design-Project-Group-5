@@ -515,7 +515,7 @@ class ShareRoutes(Resource):
                     return {"success": False, "msg": "Route is already shared"}, 402
             if _members:
                 for _member in _members:
-                    member = User.get_by_username(_member)
+                    member = User.get_by_username(_member['username'])
                     if member and not member.add_shared_route(_rid, _username):
                         return {"success": False, "msg": "Route is already shared"}, 402
         except Exception as e:

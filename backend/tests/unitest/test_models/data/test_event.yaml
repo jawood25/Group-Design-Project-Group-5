@@ -4,11 +4,21 @@
     venue: "Downtown Convention Center"
     interested: 5
     date: "2024-09-15T18:00:00"
+    information: "This is a tech meetup"
   expected_success: True
 
 - method: "__repr__"
   name: "Annual Developer Conference"
   expected_repr: "Event Annual Developer Conference"
+  expected_success: True
+
+- method: "get_by_eid"
+  params:
+    name: "Tech Meetup"
+    venue: "Downtown Convention Center"
+    interested: 5
+    date: "2024-09-15T18:00:00"
+    information: "This is a tech meetup"
   expected_success: True
 
 - method: "toDICT"
@@ -19,4 +29,5 @@
     date: "2024-09-15T18:00:00"
     host: "hostUser"
     rid: null
+    information: "This is a sample event"
   expected_success: True

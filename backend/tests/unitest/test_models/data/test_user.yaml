@@ -98,6 +98,7 @@
     saved_routes: [ ]  # Similar assumption as create_routes
     friends: [ ]  # Assume list of friend usernames or IDs
     shared_routes: [ ]  # Assume list of shared route details
+    shared_events: [ ]  # Assume list of shared event details
   expected_success: True
 
 - method: "search_user"
@@ -137,4 +138,26 @@
   username: "routeSaver"
   expected_routes_num: 2
   include_invalid_shared_route: True
+  expected_success: True
+
+- method: "add_saved_routes"
+  username: "routeSaver"
+  expected_success: False
+  expected: True
+
+- method: "add_shared_route"
+  expected_success: False
+
+- method: "get_shared_events"
+  username: "sharingUser"
+  expected_shared_events: [ { "event": "SharedEventID1", "shared_by": "sharingUser" }, { "event": "SharedEventID2", "shared_by": "sharingUser" } ]
+  expected_success: True
+
+- method: "get_shared_events"
+  username: "sharingUser"
+  include_invalid_shared_event: True
+  expected_shared_events: [ { "event": "SharedEventID1", "shared_by": "sharingUser" }, { "event": "SharedEventID2", "shared_by": "sharingUser" } ]
+  expected_success: True
+
+- method: "add_shared_event"
   expected_success: True

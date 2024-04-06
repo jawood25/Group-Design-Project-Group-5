@@ -15,11 +15,25 @@ def mock_get_by_rid(route_id):
     elif route_id == "disconnected":
         # Simulating server disconnect scenario
         raise ConnectionError("Simulated server disconnect")
+    elif route_id == "already_shared":
+        return "already_shared"
     route = Route()
     route.id = route_id
     route.get_comments = lambda: []
     route.delete_route = lambda: None  # Mock the deletion method
+    route.toDICT = lambda: {}
     return route
+
+
+def mock_get_by_eid(event_id):
+    if event_id == "nonexistent":
+        return None
+    if event_id == "disconnected":
+        raise ConnectionError("Simulated server disconnect")
+    event = Event()
+    event.id = event_id
+    event.toDICT = lambda: {}
+    return event
 
 
 def mock_get_by_username(username):
@@ -45,10 +59,13 @@ def mock_get_by_username(username):
     user.add_friend = lambda friend: not mock_are_friends(user, friend)
     user.delete_friend = lambda friend: mock_delete_friend(friend)
     user.get_friends = lambda: []
-    user.add_saved_routes = lambda route: True
+    user.add_saved_routes = lambda route: True if route != "already_shared" else False
+    user.add_shared_route = lambda route, shared_by: True if route != "already_shared" else False
     user.remove_saved_route = lambda route: True
     user.get_saved_routes = lambda: []
     user.get_created_routes = lambda: []
+    user.get_shared_routes = lambda: [{"route": "route1", "shared_by": "friend1"}]
+    user.get_shared_events = lambda: [{"event": "event1", "shared_by": "friend1"}]
     user.toDICT = lambda: {"username": username, "shared_routes": ["route1", "route2"]}  # Example return structure
     return user
 
@@ -146,6 +163,27 @@ def mock_all_routes_failure(monkeypatch):
     monkeypatch.setattr(Route, "all_routes", mock_return)
 
 
+@pytest.fixture
+def mock_all_groups_success(monkeypatch):
+    def mock_return():
+        return [
+            {"id": "group1", "name": "Group 1", "description": "This is group 1"},
+            {"id": "group2", "name": "Group 2", "description": "This is group 2"},
+        ]
+
+    # Adjusting from Route.all_routes to Group.all_groups
+    monkeypatch.setattr(Group, "all_groups", mock_return)
+
+
+@pytest.fixture
+def mock_all_groups_failure(monkeypatch):
+    def mock_return():
+        raise Exception("Simulated database failure")
+
+    # Similarly, adjusting the monkeypatch to affect Group.all_groups
+    monkeypatch.setattr(Group, "all_groups", mock_return)
+
+
 @pytest.fixture(autouse=True)
 def setup_user(monkeypatch):
     monkeypatch.setattr(User, "get_by_username", mock_get_by_username)
@@ -170,6 +208,7 @@ def setup_comment(monkeypatch):
 @pytest.fixture(autouse=True)
 def setup_event(monkeypatch):
     monkeypatch.setattr(Event, "save", mock_save)
+    monkeypatch.setattr(Event, "get_by_eid", mock_get_by_eid)
 
 
 @pytest.fixture(autouse=True)

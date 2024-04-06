@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from backend.api.models import User, Route, SharedRoute
+from backend.api.models import User, Route, SharedRoute, SharedEvent
 from backend.utils.file.yaml_op import load_data
 
 
@@ -18,7 +18,6 @@ def gen_routes(user, expected_num):
         new_route = Route(creator_username=user.username)
         new_route.save()
         routes.append(new_route)
-
     return routes
 
 
@@ -40,6 +39,28 @@ def add_shared_routes(user, expected_shared_routes):
     for route in expected_shared_routes:
         user.add_shared_route(route['route'], route['shared_by'])
     user.save()
+
+
+def add_shared_events(user, expected_shared_events):
+    for event in expected_shared_events:
+        user.add_shared_event(event['event'], event['shared_by'])
+    user.save()
+
+
+def gen_shared_routes(user, expected_num):
+    for i in range(expected_num):
+        user.add_shared_route("SharedRouteID", user.username)
+    user.save()
+    if expected_num == 1:
+        return SharedRoute(route="SharedRouteID", shared_by=user.username)
+
+
+def gen_shared_events(user, expected_num):
+    for i in range(expected_num):
+        user.add_shared_event("SharedEventID", user.username)
+    user.save()
+    if expected_num == 1:
+        return SharedEvent(event="SharedEventID", shared_by=user.username)
 
 
 def create_friend(user, test_case):
@@ -92,8 +113,10 @@ def test_user_methods(test_client, test_case):
         elif method == "add_saved_routes":
             route_to_save = Route(creator_username=user.username)
             route_to_save.save()
-            user.add_saved_routes(route_to_save)
-            assert route_to_save in user.saved_routes, "Route not saved correctly."
+            if not test_case.get('expected_success', True):
+                user.add_saved_routes(route_to_save)
+            success = user.add_saved_routes(route_to_save)
+            assert success == test_case['expected_success'], "Route not saved correctly."
         elif method == "remove_saved_route":
             new_route = Route(creator_username=user.username)
             new_route.save()
@@ -114,10 +137,10 @@ def test_user_methods(test_client, test_case):
             assert len(user.get_saved_routes_id()) == test_case[
                 'expected_routes_num'], "Failed to retrieve saved routes correctly."
         elif method == "add_shared_route":
-            shared_route = SharedRoute(route="SharedRouteID", shared_by=user.username)
-            user.add_shared_route(shared_route.route, shared_route.shared_by)
-            user.save()
-            assert any(sr.route == "SharedRouteID" for sr in user.shared_routes), "Shared route not added correctly."
+            if not test_case.get('expected_success', True):
+                gen_shared_routes(user=user, expected_num=1)
+            success = user.add_shared_route(route="SharedRouteID", shared_by=user.username)
+            assert success == test_case['expected_success'], "Shared route not added correctly."
         elif method == "get_shared_routes":
             add_shared_routes(user=user, expected_shared_routes=test_case['expected_shared_routes'])
             if test_case.get('include_invalid_shared_route', False):
@@ -140,16 +163,22 @@ def test_user_methods(test_client, test_case):
             create_friend(user, test_case)
             assert len(user.get_friends()) == len(
                 test_case['expected_friends']), "Failed to retrieve friends correctly."
-
+        elif method == "add_shared_event":
+            gen_shared_events(user=user, expected_num=1)
+            assert any(sr.event == "SharedEventID" for sr in user.shared_events), "Shared route not added correctly."
+        elif method == "get_shared_events":
+            add_shared_events(user=user, expected_shared_events=test_case['expected_shared_events'])
+            if test_case.get('include_invalid_shared_event', False):
+                user.shared_events.append(object())
+            assert len(user.get_shared_events()) == len(
+                test_case['expected_shared_events']), "Failed to retrieve shared events correctly."
         elif method == "search_user":
             found_users = User.search_user(test_case['search_params'])
             assert len(found_users) == test_case['expected_count'], "User search returned incorrect number of users."
-
         elif method == "get_by_username":
             found_user = User.get_by_username(test_case['username'])
             assert found_user is not None and found_user.username == test_case[
                 'username'], "Failed to retrieve user by username."
-
         elif method == "toDICT":
             user_dict = user.toDICT()
             expected_dict = test_case['expected_dict']
