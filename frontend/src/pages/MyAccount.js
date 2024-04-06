@@ -89,8 +89,9 @@ const MyAccount = () => {
     const shareRouteWithGroup = async (route_id) => {
         const group = groupList.filter(group => group.name === selectedGroup);
         const members = group[0].members
+        console.log(members)
         try {
-            const response = await fetch('/api/', {
+            const response = await fetch('/api/shareroute', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
