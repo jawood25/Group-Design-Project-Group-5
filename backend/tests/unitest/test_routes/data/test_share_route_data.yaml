@@ -46,10 +46,10 @@
 
 - username: "user1"
   route_id: "route123"
-  members: [ "friend1", "friend2","nonexistent" ]
+  members: [ {"username":"friend1"}, {"username":"friend2"},{"username":"nonexistent"} ]
   expected_status: 200
 
 - username: "user1"
   route_id: "already_shared"
-  members: [ "friend1", "friend2","nonexistent" ]
+  members: [ {"username":"friend1"}, {"username":"friend2"},{"username":"nonexistent"} ]
   expected_status: 402
