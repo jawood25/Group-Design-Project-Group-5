@@ -8,8 +8,6 @@ backend/
 │   ├── models.py         # Data models module, contains ORM models defining the database schema
 │   └── routes.py         # Routes module, includes the routes and view functions for the API endpoints
 ├── tests/                # Contains all test cases for the application
-│   ├── integration/      # Integration tests for the app's various features
-│   │   └── ...
 │   └── unittest/         # Unit tests for individual components of the app
 │       ├── test_models/  # Test cases for the data models and their methods
 │       │   ├── data/     # Test data used by the test cases
@@ -19,8 +17,12 @@ backend/
 │       │   └── ...
 │       └── conftest.py   # Test configuration file used by pytest for setting up test environments
 ├── utils/                # Utility functions and classes for the app's various operations
+│   ├── __init__.py       # Module initializer, sets up the utility functions and classes
+│   ├── db_op/            # Sub-package for database operations utilities
+│   │   └── ...
 │   └── file/             # Sub-package for file manipulation utilities
 │       └── ...
+├── __init__.py           # Module initializer
 ├── README.md             # Guide on the backend's overview and usage instructions
 ├── .env                  # File holding key-value pairs for environment variables
 ├── .coveragerc           # Configuration file for the coverage tool, used to customize the coverage report
@@ -50,6 +52,12 @@ backend/
 - **Method**: POST
 - **Data Model**: `AddingFriendModel`
 - **Description**: This endpoint allows a user to add another user as a friend.
+
+#### `/api/deletingfriend/`
+- **Purpose**: Deletes a friend from a user's friend list.
+- **Method**: POST
+- **Data Model**: `DeleteFriendModel`
+- **Description**: Allows a user to delete a friend if both users exist and are friends.
 
 #### `/api/usersfriends/`
 - **Purpose**: Fetches a user's friends list.
@@ -94,11 +102,34 @@ backend/
 - **Data Model**: `SaveRoutesModel`
 - **Description**: This endpoint allows users to save a route to their profile for later viewing.
 
+#### `/api/unsavingroutes/`
+- **Purpose**: Removes a saved route from a user's profile.
+- **Method**: POST
+- **Data Model**: `RemoveRoutesModel`
+- **Description**: Allows a user to remove a previously saved route from their profile.
+
 #### `/api/savedroutes/`
 - **Purpose**: Fetches routes saved by a user.
 - **Method**: POST
 - **Data Model**: `SavedRoutesModel`
 - **Description**: This endpoint retrieves all routes saved by a specific user.
+
+#### `/api/shareroute/`
+- **Purpose**: Shares a route with friends or group members.
+- **Method**: POST
+- **Data Model**: `ShareRoutesModel`
+- **Description**: Allows a user to share a route with one or more friends or group members.
+
+#### `/api/usersharedroutes/`
+- **Purpose**: Retrieves routes shared with a user.
+- **Method**: POST
+- **Data Model**: `CreatedRouteModel`
+- **Description**: Returns a list of routes that have been shared with the specified user.
+
+#### `/api/allUR/`
+- **Purpose**: Retrieves all routes.
+- **Method**: POST
+- **Description**: Returns a list of all routes in the database.
 
 #### `/api/searchroute/`
 - **Purpose**: Searches for routes based on criteria.
@@ -120,6 +151,13 @@ backend/
 - **Data Model**: `RoutesCommentModel`
 - **Description**: This endpoint retrieves all comments associated with a specific route.
 
+#### `/api/deletecomment/`
+- **Purpose**: Deletes a comment.
+- **Method**: POST
+- **Data Model**: `DeleteCommentModel`
+- **Description**: Allows a user or the owner of a route to delete a comment from the route.
+
+
 ### Event Endpoints
 
 #### `/api/uploadevent/`
@@ -127,6 +165,43 @@ backend/
 - **Method**: POST
 - **Data Model**: `UploadEventModel`
 - **Description**: This endpoint allows users to create a new event linked to a route.
+
+#### `/api/sharedevent/`
+- **Purpose**: Shares an event with friends.
+- **Method**: POST
+- **Data Model**: `SharedEventModel`
+- **Description**: Allows sharing an event with one or more friends.
+
+#### `/api/usersharedevents/`
+- **Purpose**: Retrieves events shared with a user.
+- **Method**: POST
+- **Data Model**: `CreatedRouteModel`
+- **Description**: Returns a list of events that have been shared with the specified user.
+
+### Group Endpoints
+
+#### `/api/creategroup/`
+- **Purpose**: Creates a new user group.
+- **Method**: POST
+- **Data Model**: `CreateGroupModel`
+- **Description**: Allows a user to create a new group with specified members.
+
+#### `/api/getgroup/`
+- **Purpose**: Retrieves all groups.
+- **Method**: POST
+- **Description**: Returns a list of all groups in the database.
+
+#### `/api/leavinggroup/`
+- **Purpose**: Removes a user from a group.
+- **Method**: POST
+- **Data Model**: `LeaveGroupModel`
+- **Description**: Allows a user to leave a specified group.
+
+#### `/api/deletegroup/`
+- **Purpose**: Deletes a group.
+- **Method**: POST
+- **Data Model**: `DeleteGroupModel`
+- **Description**: Allows the manager of a group to delete the group.
 
 ## Setting Up the Database
 1. Create an account on MongoDB Atlas.

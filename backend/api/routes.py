@@ -1,5 +1,5 @@
 # /api/routes.py
-# pylint: disable=broad-exception-caught
+# pylint: disable=broad-except
 
 from flask import current_app, request
 from flask_restx import Resource, fields
@@ -553,7 +553,8 @@ class SharedRoute(Resource):
                             shared_routes.append(route_dict)
                     else:
                         shared_routes.append(route_dict)
-            return {"success": True, "routes": shared_routes, "msg": "Shared routes retrieved successfully"}, 200
+            return {"success": True, "routes": shared_routes,
+                    "msg": "Shared routes retrieved successfully"}, 200
         except Exception as e:
             current_app.logger.error(e)
             return {"success": False, "msg": str(e)}, 403
@@ -656,8 +657,7 @@ class DeleteComment(Resource):
             if comment:
                 if comment.delete_comment(_owner, _author):
                     return {"success": True, "msg": "Comment has been deleted"}, 200
-                else:
-                    return {"success": False, "msg": "Unauthorised"}, 402
+                return {"success": False, "msg": "Unauthorised"}, 402
             return {"success": False, "msg": "Comment does not exist"}, 401
         except Exception as e:
             # catch all other exceptions
@@ -705,9 +705,12 @@ class ShareEvent(Resource):
         username = req_data.get('username')
         try:
             # Create a new Event object
-            new_event = Event(name=f"{username}'s event", hostname=username,
-                              venue=req_data.get('meetingPlace'), date=req_data.get('meetingTime'),
-                              route_id=req_data.get('routeId'), information=req_data.get('generalInfo'))
+            new_event = Event(name=f"{username}'s event",
+                              hostname=username,
+                              venue=req_data.get('meetingPlace'),
+                              date=req_data.get('meetingTime'),
+                              route_id=req_data.get('routeId'),
+                              information=req_data.get('generalInfo'))
             new_event.save()
 
             # Update each friend with the new event
@@ -720,7 +723,8 @@ class ShareEvent(Resource):
             current_app.logger.error(e)
             return {"success": False, "msg": str(e)}, 500
 
-        return {"success": True, "event_id": str(new_event.id), "msg": "Event created and friends updated"}, 200
+        return {"success": True, "event_id": str(new_event.id),
+                "msg": "Event created and friends updated"}, 200
 
 
 @api.route('/api/usersharedevents/')
@@ -746,7 +750,8 @@ class UsersEvent(Resource):
                     event_dict = event.toDICT()
                     event_dict['shared_by'] = shared_by
                     shared_events.append(event_dict)
-            return {"success": True, "events": shared_events, "msg": "Shared events retrieved successfully"}, 200
+            return {"success": True, "events": shared_events,
+                    "msg": "Shared events retrieved successfully"}, 200
         except Exception as e:
             current_app.logger.error(e)
             return {"success": False, "msg": str(e)}, 403

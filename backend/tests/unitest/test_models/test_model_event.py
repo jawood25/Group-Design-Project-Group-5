@@ -1,3 +1,4 @@
+# pylint: disable=no-member
 from pathlib import Path
 
 import pytest
@@ -25,13 +26,14 @@ def test_event_methods(test_client, test_case):
             for key, value in test_case['params'].items():
                 if key == "id":
                     continue
-                elif key == "date":
-                    assert getattr(event, key).strftime('%Y-%m-%dT%H:%M:%S') == value, f"{key} does not match."
+                if key == "date":
+                    assert getattr(event, key).strftime('%Y-%m-%dT%H:%M:%S') == value, \
+                        f"{key} does not match."
                 else:
                     assert getattr(event, key) == value, f"{key} does not match."
         elif method == "__repr__":
             event = Event(name=test_case['name'])
-            assert event.__repr__() == f"Event {test_case['name']}", "__repr__ method failed."
+            assert repr(event) == f"Event {test_case['name']}", "__repr__ method failed."
         elif method == "get_by_eid":
             event = Event(**test_case['params'])
             event.save()
@@ -39,9 +41,12 @@ def test_event_methods(test_client, test_case):
             assert found_event is not None, "Failed to retrieve event by ID."
         elif method == "toDICT":
             user, route = create_test_user_and_route()
-            event = Event(name=test_case['expected_dict']['name'], venue=test_case['expected_dict']['venue'], interested=test_case['expected_dict']['interested'],
-                          date=test_case['expected_dict']['date'], hostname=test_case['expected_dict']['host'],
-                          route_id=route.id,information=test_case['expected_dict']['information'])
+            event = Event(name=test_case['expected_dict']['name'],
+                          venue=test_case['expected_dict']['venue'],
+                          interested=test_case['expected_dict']['interested'],
+                          date=test_case['expected_dict']['date'],
+                          hostname=test_case['expected_dict']['host'], route_id=route.id,
+                          information=test_case['expected_dict']['information'])
             event_dict = event.toDICT()
             test_case['expected_dict'].pop('rid')
             test_case['expected_dict']['route'] = route.toDICT()

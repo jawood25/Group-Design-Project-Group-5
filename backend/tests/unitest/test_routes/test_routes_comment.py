@@ -6,7 +6,9 @@ from backend.utils.file.yaml_op import load_data
 
 
 class TestCreateComment:
-    @pytest.mark.parametrize("test_case", load_data(Path(__file__).parent /"data/test_create_comment_data.yaml"))
+    @pytest.mark.parametrize("test_case", load_data(
+        Path(__file__).parent /"data/test_create_comment_data.yaml"
+    ))
     def test_adding_comment(self, test_client, test_case):
         response = test_client.post('/api/addingcomment/', json=test_case["req_data"],
                                     content_type=test_case.get("content_type", "application/json"))
@@ -20,7 +22,9 @@ class TestCreateComment:
 
 
 class TestCreatedComment:
-    @pytest.mark.parametrize("test_case", load_data(Path(__file__).parent /"data/test_created_comment_data.yaml"))
+    @pytest.mark.parametrize("test_case", load_data(
+        Path(__file__).parent /"data/test_created_comment_data.yaml"
+    ))
     def test_fetch_comments(self, test_client, test_case):
         response = test_client.post('/api/routescomment/', json={
             "route_id": test_case["route_id"]
@@ -35,7 +39,9 @@ class TestCreatedComment:
             assert response.json['success'] is False
 
 class TestDeleteComment:
-    @pytest.mark.parametrize("test_case", load_data(Path(__file__).parent /"data/test_delete_comment_data.yaml"))
+    @pytest.mark.parametrize("test_case", load_data(
+        Path(__file__).parent /"data/test_delete_comment_data.yaml"
+    ))
     def test_delete_comment(self, test_client, test_case):
         # Construct the request payload dynamically, excluding 'null' values
         payload = {"comment_id": test_case["comment_id"]}

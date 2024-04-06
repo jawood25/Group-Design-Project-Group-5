@@ -1,3 +1,4 @@
+# pylint: disable=no-member
 import math
 from pathlib import Path
 
@@ -15,7 +16,7 @@ def create_test_route(test_case):
 
 
 def create_routes(test_case):
-    for i in range(test_case['expected_routes_count'] - 1):
+    for _ in range(test_case['expected_routes_count'] - 1):
         create_test_route(test_case)
 
 
@@ -31,7 +32,7 @@ def test_route_methods(test_client, test_case):
     method = test_case['method']
     try:
         if method == "__repr__ and update_distance_and_time":
-            assert route.__repr__() == f"Route {route.id}", "__repr__ method output mismatch."
+            assert repr(route) == f"Route {route.id}", "__repr__ method output mismatch."
             assert math.isclose(route.distance, test_case['expected_distance'], rel_tol=1e-3), \
                 "Distance calculation mismatch."
             assert route.min == test_case['expected_time'], "Time calculation mismatch."
@@ -54,8 +55,8 @@ def test_route_methods(test_client, test_case):
         elif method == "update_route":
             if test_case.get('expected_success', True):
                 success, message = Route.update_route(route.id, test_case['update_data'])
-                assert success is test_case.get('expected_success',
-                                                True) and message == "Route updated successfully", "Route update failed."
+                assert success is test_case.get('expected_success', True) \
+                       and message == "Route updated successfully", "Route update failed."
             else:
                 success, message = Route.update_route(None, test_case['update_data'])
                 assert success is test_case['expected_success'], "Unexpected route update success."
@@ -71,7 +72,8 @@ def test_route_methods(test_client, test_case):
         elif method == "all_routes":
             create_routes(test_case)
             all_routes = Route.all_routes()
-            assert isinstance(all_routes, list) and len(all_routes) > 0, "Failed to retrieve all routes."
+            assert isinstance(all_routes, list) and len(all_routes) > 0,\
+                "Failed to retrieve all routes."
         elif method == "get_by_rid":
             found_route = Route.get_by_rid(route.id)
             assert found_route is not None, "Failed to retrieve route by ID."

@@ -1,3 +1,5 @@
+# pylint: disable=too-few-public-methods
+
 from pathlib import Path
 
 import pytest
@@ -8,7 +10,9 @@ from backend.utils.file.yaml_op import load_data
 # Test the /api/sign-up/ route
 class TestUserSignUp:
     # test by adding a user
-    @pytest.mark.parametrize("test_case", load_data(Path(__file__).parent / "data/test_signup_data.yaml"))
+    @pytest.mark.parametrize("test_case", load_data(
+        Path(__file__).parent / "data/test_signup_data.yaml"
+    ))
     def test_user_sign_up(self, test_client, test_case):
         # Simulate a POST request to the sign-up endpoint
         response = test_client.post('/api/sign-up/', json={
@@ -26,7 +30,9 @@ class TestUserSignUp:
 
 
 class TestUserLogin:
-    @pytest.mark.parametrize("test_case", load_data(Path(__file__).parent / "data/test_login_data.yaml"))
+    @pytest.mark.parametrize("test_case", load_data(
+        Path(__file__).parent / "data/test_login_data.yaml"
+    ))
     def test_user_login(self, test_client, test_case):
         # Prepare request data, considering possible None values
         request_data = {
@@ -49,8 +55,10 @@ class TestUserLogin:
 
 
 class TestAddFriend:
-    @pytest.mark.parametrize("test_case", load_data(Path(__file__).parent / "data/test_add_friend_data.yaml"))
-    def test_add_friend(self, test_client, test_case, monkeypatch):
+    @pytest.mark.parametrize("test_case", load_data(
+        Path(__file__).parent / "data/test_add_friend_data.yaml"
+    ))
+    def test_add_friend(self, test_client, test_case):
 
         response = test_client.post('/api/addingfriend/', json={
             "username": test_case["username"],
@@ -67,8 +75,10 @@ class TestAddFriend:
 
 
 class TestSaveRoute:
-    @pytest.mark.parametrize("test_case", load_data(Path(__file__).parent / "data/test_save_route_data.yaml"))
-    def test_save_route(self, test_client, test_case, monkeypatch):
+    @pytest.mark.parametrize("test_case", load_data(
+        Path(__file__).parent / "data/test_save_route_data.yaml"
+    ))
+    def test_save_route(self, test_client, test_case):
 
         response = test_client.post('/api/savingroutes/', json={
             "username": test_case["username"],
@@ -85,8 +95,10 @@ class TestSaveRoute:
 
 
 class TestSavedRoutes:
-    @pytest.mark.parametrize("test_case", load_data(Path(__file__).parent / "data/test_saved_routes_data.yaml"))
-    def test_saved_routes(self, test_client, test_case, monkeypatch):
+    @pytest.mark.parametrize("test_case", load_data(
+        Path(__file__).parent / "data/test_saved_routes_data.yaml"
+    ))
+    def test_saved_routes(self, test_client, test_case):
         response = test_client.post('/api/savedroutes/', json={
             "username": test_case["username"]
         }, content_type=test_case.get("content_type", "application/json"))
@@ -94,15 +106,17 @@ class TestSavedRoutes:
         assert response.status_code == test_case["expected_status"]
         if response.status_code == 200:
             assert response.json['success'] is True
-            assert type(response.json['routes']) is list
+            assert isinstance(response.json['routes'], list)
             assert "Routes retrieved successfully" in response.json['msg']
         elif response.status_code in [401, 403]:
             assert response.json['success'] is False
 
 
 class TestUnsavingRoute:
-    @pytest.mark.parametrize("test_case", load_data(Path(__file__).parent / "data/test_unsave_route_data.yaml"))
-    def test_unsaving_route(self, test_client, test_case, monkeypatch):
+    @pytest.mark.parametrize("test_case", load_data(
+        Path(__file__).parent / "data/test_unsave_route_data.yaml"
+    ))
+    def test_unsaving_route(self, test_client, test_case):
 
         response = test_client.post('/api/unsavingroutes/', json={
             "username": test_case["username"],
@@ -118,8 +132,10 @@ class TestUnsavingRoute:
 
 
 class TestDeletingFriend:
-    @pytest.mark.parametrize("test_case", load_data(Path(__file__).parent / "data/test_delete_friend_data.yaml"))
-    def test_deleting_friend(self, test_client, test_case, monkeypatch):
+    @pytest.mark.parametrize("test_case", load_data(
+        Path(__file__).parent / "data/test_delete_friend_data.yaml"
+    ))
+    def test_deleting_friend(self, test_client, test_case):
         response = test_client.post('/api/deletingfriend/', json={
             "username": test_case["username"],
             "friend_username": test_case["friend_username"]
@@ -135,8 +151,10 @@ class TestDeletingFriend:
 
 
 class TestUsersFriends:
-    @pytest.mark.parametrize("test_case", load_data(Path(__file__).parent / "data/test_users_friends_data.yaml"))
-    def test_users_friends(self, test_client, test_case, monkeypatch):
+    @pytest.mark.parametrize("test_case", load_data(
+        Path(__file__).parent / "data/test_users_friends_data.yaml"
+    ))
+    def test_users_friends(self, test_client, test_case):
         response = test_client.post('/api/usersfriends/', json={
             "username": test_case["username"]
         }, content_type=test_case.get("content_type", "application/json"))
@@ -151,8 +169,10 @@ class TestUsersFriends:
 
 
 class TestSearchUser:
-    @pytest.mark.parametrize("test_case", load_data(Path(__file__).parent / "data/test_search_user_data.yaml"))
-    def test_search_user(self, test_client, test_case, monkeypatch):
+    @pytest.mark.parametrize("test_case", load_data(
+        Path(__file__).parent / "data/test_search_user_data.yaml"
+    ))
+    def test_search_user(self, test_client, test_case):
 
         response = test_client.post('/api/searchuser/', json=test_case["search_query"],
                                     content_type=test_case.get("content_type", "application/json"))
@@ -169,8 +189,10 @@ class TestSearchUser:
 
 # Test the /api/savedroutes/ route
 class TestCreatedRoutes:
-    @pytest.mark.parametrize("test_case", load_data(Path(__file__).parent / "data/test_userroutes_data.yaml"))
-    def test_saved_routes(self, test_client, test_case, monkeypatch):
+    @pytest.mark.parametrize("test_case", load_data(
+        Path(__file__).parent / "data/test_userroutes_data.yaml"
+    ))
+    def test_saved_routes(self, test_client, test_case):
 
         response = test_client.post('/api/userroutes/', json={
             "username": test_case["username"]
@@ -187,8 +209,10 @@ class TestCreatedRoutes:
 
 
 class TestShareRoutes:
-    @pytest.mark.parametrize("test_case", load_data(Path(__file__).parent / "data/test_share_route_data.yaml"))
-    def test_share_route(self, test_client, test_case, monkeypatch):
+    @pytest.mark.parametrize("test_case", load_data(
+        Path(__file__).parent / "data/test_share_route_data.yaml"
+    ))
+    def test_share_route(self, test_client, test_case):
 
         response = test_client.post('/api/shareroute/', json={
             "username": test_case["username"],
@@ -207,12 +231,14 @@ class TestShareRoutes:
 
 
 class TestUserSharedRoutes:
-    @pytest.mark.parametrize("test_case", load_data(Path(__file__).parent / "data/test_user_shared_routes_data.yaml"))
-    def test_user_shared_routes(self, test_client, test_case, monkeypatch):
+    @pytest.mark.parametrize("test_case", load_data(
+        Path(__file__).parent / "data/test_user_shared_routes_data.yaml"
+    ))
+    def test_user_shared_routes(self, test_client, test_case):
         # Simulate a POST request to the endpoint
         response = test_client.post('/api/usersharedroutes/', json={
             "username": test_case["username"],
-            "shared_by" : test_case.get("shared_by", None)
+            "shared_by": test_case.get("shared_by", None)
         }, content_type=test_case.get("content_type", "application/json"))
 
         # Validate the status code
@@ -231,8 +257,10 @@ class TestUserSharedRoutes:
 
 
 class TestSharedEvent:
-    @pytest.mark.parametrize("test_case", load_data(Path(__file__).parent / "data/test_shared_event_data.yaml"))
-    def test_shared_event(self, test_client, test_case, monkeypatch):
+    @pytest.mark.parametrize("test_case", load_data(
+        Path(__file__).parent / "data/test_shared_event_data.yaml"
+    ))
+    def test_shared_event(self, test_client, test_case):
         response = test_client.post('/api/sharedevent/', json=test_case["request_body"],
                                     content_type=test_case.get("content_type", "application/json"))
 
@@ -246,9 +274,12 @@ class TestSharedEvent:
 
 
 class TestUsersEvent:
-    @pytest.mark.parametrize("test_case", load_data(Path(__file__).parent / "data/test_users_event_data.yaml"))
-    def test_users_event(self, test_client, test_case, monkeypatch):
-        response = test_client.post('/api/usersharedevents/', json={"username": test_case["username"]},
+    @pytest.mark.parametrize("test_case", load_data(
+        Path(__file__).parent / "data/test_users_event_data.yaml"
+    ))
+    def test_users_event(self, test_client, test_case):
+        response = test_client.post('/api/usersharedevents/',
+                                    json={"username": test_case["username"]},
                                     content_type=test_case.get("content_type", "application/json"))
 
         assert response.status_code == test_case["expected_status"]

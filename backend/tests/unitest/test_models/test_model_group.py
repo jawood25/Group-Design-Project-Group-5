@@ -1,3 +1,4 @@
+# pylint: disable=no-member
 from pathlib import Path
 
 import pytest
@@ -49,7 +50,7 @@ def test_group_methods(test_client, test_case):
     try:
         group = create_test_group(test_case)
         if method == "__repr__":
-            assert group.__repr__() == f"Group {test_case['name']}", "__repr__ method failed."
+            assert repr(group) == f"Group {test_case['name']}", "__repr__ method failed."
         elif method == "remove_member":
             member = User.objects(username=test_case['member_to_remove']).first()
             result = group.remove_member(member)
@@ -63,7 +64,8 @@ def test_group_methods(test_client, test_case):
         elif method == "all_groups":
             create_groups(test_case)
             all_groups = Group.all_groups()
-            assert isinstance(all_groups, list) and len(all_groups) > 0, "Failed to retrieve all routes."
+            assert isinstance(all_groups, list) and len(all_groups) > 0,\
+                "Failed to retrieve all routes."
         elif method == "toDICT":
             group_dict = group.toDICT()
             assert group_dict == test_case['expected_dict'], "toDICT method failed."

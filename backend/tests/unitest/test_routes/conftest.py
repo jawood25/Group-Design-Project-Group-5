@@ -12,7 +12,7 @@ def mock_save(object=None):
 def mock_get_by_rid(route_id):
     if route_id == "nonexistent":
         return None
-    elif route_id == "disconnected":
+    if route_id == "disconnected":
         # Simulating server disconnect scenario
         raise ConnectionError("Simulated server disconnect")
     elif route_id == "already_shared":
@@ -39,7 +39,7 @@ def mock_get_by_eid(event_id):
 def mock_get_by_username(username):
     if username == "nonexistent":
         return None
-    elif username == "disconnected":
+    if username == "disconnected":
         # Simulating server disconnect scenario
         raise ConnectionError("Simulated server disconnect")
 
@@ -66,7 +66,7 @@ def mock_get_by_username(username):
     user.get_created_routes = lambda: []
     user.get_shared_routes = lambda: [{"route": "route1", "shared_by": "friend1"}]
     user.get_shared_events = lambda: [{"event": "event1", "shared_by": "friend1"}]
-    user.toDICT = lambda: {"username": username, "shared_routes": ["route1", "route2"]}  # Example return structure
+    user.toDICT = lambda: {"username": username, "shared_routes": ["route1", "route2"]}
     return user
 
 

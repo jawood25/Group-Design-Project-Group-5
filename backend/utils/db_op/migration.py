@@ -49,7 +49,8 @@ def migrate_comments():
             updates.append(update)
         if 'author_username' in c:
             update = UpdateOne({'_id': c['_id']},
-                               {'$set': {'author': c['author_username']}, '$unset': {'author_username': ''}})
+                               {'$set': {'author': c['author_username']},
+                                '$unset': {'author_username': ''}})
             updates.append(update)
 
     # Execute bulk update

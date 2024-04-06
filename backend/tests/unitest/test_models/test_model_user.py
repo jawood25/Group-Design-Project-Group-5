@@ -14,7 +14,7 @@ def create_test_user(test_case):
 
 def gen_routes(user, expected_num):
     routes = []
-    for i in range(expected_num):
+    for _ in range(expected_num):
         new_route = Route(creator_username=user.username)
         new_route.save()
         routes.append(new_route)
@@ -48,7 +48,7 @@ def add_shared_events(user, expected_shared_events):
 
 
 def gen_shared_routes(user, expected_num):
-    for i in range(expected_num):
+    for _ in range(expected_num):
         user.add_shared_route("SharedRouteID", user.username)
     user.save()
     if expected_num == 1:
@@ -56,7 +56,7 @@ def gen_shared_routes(user, expected_num):
 
 
 def gen_shared_events(user, expected_num):
-    for i in range(expected_num):
+    for _ in range(expected_num):
         user.add_shared_event("SharedEventID", user.username)
     user.save()
     if expected_num == 1:
@@ -65,7 +65,8 @@ def gen_shared_events(user, expected_num):
 
 def create_friend(user, test_case):
     for friend in test_case['expected_friends']:
-        new_friend = User(username=friend['username'], password="FriendPassword", name=friend['name'])
+        new_friend = User(username=friend['username'], password="FriendPassword",
+                          name=friend['name'])
         new_friend.save()
         user.add_friend(new_friend)
 
@@ -76,7 +77,7 @@ def test_user_methods(test_client, test_case):
     method = test_case['method']
     try:
         if test_case['method'] == "__repr__":
-            assert user.__repr__() == test_case['expected_repr'], "__repr__ method output mismatch."
+            assert repr(user) == test_case['expected_repr'], "__repr__ method output mismatch."
         if method == "password":
             user = User(username="testUser", password="initialPass")
             user.password = test_case['new_password']
@@ -84,8 +85,8 @@ def test_user_methods(test_client, test_case):
                 'expected_result'], "Password method failed."
             with pytest.raises(AttributeError) as excinfo:
                 _ = user.password
-            assert str(
-                excinfo.value) == "not a readable attribute", "Password property read did not raise expected AttributeError."
+            assert str(excinfo.value) == "not a readable attribute", \
+                "Password property read did not raise expected AttributeError."
         elif method == "add_create_routes":
             new_route = Route(creator_username=user.username)
             new_route.save()
@@ -165,7 +166,8 @@ def test_user_methods(test_client, test_case):
                 test_case['expected_friends']), "Failed to retrieve friends correctly."
         elif method == "add_shared_event":
             gen_shared_events(user=user, expected_num=1)
-            assert any(sr.event == "SharedEventID" for sr in user.shared_events), "Shared route not added correctly."
+            assert any(sr.event == "SharedEventID" for sr in user.shared_events), \
+                "Shared route not added correctly."
         elif method == "get_shared_events":
             add_shared_events(user=user, expected_shared_events=test_case['expected_shared_events'])
             if test_case.get('include_invalid_shared_event', False):
@@ -174,7 +176,8 @@ def test_user_methods(test_client, test_case):
                 test_case['expected_shared_events']), "Failed to retrieve shared events correctly."
         elif method == "search_user":
             found_users = User.search_user(test_case['search_params'])
-            assert len(found_users) == test_case['expected_count'], "User search returned incorrect number of users."
+            assert len(found_users) == test_case['expected_count'], \
+                "User search returned incorrect number of users."
         elif method == "get_by_username":
             found_user = User.get_by_username(test_case['username'])
             assert found_user is not None and found_user.username == test_case[
