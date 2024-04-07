@@ -83,6 +83,9 @@ const MyAccount = () => {
             }
             const data = await response.json();
             console.log(data)
+            if (data.success) {
+                alert('The route is shared!');
+            }
         } catch (error) {
             console.error('There was a problem with your fetch operation:', error);
         }
@@ -105,6 +108,9 @@ const MyAccount = () => {
             }
             const data = await response.json();
             console.log(data)
+            if (data.success) {
+                alert('The route is shared!');
+            }
         } catch (error) {
             console.error('There was a problem with your fetch operation:', error);
         }
@@ -405,6 +411,9 @@ const MyAccount = () => {
 
             const data = await response.json();
             console.log(data);
+            if (data.success) {
+                alert('Event created!');
+            }
         } catch (error) {
             console.error('There was a problem with your fetch operation:', error);
         }

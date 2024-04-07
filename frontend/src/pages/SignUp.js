@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import Header from '../components/Header';
 import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [Username_already_exists, setUsername_already_exists] = useState(false)
-
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -27,6 +28,7 @@ const SignUp = () => {
 
             if (response.ok) {
                 console.log('Sign up successful');
+                navigate("/login");
             }
             
             else if (response.status === 405){

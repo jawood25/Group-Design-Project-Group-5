@@ -25,7 +25,7 @@ Follow these steps to run the app. You'll need to split your terminal into **two
    - Add the following content to the file:
    ```
    DB_NAME=pathpal
-   DB_HOST=cluster0.b6yu9ji.mongodb.net
+   DB_HOST=cluster0.5saounj.mongodb.net
    DB_USERNAME=[YOUR_USERNAME]
    DB_PASSWORD=[YOUR_PASSWORD]
    ```

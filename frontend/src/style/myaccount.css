@@ -217,3 +217,22 @@ li {
     position: relative;
     left: 1%;
 }
+
+.comment {
+    display: flex; /* Adding flex container */
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    font-size: 15px;
+    flex-direction: row; /* Setting flex direction to row */
+    justify-content: space-between; /* Align items on the row with space between */
+}
+
+.comment p {
+    font-size: 15px;
+    margin: 0;
+    padding: 0;
+}
+
+.comment button {
+    margin-left: 10px;
+}
