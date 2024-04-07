@@ -27,15 +27,8 @@ class Comment(db.Document):
     def __repr__(self):
         return f"{self.author}'s comment"
 
-    def delete_comment(self, owner, author):
-        if bool(owner) == bool(author):
-            return False
+    def delete_comment(self):
         route = self.get_route()
-        if route:
-            if route.creator_username != owner and self.author != author:
-                return False
-        else:
-            return False
         route.update(
             pull__comment=self,
         )

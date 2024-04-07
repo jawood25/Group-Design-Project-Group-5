@@ -650,12 +650,10 @@ class DeleteComment(Resource):
         # Extract JSON data from the request
         req_data = request.get_json()
         _cid = req_data.get("comment_id")
-        _owner = req_data.get("owner")
-        _author = req_data.get("author")
         try:
             comment = Comment.get_by_cid(_cid)
             if comment:
-                if comment.delete_comment(_owner, _author):
+                if comment.delete_comment():
                     return {"success": True, "msg": "Comment has been deleted"}, 200
                 return {"success": False, "msg": "Unauthorised"}, 402
             return {"success": False, "msg": "Comment does not exist"}, 401
