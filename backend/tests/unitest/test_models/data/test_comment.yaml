@@ -17,53 +17,7 @@
   expected_success: True
 
 - method: "delete_comment"
-  owner: null
-  author: "commentAuthor"
-  no_route: True
-  expected_result: False
-  expected_success: True
-
-- method: "delete_comment"
-  owner: null
-  author: "commentAuthor"
   expected_result: True
-  expected_success: True
-
-- method: "delete_comment"
-  owner: "testuser"
-  author: null
-  expected_result: True
-  expected_success: True
-
-- method: "delete_comment"
-  owner: "testuser"
-  author: "commentAuthor"
-  expected_result: False
-  expected_success: True
-
-- method: "delete_comment"
-  owner: null
-  author: null
-  expected_result: False
-  expected_success: True
-
-- method: "delete_comment"
-  owner: "testuser1"
-  author: null
-  expected_result: False
-  expected_success: True
-
-- method: "delete_comment"
-  owner: null
-  author: "commentAuthor1"
-  expected_result: False
-  expected_success: True
-
-- method: "delete_comment"
-  owner: "routeOwner"
-  author: "anotherUser"
-  route_creator: "differentOwner"
-  expected_result: False
   expected_success: True
 
 - method: "get_by_cid"

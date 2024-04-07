@@ -33,7 +33,6 @@ class Comment(db.Document):
             pull__comment=self,
         )
         self.delete()
-        return True
 
     def get_route(self):
         return Route.objects(comment=self).first()

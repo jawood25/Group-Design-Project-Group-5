@@ -44,13 +44,8 @@ class TestDeleteComment:
     ))
     def test_delete_comment(self, test_client, test_case):
         # Construct the request payload dynamically, excluding 'null' values
-        payload = {"comment_id": test_case["comment_id"]}
-        if test_case.get("owner") is not None:
-            payload["owner"] = test_case["owner"]
-        if test_case.get("author") is not None:
-            payload["author"] = test_case["author"]
 
-        response = test_client.post('/api/deletecomment/', json=payload,
+        response = test_client.post('/api/deletecomment/', json={"comment_id": test_case["comment_id"]},
                                     content_type=test_case.get("content_type", "application/json"))
 
         assert response.status_code == test_case["expected_status"]

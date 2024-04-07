@@ -89,21 +89,8 @@ def mock_get_by_cid(comment_id):
     comment.author = "commentAuthor"  # Adjust as necessary based on your test cases
 
     # Mocked method to simulate the deletion logic as per the provided source code.
-    def mock_delete_comment(owner, author):
-        # Simulate checking ownership and authorship
-        if bool(owner) == bool(author):
-            return False
 
-        # For simplicity, simulate the comment is always associated with a route
-        # and adjust the route's creator and comment's author as per your testing needs
-        route_creator_username = "validOwner"
-        if route_creator_username != owner and comment.author != author:
-            return False
-
-        # Simulate successful deletion
-        return True
-
-    comment.delete_comment = mock_delete_comment
+    comment.delete_comment = lambda: None
     return comment
 
 

@@ -131,8 +131,6 @@ created_comment_model = api.model('CreatedCommentModel', {
 
 delete_comment_model = api.model('DeleteCommentModel', {
     "comment_id": fields.String(required=True, min_length=2, max_length=32),
-    "owner": fields.String(min_length=2, max_length=32),
-    "author": fields.String(min_length=2, max_length=32),
     # Model for deleting a comment.
 })
 
@@ -653,9 +651,8 @@ class DeleteComment(Resource):
         try:
             comment = Comment.get_by_cid(_cid)
             if comment:
-                if comment.delete_comment():
-                    return {"success": True, "msg": "Comment has been deleted"}, 200
-                return {"success": False, "msg": "Unauthorised"}, 402
+                comment.delete_comment()
+                return {"success": True, "msg": "Comment has been deleted"}, 200
             return {"success": False, "msg": "Comment does not exist"}, 401
         except Exception as e:
             # catch all other exceptions

@@ -36,14 +36,11 @@ def test_comment_methods(test_client, test_case):
             comment = create_test_comment(test_case['author'], test_case['body'])
             assert repr(comment) == f"{test_case['author']}'s comment"
         elif method == "delete_comment":
-            owner = test_case['owner']
-            author = test_case['author']
             comment = create_test_comment("commentAuthor", "Sample comment body")
-            if not test_case.get('no_route', False):
-                create_test_route(comment)
-            # Assuming `get_route()` and other interactions need mock or setup
-            result = comment.delete_comment(owner, author)
-            assert result == test_case['expected_result']
+            old_route = create_test_route(comment)
+            comment.delete_comment()
+            route = Route.objects(id=old_route.id).first()
+            assert comment not in route.comment, "Comment was not deleted from route."
         elif method == "get_route":
             test_comment = create_test_comment("testuser", "Sample comment")
             test_route = create_test_route(test_comment)
