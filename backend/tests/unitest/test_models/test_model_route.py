@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from backend.api.models import Route, Comment, User
+from backend.api.models import Route, Comment, User, Event
 from backend.utils.file.yaml_op import load_data
 
 
@@ -65,10 +65,13 @@ def test_route_methods(test_client, test_case):
             owner.add_shared_route(str(route.id), "testuser")
             owner.add_create_routes(route)
             owner.add_saved_routes(route)
+            event = Event(name="Test Event", date = "2024-09-15T18:00:00", venue="Test Venue", route_id=route.id)
+            event.save()
             new_comment = Comment(body="Nice route!", author="testuser").save()
             route.add_comment(new_comment)
             route.delete_route()
             assert Route.objects(id=route.id).first() is None, "Route not deleted correctly."
+            assert event not in Event.objects(route=route), "Event not deleted correctly."
         elif method == "all_routes":
             create_routes(test_case)
             all_routes = Route.all_routes()

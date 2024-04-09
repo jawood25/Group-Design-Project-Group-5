@@ -197,6 +197,10 @@ class Route(db.Document):
             # Filter out this route from shared routes
             user.update(pull__shared_routes__route=route_id)
 
+        for event in Event.objects():
+            if event.route == self:
+                event.delete()
+
         for comment in self.comment:
             comment.delete()
         self.delete()
