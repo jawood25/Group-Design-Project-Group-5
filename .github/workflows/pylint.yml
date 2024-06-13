@@ -21,6 +21,4 @@ jobs:
         pip install -r ./backend/requirements.txt
     - name: Analysing the code with pylint
       run: |
-        pylint -d C0114,C0115,C0116, R0903, W0107, C0303, R0904, 
-        W0246, R091,  W0718, W0613, C0301, R0914, R0912, R0915, R1710, W0622,
-        R1720, W0108, R1719, R0801 $(git ls-files '*.py')
+        pylint -d C0114,C0115,C0116, R0903, W0107, C0303, R0904, W0246, R091,  W0718, W0613, C0301, R0914, R0912, R0915, R1710, W0622, R1720, W0108, R1719, R0801 $(git ls-files '*.py')
