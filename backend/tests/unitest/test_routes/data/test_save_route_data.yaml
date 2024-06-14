@@ -1,0 +1,28 @@
+- username: "existinguser"
+  route_id: "existingroute"
+  expected_status: 200
+
+- username: "nonexistent"
+  route_id: "existingroute"
+  expected_status: 401
+
+- username: "existinguser"
+  route_id: "already_shared"
+  expected_status: 402
+
+- username: "existinguser"
+  route_id: "nonexistent"
+  expected_status: 404
+
+- username: "disconnected"
+  route_id: "existingroute"
+  expected_status: 403
+
+- username: "existinguser"
+  route_id: "disconnected"
+  expected_status: 403
+
+- username: "existinguser"
+  route_id: "existingroute"
+  content_type: "text/plain"
+  expected_status: 415

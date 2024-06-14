@@ -1,0 +1,238 @@
+.MyAccount {
+    margin: 0 auto;
+    text-align: center;
+}
+
+.MyAccount > h2 {
+    font-family: Arial, sans-serif;
+    color: black;
+    background-color: #ecf0f1;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    margin-top: 20px;
+    display: inline-block;
+    position: relative;
+    right: 7%
+}
+
+.MyAccount > h3 {
+    font-family: Arial, sans-serif;
+    position: absolute;
+    font-size: 22px;
+    text-align: center;
+    margin-top: 15px;
+    right: 25px;
+    padding-top: 5px;
+    color: black;
+    border: 1px solid lightgray;
+    padding: 5px;
+    background-color: #ecf0f1;
+}
+
+#mypaths {
+    position: relative;
+    right: 7%
+}
+
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(700px, 1fr));
+    grid-row-gap: 50px; 
+    margin-left: 2%;
+    margin-right: 2%;
+    margin-bottom: 25px;
+    justify-items: center;
+    border: 2px solid lightgray;
+    padding-left: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-radius: 25px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    grid-auto-flow: dense;
+}
+
+.grid-item {
+    text-align: center;
+    border: 2px solid black;
+    padding: 5px;
+    border-radius: 15px;
+    margin-left: 2%;
+    margin-right: 2%;
+    max-width: 720px;
+    min-width: 720px;
+}
+
+.info {
+    margin-top: 10px;
+    font-family: Arial, Helvetica, sans-serif; 
+    margin-top: 10px;
+    background-color: #f2f2f2; 
+    border: 1px solid #ccc;
+    padding: 15px; 
+    color: #000; 
+    border-radius: 5px; 
+    text-align: left;
+    white-space: pre-wrap;
+}
+
+.btn-primary {
+    background-color: #34c9eb;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    margin: 5px;
+    float: left;
+}
+
+.btn-primary:hover {
+    background-color: #20a7c5;
+}
+
+.btn-primary:active {
+    background-color: #71cfe4;
+}
+
+.friendSelect {
+    float: left;
+    margin-top: 15px;
+    margin-left: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    background-color: #ececf2;
+}
+
+.sharebtn {
+    background-color: rgb(66, 194, 46);
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    margin: 5px;
+    float: right;
+}
+
+.commentinput {
+    float: left;
+    border: 1px solid black;
+    margin-right: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.commentbutton {
+    float: left;
+    margin-top: 10px;
+    background-color: #34c9eb;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    padding: 2px 10px;
+}
+
+.commentbutton:hover {
+    background-color: #20a7c5;
+}
+
+.commentbutton:active {
+    background-color: #71cfe4;
+}
+
+#groupsh2 {
+    right: 0%;
+}
+
+#groupsdiv {
+    margin-left: 2%;
+    margin-right: 2%;
+    margin-bottom: 25px;
+    justify-items: center;
+    border: 2px solid lightgray;
+    padding-left: 20px;
+    padding-top: 50px;
+    padding-bottom: 20px;
+    border-radius: 25px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#friendsdiv {
+    margin-left: 2%;
+    margin-right: 2%;
+    margin-bottom: 25px;
+    justify-items: center;
+    border: 2px solid lightgray;
+    padding-left: 40%;
+    padding-right: 40%;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-radius: 25px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+ul {
+    list-style-type: none;
+    text-align: center;
+}
+
+.btn-groups {
+    float: none;
+}
+
+.groupsubdiv {
+    text-align: center;
+    background-color: lightgray;
+    max-width: 20%;
+    left: 39%;
+    position: relative;
+    padding: 15px 0px;
+    margin-bottom: 25px;
+    border-radius: 35px;
+}
+
+li {
+    font-size: 20px;
+}
+
+.group {
+    border: 2px solid lightgray;
+    border-radius: 25px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    margin-bottom: 35px;
+    background-color: #eae7e7;
+    padding: 20px;
+    margin-right: 1%;
+}
+
+.mylikedpaths {
+    position: relative;
+    left: 1%;
+}
+
+.comment {
+    display: flex; /* Adding flex container */
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    font-size: 15px;
+    flex-direction: row; /* Setting flex direction to row */
+    justify-content: space-between; /* Align items on the row with space between */
+}
+
+.comment p {
+    font-size: 15px;
+    margin: 0;
+    padding: 0;
+}
+
+.comment button {
+    margin-left: 10px;
+}

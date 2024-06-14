@@ -1,0 +1,129 @@
+- method: "__repr__ and update_distance_and_time"
+  route_data:
+    username: "creator1"
+    coordinates: [ [ 0, 0 ], [ 0, 0.0045 ] ]
+    mobility: "Bike"
+    mapCenter: {"lat": 53.3584139565632, "lng": -6.340429770960355}
+    hours: 1
+    minutes: 30
+  expected_distance: 0.5
+  expected_time: 2
+  expected_repr: "Expected __repr__ output based on route's ID"
+
+- method: "add_comment"
+  route_data:
+    creator_username: "creator1"
+  comment_data:
+    content: "Great route for morning runs!"
+    user: "commenter1"
+  expected_comment_content: "Great route for morning runs!"
+
+- method: "get_comments"
+  route_data:
+    creator_username: "creator1"
+  comment_data:
+    - content: "Challenging but fun."
+      user: "commenter2"
+    - content: "Will do it again!"
+      user: "commenter3"
+  expected_comments_count: 2
+
+- method: "get_comments"
+  route_data:
+    creator_username: "creator1"
+  comment_data:
+    - content: "Challenging but fun."
+      user: "commenter2"
+    - content: "Will do it again!"
+      user: "commenter3"
+  include_invalid_shared_route : true
+  expected_comments_count: 2
+
+- method: "search_routes"
+  route_data:
+    username: "creator1"
+    city: "Vancouver"
+    mobility: "Walk"
+    distance: 5
+    minutes: 30
+    mapCenter: { "lat": 49.2827, "lng": -123.1207 }
+  search_params:
+    username: "creator1"
+    city: "Vancouver"
+    mobility: "Walk"
+    distance: 5
+    distanceMargin: 0
+    minutes: 60
+    timeMargin: 0
+    map_center_lat: 49.2827
+    map_center_lng: -123.1207
+  expected_count: 1
+
+
+- method: "update_route"
+  route_data:
+    creator_username: "creator2"
+    coordinates: [ [ 0, 0 ], [ 0, 0.0045 ] ]
+    mobility: "Run"
+  update_data:
+    city: "Vancouver"
+    location: "Stanley Park"
+  expected_updated_city: "Vancouver"
+  expected_updated_location: "Stanley Park"
+
+- method: "update_route"
+  route_data:
+    creator_username: "creator2"
+    coordinates: [ [ 0, 0 ], [ 0, 0.0045 ] ]
+    mobility: "Run"
+  update_data:
+    city: "Vancouver"
+    location: "Stanley Park"
+  expected_updated_city: "Vancouver"
+  expected_updated_location: "Stanley Park"
+  expected_success: false
+
+
+- method: "delete_route"
+  route_data:
+    creator_username: "creator3"
+    coordinates: [ [ 0, 0 ], [ 0, 0.0045 ] ]
+    mobility: "Walk"
+
+- method: "all_routes"
+  route_data:
+    creator_username: "creator3"
+    coordinates: [ [ 0, 0 ], [ 0, 0.0045 ] ]
+    mobility: "Walk"
+  expected_routes_count: 4 # This depends on the routes present in your database before the test runs.
+
+- method: "get_by_rid"
+  route_data:
+    creator_username: "creator1"
+    coordinates: [ [ 0, 0 ], [ 0, 0.0045 ] ]
+    mobility: "Walk"
+  expected_creator_username: "creator1"
+
+- method: "toDICT"
+  route_data:
+    creator_username: "creator1"
+    city: "Vancouver"
+    location: "Stanley Park"
+    mobility: "Walk"
+  expected_dict:
+    'city': 'Vancouver'
+    'comment': [ ]
+    'coordinates': [ ]
+    'creator_username': 'creator1'
+    'difficulty': null
+    'dislike': 0
+    'distance': 0.0
+    'hour': null
+    'id': null
+    'like': 0
+    'location': 'Stanley Park'
+    'map_center': { 'lat': 0.0, 'lng': 0.0 }
+    'minutes': 0
+    'mobility': 'Walk'
+    'saves': 0
+    # Include all expected fields here

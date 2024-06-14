@@ -1,0 +1,55 @@
+- username: "user1"
+  route_id: "route123"
+  friend_username: "friend1"
+  expected_status: 200
+
+- username: "nonexistent"
+  route_id: "route123"
+  friend_username: "friend1"
+  expected_status: 401
+
+- username: "user1"
+  route_id: "nonexistent"
+  friend_username: "friend1"
+  expected_status: 401
+
+- username: "user1"
+  route_id: "route123"
+  friend_username: "nonexistent"
+  expected_status: 401
+
+- username: "user1"
+  route_id: "already_shared"
+  friend_username: "friend1"
+  expected_status: 402
+
+- username: "disconnected"
+  route_id: "route123"
+  friend_username: "friend1"
+  expected_status: 403
+
+- username: "user1"
+  route_id: "disconnected"
+  friend_username: "friend1"
+  expected_status: 403
+
+- username: "user1"
+  route_id: "route123"
+  friend_username: "disconnected"
+  expected_status: 403
+
+- username: "user1"
+  route_id: "route123"
+  friend_username: "friend1"
+  content_type: "text/plain"
+  expected_status: 415
+
+- username: "user1"
+  route_id: "route123"
+  members: [ {"username":"friend1"}, {"username":"friend2"},{"username":"nonexistent"} ]
+  expected_status: 200
+
+- username: "user1"
+  route_id: "already_shared"
+  members: [ {"username":"friend1"}, {"username":"friend2"},{"username":"nonexistent"} ]
+  expected_status: 402

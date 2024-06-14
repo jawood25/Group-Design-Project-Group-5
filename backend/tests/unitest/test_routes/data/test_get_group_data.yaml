@@ -1,0 +1,12 @@
+- groupname: "existinggroup"
+  expected_status: 200
+
+- groupname: "nonexistent"
+  expected_status: 401
+
+- groupname: "disconnected"
+  expected_status: 500
+
+- groupname: "existinggroup"
+  content_type: "text/plain"
+  expected_status: 415

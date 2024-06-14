@@ -1,0 +1,25 @@
+# test_signup_data.yaml
+- username: "nonexistent"
+  password: "newpassword"
+  expected_status: 200
+
+- username: "newuser"
+  password: null
+  expected_status: 400
+
+- username: null
+  password: "newpassword"
+  expected_status: 400
+
+- username: "disconnected"
+  password: "newpassword"
+  expected_status: 401
+
+- username: "testuser"
+  password: "testpassword"
+  expected_status: 405
+
+- username: "newuser1"
+  password: "newpassword1"
+  content_type: "text/plain"
+  expected_status: 415

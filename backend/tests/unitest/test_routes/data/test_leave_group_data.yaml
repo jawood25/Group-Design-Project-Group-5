@@ -1,0 +1,28 @@
+- groupname: "existinggroup"
+  username: "member"
+  expected_status: 200
+
+- groupname: "nonexistent"
+  username: "user"
+  expected_status: 401
+
+- groupname: "existinggroup"
+  username: "nonmember"
+  expected_status: 402
+
+- groupname: "existinggroup"
+  username: "nonexistent"
+  expected_status: 402
+
+- groupname: "disconnected"
+  username: "member"
+  expected_status: 500
+
+- groupname: "existinggroup"
+  username: "disconnected"
+  expected_status: 500
+
+- groupname: "existinggroup"
+  username: "member"
+  content_type: "text/plain"
+  expected_status: 415

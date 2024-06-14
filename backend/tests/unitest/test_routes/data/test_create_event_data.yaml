@@ -1,0 +1,54 @@
+- req_data:
+    hostname: "validUser"
+    name: "Morning Run"
+    interested: 0
+    venue: "Central Park"
+    date: "2023-04-22T07:00:00"  # Updated to ISO 8601 format
+    route_id: "validRoute"
+  expected_status: 200
+
+- req_data:
+    hostname: "nonexistent"
+    name: "Evening Jog"
+    interested: 0
+    venue: "River Side"
+    date: "2023-05-05T18:30:00"  # Updated to ISO 8601 format
+    route_id: "validRoute"
+  expected_status: 401  # User does not exist
+
+- req_data:
+    hostname: "validUser"
+    name: "Night Walk"
+    interested: 0
+    venue: "Downtown"
+    date: "2023-06-15T21:00:00"  # Updated to ISO 8601 format
+    route_id: "nonexistent"
+  expected_status: 401  # Route does not exist
+
+- req_data:
+    hostname: "validUser"
+    name: "Morning Run"
+    interested: 0
+    venue: "Central Park"
+    date: "2023-04-22T07:00:00"  # Updated to ISO 8601 format
+    route_id: "validRoute"
+  content_type: "text/plain"
+  expected_status: 415
+
+- req_data:
+    hostname: "disconnected"
+    name: "Morning Run"
+    interested: 0
+    venue: "Central Park"
+    date: "2023-04-22T07:00:00"  # Updated to ISO 8601 format
+    route_id: "validRoute"
+  expected_status: 403
+
+- req_data:
+    hostname: "validUser"
+    name: "Morning Run"
+    interested: 0
+    venue: "Central Park"
+    date: "2023-04-22T07:00:00"  # Updated to ISO 8601 format
+    route_id: "disconnected"
+  expected_status: 403

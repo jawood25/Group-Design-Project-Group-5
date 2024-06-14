@@ -1,0 +1,16 @@
+- comment_id: "existingComment"
+  expected_status: 200
+
+- comment_id: "nonexistent"
+  expected_status: 401  # Comment does not exist
+
+- comment_id: "disconnected"
+  owner: null
+  author: null
+  expected_status: 403
+
+- comment_id: "existingComment"
+  owner: null
+  author: "commentAuthor"
+  content_type: "text/plain"
+  expected_status: 415

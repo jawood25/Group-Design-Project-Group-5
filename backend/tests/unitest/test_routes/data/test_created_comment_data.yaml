@@ -1,0 +1,12 @@
+- route_id: "existingRoute"
+  expected_status: 200
+
+- route_id: "nonexistent"
+  expected_status: 401
+
+- route_id: "disconnected"
+  expected_status: 403
+
+- route_id: "existingRoute"
+  content_type: "text/plain"
+  expected_status: 415

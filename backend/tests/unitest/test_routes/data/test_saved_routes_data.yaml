@@ -1,0 +1,12 @@
+- username: "existingUser"
+  expected_status: 200
+
+- username: "nonexistent"
+  expected_status: 401
+
+- username: "disconnected"
+  expected_status: 403
+
+- username: "existingUser"
+  content_type: "text/plain"
+  expected_status: 415

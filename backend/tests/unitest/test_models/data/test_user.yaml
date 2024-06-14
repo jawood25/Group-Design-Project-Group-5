@@ -1,0 +1,163 @@
+- method: "__repr__"
+  username: "john_doe"
+  expected_repr: "User john_doe"
+  expected_success: True
+
+- method: "password"
+  new_password: "SecurePassword123"
+  check_password: "SecurePassword123"
+  expected_result: True
+  expected_success: True
+
+- method: "check_password"
+  username: "userOne"
+  set_password: "InitialPassword123"
+  check_password: "InitialPassword123"
+  expected_result: True
+  expected_success: True
+
+- method: "check_password"
+  username: "userOne"
+  set_password: "InitialPassword123"
+  check_password: "WrongPassword"
+  expected_result: False
+  expected_success: True
+
+- method: "add_create_routes"
+  username: "routeCreator"
+  expected_success: True
+
+- method: "remove_created_route"
+  username: "routeCreator"
+  expected_success: True
+
+- method: "get_created_routes"
+  username: "routeCreator"
+  expected_routes_num: 2
+  expected_success: True
+
+- method: "get_created_routes_id"
+  username: "routeCreator"
+  expected_routes_num: 2
+  expected_success: True
+
+- method: "add_saved_routes"
+  username: "routeSaver"
+  expected_success: True
+
+- method: "remove_saved_route"
+  username: "routeSaver"
+  route_name: "City Walk"
+  expected_success: True
+
+- method: "get_saved_routes"
+  username: "routeSaver"
+  expected_routes_num: 2
+  expected_success: True
+
+- method: "get_saved_routes_id"
+  username: "routeSaver"
+  expected_routes_num: 2
+  expected_success: True
+
+- method: "add_shared_route"
+  username: "userTwo"
+  shared_route: "BeachPath"
+  shared_by: "userOne"
+  expected_success: True
+
+- method: "get_shared_routes"
+  username: "sharingUser"
+  expected_shared_routes: [ { "route": "SharedRouteID1", "shared_by": "sharingUser" }, { "route": "SharedRouteID2", "shared_by": "sharingUser" } ]
+  expected_success: True
+
+- method: "add_friend"
+  username: "userThree"
+  friend_username: "userFour"
+  expected_success: True
+
+- method: "delete_friend"
+  username: "userThree"
+  friend_username: "userFour"
+  expected_success: True
+
+- method: "get_friends"
+  username: "socialUser"
+  expected_friends: [ { "username": "Friend1", "name": "Friend One" }, { "username": "Friend2", "name": "Friend Two" } ]
+  expected_success: True
+
+- method: "toDICT"
+  username: "detailedUser"
+  expected_dict:
+    username: "detailedUser"
+    email: null
+    name: null
+    age: 0
+    phone: 0
+    create_routes: [ ]  # Assume these are the IDs or simplified details of the routes
+    saved_routes: [ ]  # Similar assumption as create_routes
+    friends: [ ]  # Assume list of friend usernames or IDs
+    shared_routes: [ ]  # Assume list of shared route details
+    shared_events: [ ]  # Assume list of shared event details
+  expected_success: True
+
+- method: "search_user"
+  search_params: { "username": "testuser" }
+  expected_count: 1
+  expected_success: True
+
+- method: "get_by_username"
+  username: "existingUser"
+  expected_success: True
+
+- method: "get_shared_routes"
+  username: "userWithInvalidSharedRoute"
+  include_invalid_shared_route: True
+  expected_shared_routes: [ { "route": "SharedRouteID1", "shared_by": "sharingUser" }, { "route": "SharedRouteID2", "shared_by": "sharingUser" } ]
+  expected_success: True
+
+- method: "get_created_routes"
+  username: "routeCreator"
+  expected_routes_num: 2
+  include_invalid_shared_route: True
+  expected_success: True
+
+- method: "get_created_routes_id"
+  username: "routeCreator"
+  expected_routes_num: 2
+  include_invalid_shared_route: True
+  expected_success: True
+
+- method: "get_saved_routes"
+  username: "routeSaver"
+  expected_routes_num: 2
+  include_invalid_shared_route: True
+  expected_success: True
+
+- method: "get_saved_routes_id"
+  username: "routeSaver"
+  expected_routes_num: 2
+  include_invalid_shared_route: True
+  expected_success: True
+
+- method: "add_saved_routes"
+  username: "routeSaver"
+  expected_success: False
+  expected: True
+
+- method: "add_shared_route"
+  expected_success: False
+
+- method: "get_shared_events"
+  username: "sharingUser"
+  expected_shared_events: [ { "event": "SharedEventID1", "shared_by": "sharingUser" }, { "event": "SharedEventID2", "shared_by": "sharingUser" } ]
+  expected_success: True
+
+- method: "get_shared_events"
+  username: "sharingUser"
+  include_invalid_shared_event: True
+  expected_shared_events: [ { "event": "SharedEventID1", "shared_by": "sharingUser" }, { "event": "SharedEventID2", "shared_by": "sharingUser" } ]
+  expected_success: True
+
+- method: "add_shared_event"
+  expected_success: True

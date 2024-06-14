@@ -1,0 +1,25 @@
+- username: "validUser"
+  route_id: "savedRoute"
+  expected_status: 200
+
+- username: "nonexistent"
+  route_id: "savedRoute"
+  expected_status: 401
+
+- username: "validUser"
+  route_id: "disconnected"
+  expected_status: 403
+
+- username: "disconnected"
+  route_id: "savedRoute"
+  expected_status: 403
+
+- username: "validUser"
+  route_id: "nonexistent"
+  expected_status: 404
+
+- username: "validUser"
+  route_id: "savedRoute"
+  content_type: "text/plain"
+  expected_status: 415
+

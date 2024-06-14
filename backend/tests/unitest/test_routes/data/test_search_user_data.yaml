@@ -1,0 +1,35 @@
+- search_query:
+    username: "existent"
+    email: "        "
+  expected_status: 200
+
+- search_query:
+    username: "   "
+    email: "existent@example.com"
+  expected_status: 200
+
+- search_query:
+    username: "nonexistent"
+    email: "        "
+  expected_status: 200  # Even if no users are found, the operation is successful, but the users list is empty.
+
+- search_query:
+    username: "   "
+    email: "nonexistent@example.com"
+  expected_status: 200  # Similarly, a successful operation with no users found.
+
+- search_query:
+    username: "disconnected"
+    email: "        "
+  expected_status: 500
+
+- search_query:
+    username: "   "
+    email: "disconnected"
+  expected_status: 500
+
+- search_query:
+    username: "existent"
+    email: "        "
+  content_type: "text/plain"
+  expected_status: 415

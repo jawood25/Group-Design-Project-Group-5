@@ -1,0 +1,16 @@
+# test_userroutes_data.yaml
+- username: "testuser"
+  expected_status: 200
+
+- username: null
+  expected_status: 400
+
+- username: "nonexistent"
+  expected_status: 401
+
+- username: "disconnected"
+  expected_status: 403
+
+- username: "testuser"
+  content_type: "text/plain"
+  expected_status: 415
